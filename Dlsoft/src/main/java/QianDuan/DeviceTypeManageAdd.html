@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新增设备类型</title>
+
+	<style type="text/css">
+       
+    .mtable tr th,.mtable tr td{
+    	padding:0px;
+    	text-align:center;
+    }
+    .mtable .btn {
+    	padding:2px 5px;
+    }
+	.panel-heading{
+		color:#00fefd !important;
+		background: #284c73;
+		background: -moz-linear-gradient(top, #284c73 30%,#1f3b5b 60%,#14283f 80%);
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#284c73), color-stop(60%,#1f3b5b),color-stop(80%,#1f3b5b));
+		background: -webkit-linear-gradient(top, #284c73 30%,#1f3b5b 60%,#14283f 80%);
+		background: -o-linear-gradient(top,#284c73 30%,#1f3b5b 60%,#14283f 80%);
+		background: -ms-linear-gradient(top, #284c73 30%,#1f3b5b 60%,#14283f 80%);
+		background: linear-gradient(to bottom, #284c73 30%,#1f3b5b 60%,#14283f 80%);
+		border-color:#284c73;
+	}
+
+	.form-group{
+		font-size:16px;
+		font-weight:normal;
+	}
+	.form-group .control-label{
+		font-size:16px;
+		font-weight:normal;
+		text-align:right;
+		padding-right:0px;
+		padding-top:5px;
+		width:200px;
+	}
+	.form-group .control-input{
+		width:200px;
+	}
+	</style>
+<body>
+<div class="panel-heading" role="tab">
+	<h4 class="panel-title">
+		<span  class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse2" aria-expanded="false"
+			   i18n="deviceType.sblxxx"    aria-controls="collapse2">设备类型信息</span>
+	</h4>
+</div>
+<!-- Tab panes -->
+<div class="tab-content" style="height:100%;">
+	<div role="tabpanel" class="tab-pane col-md-12 active" style="padding:15px;height:95%;overflow: auto;" id="tab1">
+		<div class="form-group row" id="devCodeDiv" style="display:none">
+			<label for="equTypeCode" class="col-md-2 control-label">
+				<span i18n="deviceType.lbdm">类别代码</span><span>：</span>
+			</label>
+			<div class="col-md-10">
+				<input type="number" class="control-input control-input-long" id="equTypeCode"  data-minlength="6">
+			</div>
+		</div>
+		<div class="form-group row">
+			<label for="equTypeName" class="col-md-2 control-label">
+				<span i18n="deviceType.lbmc">类别名称</span><span>：</span>
+			</label>
+			<div class="col-md-10">
+				<input class="control-input control-input-long" id="equTypeName"  placeholder="类别名称">
+			</div>
+		</div>
+		<div class="form-group row">
+			<label for="manufacturer" class="col-md-2 control-label">
+				<span i18n="deviceType.sccj">生产厂家</span><span>：</span>
+			</label>
+			<div class="col-md-10">
+				<input class="control-input control-input-long" id="manufacturer"  i18n="deviceType.sccj"  placeholder="ddd">
+			</div>
+		</div>
+		<div class="form-group row">
+			<label for="type_name" class="col-md-2 control-label">
+				<span i18n="deviceType.zxtlx2">子系统类型</span><span>：</span>
+			</label>
+			<div class="col-md-10">
+				<select id="type_name"  class="control-input control-input-short blue-select" >
+				</select>
+			</div>
+		</div>
+		<div class="form-group row">
+			<label for="parent_node" class="col-md-2 control-label">
+				<span i18n="deviceType.fjd">父节点</span><span>：</span>
+			</label>
+			<div class="col-md-10">
+				<select id="parent_node"  class="control-input control-input-short blue-select" >
+				</select>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label for="equTypeGraph" class="col-md-2 control-label">
+				<span i18n="deviceType.gltx">关联图形</span><span>：</span>
+			</label>
+			<div class="col-md-10">
+				<select id="equTypeGraph"  class="control-input control-input-short blue-select" >
+				</select>
+			</div>
+		</div>
+
+
+		<div class="form-group row">
+			<label class="col-md-2 control-label">
+				<span i18n="deviceType.gltp">关联图片</span><span>：</span>
+			</label>
+			<div class="col-lg-10">
+				<form enctype="multipart/form-data" id="editDevImgForm" method="POST">
+					<div class="row">
+						<div class="col-xs-1">
+							<a  class="btn btn-info m-bottom-sm" onClick="$(&#39;#devImg&#39;).click();"> <i class="fa fa-picture-o" i18n="deviceType.xztp"></i>选择图片
+							</a>
+							<!-- 上传头像按钮 -->
+							<input type="file" class="hidden" id="devImg" name="mainFile" accept=".bmp,.jpg,.gif,.png,.ico" onChange="javascript:setDevImagePreview();">
+						</div>
+						<div class="col-xs-9 ">
+							<img id="devModelPreview" src="" style="height:160px;width:200px;" >
+							<input type="text" class="hidden"  value="" id="devImgText" />
+						</div>
+						
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-md-2 control-label">
+				<span i18n="deviceType.gltb">关联图标</span><span>：</span>
+			</label>
+			<div class="col-lg-10">
+				<form enctype="multipart/form-data" id="editDevIconForm" method="POST">
+					<div class="row">
+						<div class="col-xs-1">
+							<a  class="btn btn-info m-bottom-sm" onClick="$(&#39;#devIcon&#39;).click();"> <i class="fa fa-picture-o" i18n="deviceType.xztp"></i>选择图片
+							</a>
+							<!-- 上传头像按钮 -->
+							<input type="file" class="hidden" id="devIcon" name="mainFile" accept=".bmp,.jpg,.gif,.png,.ico" onChange="javascript:setDevIconPreview();">
+						</div>
+						<div class="col-xs-9 ">
+							<img id="devIconPreview" src="" style="height:160px;width:200px;" >
+							<input type="text" class="hidden"  value="" id="devIconText" />
+						</div>
+
+					</div>
+				</form>
+			</div>
+		</div>
+		<div>
+			<a type="button" class="btn btn-success" id="saveDeviceTypeBtn" style="margin-left:80%;cursor: pointer;font-size:14px;"><i class="fa fa-check" i18n="UserSet.save"></i>保存</a>
+			<a type="button" class="btn btn-info" href="DeviceTypeManage.html" id="cancelBtn" style="margin-left:2%;cursor:pointer;font-size:14px;"><i class="fa fa-reply" i18n="sys.back"></i>返回</a>
+		</div>
+	</div>
+</div>
+<script>
+	// console.log("EqumanagementAdd");
+	var tableDataTemp=[];
+	// var devTypeCodes=[];
+	var deviceTypeList=[];
+	$(function(){
+		init();
+	});
+	
+	function init(){
+		getI18cnDatas();
+		languageSelect();
+		$("#equTypeCode").attr("readOnly","readOnly");
+		if(localStorage["devType_ChangeFlag"]=="修改"){
+			document.getElementById("devCodeDiv").style.display="";
+		    $("#equTypeCode").val(localStorage["devType_code"]);
+			$("#equTypeName").val(localStorage["devType_name"] == "undefined"?"":localStorage["devType_name"]);
+			$("#manufacturer").val(localStorage["devType_manufacturer"] == "undefined"?"":localStorage["devType_manufacturer"]);
+			// $("#parent_node").val(localStorage["devType_parentname"] == "undefined"?"":localStorage["devType_parentname"]);
+			// $("#type_name").val(localStorage["devType_typename"] == "undefined"?"":localStorage["devType_typename"]);
+			$("#devModelPreview").attr("src",localStorage["devType_pic"] == "undefined"?"":localStorage["devType_pic"]);
+			$("#devIconPreview").attr("src",localStorage["devType_icon"] == "undefined"?"":localStorage["devType_icon"]);
+			$("#devImgText").val(localStorage["devType_pic"] == "undefined"?"":localStorage["devType_pic"]);
+        }
+        $("#cancelBtn").click(goBack);
+		$("#saveDeviceTypeBtn").click(function(){
+			// console.log(22)
+			var code=$("#equTypeCode").val();
+			var name=$("#equTypeName").val();
+			var graph=$("#equTypeGraph").val() == null?"":$("#equTypeGraph").val();
+			var pic=$("#devImgText").val();
+			var icon = $("#devIconText").val();
+			var manufacturer=$("#manufacturer").val();
+			// var parentCode = $("#parent_node").val();
+			var parentCode = $("#parent_node").val();
+			// var subSysType =  localStorage["devType_subSysType"];
+			var subSysType =  $("#type_name").val();
+
+			var dataStr="'"+code+"','"+name+"','"+manufacturer+"','"+graph+"','"+pic+"','"+parentCode+"','"+subSysType+"','"+icon+"'";
+			var dataStr1="'"+name+"','"+manufacturer+"','"+graph+"','"+pic+"','"+parentCode+"','"+subSysType+"','"+icon+"'";
+			if(localStorage["devType_ChangeFlag"]=="修改"){
+				get_promapper_result("updateDeviceType",dataStr,function(result){
+					if(result){
+						sweetAlert(getLangData("akbm.saveok"));
+						$.get("DeviceTypeManage.html", function(result){
+							$("#main-container").html(result);
+							getI18cnDatas();
+							languageSelect();
+						});
+					}else{
+						sweetAlert(getLangData("akbm.savefalse"));
+					}
+				});
+			}else{
+				get_promapper_result("saveDeviceType",dataStr1,function(result){
+					if(result){
+						sweetAlert(getLangData("akbm.saveok"));
+						$.get("DeviceTypeManage.html", function(result){
+							$("#main-container").html(result);
+							getI18cnDatas();
+							languageSelect();
+						});
+					}else{
+						sweetAlert(getLangData("akbm.savefalse"));
+					}
+				});
+			}
+
+			return;
+		});
+		//初始化子系统下拉框
+		initSysType();
+		//初始化父节点下拉框
+        initParentNode();
+        //初始化组态图
+		initGraph();
+	}
+
+	$("#type_name").change(function (){
+		var sysTypeId = $("#type_name").val();
+		// console.log(localStorage["devType_parentname"])
+		$("#parent_node").empty();
+		$("#parent_node").append("<option value=''> </option>");
+		if(deviceTypeList!=null && deviceTypeList.length>0) {
+			for (var i =0;i<deviceTypeList.length;i++) {
+				if (deviceTypeList[i].sub_sys_type !=sysTypeId)continue;
+				if (deviceTypeList[i].name==$("#equTypeName").val())continue;
+				$("#parent_node").append("<option value='"+deviceTypeList[i].code +"'>"+deviceTypeList[i].name+ "</option>");
+			}
+		}
+	});
+	//初始化子系统类型下拉框
+	function initSysType(){
+		$("#type_name").empty();
+		get_promapper_result("getSubsysTypeList",null,function(data) {
+			var list = data;
+			// console.log('data');
+			// console.log(data);
+			// alert(1);
+
+			if(localStorage["devType_ChangeFlag"]=="修改"){
+				if (localStorage["devType_subSysType"]!=null&&localStorage["devType_subSysType"]!=''){
+					$("#type_name").append("<option value=''></option>");
+				}
+				$("#type_name").append("<option value='"+localStorage["devType_subSysType"] +"' selected>"+localStorage["devType_typename"]+ "</option>");
+				if(list!=null && list.length>0) {
+					for (var i =0;i<list.length;i++) {
+						if (list[i].name==localStorage["devType_typename"])continue;
+						$("#type_name").append("<option value='"+list[i].id +"'>"+list[i].name+ "</option>");
+					}
+				}
+			}else {//新增
+				if(list!=null && list.length>0) {
+					$("#type_name").append("<option value=''></option>");
+					for (var i =0;i<list.length;i++) {
+						$("#type_name").append("<option value='"+list[i].id +"'>"+list[i].name+ "</option>");
+					}
+				}
+			}
+
+
+		});
+	}
+	function initGraph(){
+		$("#equTypeGraph").empty();
+		GraphSelection($("#equTypeGraph"),localStorage["currentStationCd"],null,localStorage["devType_graphname"]);
+	}
+	function GraphSelection($select,stationCd,callback,defaultId){
+		var current;
+		var data = [];
+
+		initList();
+		function initList(){
+			$select.select2({
+				minimumResultsForSearch: -1
+			});
+			$.ajax({
+				url:"getGraphListByStation",
+				type:"POST",
+				async:false,
+				data:{stationCd:localStorage["currentStationCd"]},
+				success:function(result){
+					if(result == null || result.list == null){
+						//异常信息
+						data = [];
+						console.log(getLangData("stationmanage.findSystemMainGraphError"));
+						return ;
+					}
+					data = [[getLangData("stationmanage.pleaseChoose"),""]];
+					for(var i=0;i<result.list.length;i++){
+						data.push([result.list[i],result.list[i]]);
+					}
+
+				}
+			});
+			if(defaultId){
+				for(var i=0;i<data.length;i++){
+					if(data[i][1] == defaultId){
+						current = data[i];
+					}
+				}
+			}
+			if(!current && data.length>0){
+				defaultId = data[0][1];
+				current = data[0];
+			}
+			var str = "";
+			if(data.length > 0 ){
+				for(var i=0;i<data.length;i++){
+					if (data[i][1]==''){//空选项处理
+						var selected =  "";
+						if (data[i][1] == defaultId){
+							selected =  "selected='selected'";
+						}
+						str += "<option value='' "+selected+">"+data[i][0]+"</option>";
+						continue;
+					}
+					if(data[i][1] == defaultId){
+						str += "<option value='"+data[i][0]+"' selected='selected'>"+data[i][0]+"</option>";
+					}else{
+						str += "<option value='"+data[i][0]+"'>"+data[i][0]+"</option>";
+					}
+				}
+			}
+
+			$select.html(str);
+			$select.change(function(e){
+				var s = data[e.target.value];
+				current = s;
+				if(callback){
+					callback(s,e);
+				}
+			});
+		}
+
+		function currentSelect(){
+			if(current){
+				return current;
+			}else{
+				return ["",""];
+			}
+		}
+		function setCurrent(id){
+			for(var i=0;i<data.length;i++){
+				if(data[i][1] == id){
+					current = data[i];
+					$select.val(i).change();
+				}
+			}
+		}
+		function setCurrentName(name){
+			for(var i=0;i<data.length;i++){
+				if(data[i][0] == name){
+					current = data[i];
+					$select.val(i).change();
+				}
+			}
+		}
+		return {
+			currentSelect:currentSelect,
+			setCurrent:setCurrent,
+			setCurrentName:setCurrentName
+		};
+	};
+	function goBack(event){
+		event.preventDefault();
+		
+		swal({ 
+			title: "返回前请确认是否已保存数据",
+			title: localStorage["cLan"] == "cn"?"返回前请确认是否已保存数据":
+							"Please confirm if the data has been saved before returning",
+			type: "warning",
+			showCancelButton: true,
+			confirmButtonText: localStorage["cLan"] == "cn"?"继续返回":"Continue",
+			cancelButtonText:localStorage["cLan"] == "cn"?"取消":"Cancel",
+			closeOnConfirm: false
+			},
+			function(){
+			}).then(function(isConfirm) {
+				if (isConfirm === true) {
+					//刷新界面
+					$.get("DeviceTypeManage.html", function(result){
+						$("#main-container").html(result);
+						getI18cnDatas();
+						languageSelect();
+					});
+				}
+			});
+		
+	}
+	//初始化父节点下拉框
+	function initParentNode(){
+		$("#parent_node").empty();
+
+		var sq1='1=1';
+		get_promapper_result("getDeviceTypeList",sq1,function(data) {
+			var list = data;
+			deviceTypeList = null;
+			deviceTypeList = data;
+			if (data!=null){
+				// for (var i=0;i<data.length;i++){
+				// 	devTypeCodes.push(data[i].code);
+				// }
+				if(localStorage["devType_ChangeFlag"]=="修改"){
+					var sysTypeId = $("#type_name").val();
+					// console.log(localStorage["devType_parentname"])
+					if (localStorage["devType_parenttype"]!=null&&localStorage["devType_parenttype"]!=''){
+						$("#parent_node").append("<option value=''></option>");
+					}
+					$("#parent_node").append("<option value='"+localStorage["devType_parenttype"] +"' selected>"+localStorage["devType_parentname"]+ "</option>");
+					// console.log(list);
+					if(list!=null && list.length>0) {
+						for (var i =0;i<list.length;i++) {
+							if (list[i].sub_sys_type !=sysTypeId)continue;
+							if (list[i].name==localStorage["devType_parentname"])continue;
+							if (list[i].name==$("#equTypeName").val())continue;
+							$("#parent_node").append("<option value='"+list[i].code +"'>"+list[i].name+ "</option>");
+						}
+					}
+				}
+				// else {//新增
+				// 	$("#parent_node").append("<option value=''></option>");
+				// 	for (var i =0;i<list.length;i++) {
+				// 		$("#parent_node").append("<option value='"+list[i].code +"'>"+list[i].name+ "</option>");
+				// 	}
+				// }
+			}
+		});
+	}
+
+</script>
+</body>
+</html>

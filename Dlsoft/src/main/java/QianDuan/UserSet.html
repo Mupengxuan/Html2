@@ -1,0 +1,2536 @@
+<!DOCTYPE html>
+<html>
+<head>  
+	<meta charset="UTF-8">
+	<title>用户设置</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta name="description" content="">
+	
+	<style type="text/css">
+        .base-info{
+        	font-size:18px;
+        	margin-left:50px;
+        }
+        .panel{
+        	border:0px;
+        }
+        .panel-group{
+        	margin:10px;
+        	margin-top:40px;
+        }
+        .thclass2{
+			white-space:nowrap;
+			overflow:hidden;
+			text-overflow:ellipsis;
+		}
+
+        .panel-heading{
+        	color:#00fefd !important;
+        	background: #284c73;
+       	 	background: -moz-linear-gradient(top, #284c73 30%,#1f3b5b 60%,#14283f 80%);
+		    background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#284c73), color-stop(60%,#1f3b5b),color-stop(80%,#1f3b5b));
+		    background: -webkit-linear-gradient(top, #284c73 30%,#1f3b5b 60%,#14283f 80%);
+		    background: -o-linear-gradient(top,#284c73 30%,#1f3b5b 60%,#14283f 80%);
+		    background: -ms-linear-gradient(top, #284c73 30%,#1f3b5b 60%,#14283f 80%);
+		    background: linear-gradient(to bottom, #284c73 30%,#1f3b5b 60%,#14283f 80%);
+		    border-top-left-radius:10px;
+        }
+
+        .panel-body{
+        	border-top: 0px !important;
+        }
+        .panel-title-indicator{
+        	color:#00fefd;
+        }
+        .table{
+        	text-align:center;
+        }
+        .table thead tr{
+        	border-color:#4d5456 !important;
+        	border-width:1px 1px 0px 1px !important;
+        }
+        .table tbody tr {
+        	border-color:#4d5456 !important;
+        	border-width:0px 1px 0px 1px !important;
+        }
+        .table tbody tr:last-child {
+        	border-width:0px 1px 1px 1px !important;
+        }
+        .table th{
+        	border:0px !important;
+        	font-size:16px;
+        	font-weight:normal;
+        }
+        .table td {
+        	border:0px !important;
+        	font-size:14px;
+        }
+        .table>thead{
+        	background:#102236;
+        }
+        .table>thead>tr>th{
+        	text-align:center;
+        	font-size:14px;
+        }
+         .panel-footer div>button {
+			background-color: rgba(223, 228, 232, 0);
+			/*height: 30px;*/
+			font-size: 14px;
+			border: solid 1px rgba(0, 186, 189, 0);
+			color: #fff;
+			padding-bottom: 2px;
+		}
+         .pagination2 div,
+		.pagination2 div>a {
+			background-color: rgba(223, 228, 232, 0);
+			float: left;
+			font-size: 14px;
+			margin-left: 10px;
+			border: solid 1px rgba(0, 186, 189, 0);
+			color: #fff;
+		}
+		.sysLogModalInput{
+			color:rgb(255, 255, 255);
+			height:30px;
+			padding-left:5px;
+			width:300px;
+			font-size:14px;
+		}
+		.sysLogModalSpan{
+			float:left;
+			line-height: 33px;
+			width:180px;
+			text-align:center;
+			font-size:15px;
+			font-weight: normal;
+		}
+		.sysLogModalInput2{
+			color:rgb(255, 255, 255);
+			height:200px;
+			padding:5px;
+			width:300px;
+			font-size:14px;
+			background: transparent;
+			border: solid 1px rgba(0, 186, 189, 0.4);
+		}
+		.sysLogModalSpan2{
+			float:left;
+			line-height: 200px;
+			width:180px;
+			text-align:center;
+			font-size:15px;
+			font-weight: normal;
+		}
+        input::-webkit-outer-spin-button,
+		input::-webkit-inner-spin-button {
+		    -webkit-appearance: none;
+		}
+		 
+		input[type="number"] {
+		    -moz-appearance: textfield;
+		}
+		table tr td span{
+			font-size:14px;
+		}
+		table tr td input{
+			font-size:14px;
+		}
+		table tr td select{
+			font-size:14px;
+		}
+		table tr td select option{
+			font-size:14px;
+		}
+		table tbody tr td{
+			font-size:14px;
+		}
+		.select2-container .select2-selection--single{  
+	        height:32px;  
+	        line-height: 32px; 
+	        padding:3px;
+	    }
+	    .inputstyle{
+        	height:35px;
+        	line-height:35px;
+        	width:200px;
+        	color:#fff;
+        	border:1px solid rgba(0, 186, 189, 0.4);
+        	font-size:14px;
+        	padding:10px;
+        }
+	</style>
+</head>
+<body>
+	<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+	  <div class="panel panel-default">
+	    <div class="panel-heading" role="tab" id="heading1">
+	      <h4 class="panel-title">
+	      	<span  role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse1" aria-expanded="true" aria-controls="collapse1">
+	        	<span i18n="UserSet.baseInfo">
+	          		用户信息设置
+	        	</span>
+	        	<span class="fa fa-caret-up pull-right panel-title-indicator" ></span>
+	        </span>
+	      </h4>
+	    </div>
+	    <div id="collapse1" class="panel-collapse collapse in " role="tabpanel" aria-labelledby="heading1">
+	      	<div class="panel-body">
+	      		<div class="base-info">
+	      		<table style="border-collapse:separate; border-spacing:10px;">
+				  <tr>
+				    <td>
+				    	<span i18n="UserSet.username"> 用户名 </span>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<input logPropertyUSER="user name" style="font-size:14px;" id="username" type="text" autocomplete="off" class="inputstyle" />
+				    </td>
+				  </tr>
+				  <tr>
+				    <td>
+				    	<span i18n="UserSet.email"> 邮箱 </span>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<input logPropertyUSER="email" id="email" type="text" autocomplete="off" style="font-size:14px;" class="inputstyle" />
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<span i18n="UserSet.country"> 国家/地区 </span>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<select logPropertyUSER="country" id="seachcountry" type="text" name="seachcountry" class="inputstyle" onchange="changeCountry(this.value);">
+		      		 
+		      			</select>
+				    </td>
+				  </tr>
+				  <tr>
+				    <td id="shengz">
+				    	<span i18n="UserSet.province"> 省/州 </span>
+				    </td>
+				    <td id="shengz2" style="padding-left:15px;">
+				    	<select logPropertyUSER="province" id="seachprov" type="text" name="seachprov" class="inputstyle" onchange="changerovince(this.value);">
+		      		 
+		      			</select>
+				    </td>
+				    <td id="chengs" style="padding-left:15px;">
+				    	<span i18n="UserSet.city"> 城市 </span>
+				    </td>
+				    <td id="chengs2" style="padding-left:15px;">
+				    	<select logPropertyUSER="city" id="seachcity" type="text" name="seachcity" class="inputstyle" onchage="changecitys(this.value);">
+		      		
+		      			</select>
+				    </td>
+				    <td style="padding-left:15px;display:none;">
+				    	<select id="seachdistrict" type="text" name="seachdistrict" class="inputstyle" >
+		      		
+		      			</select>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<span i18n="UserSet.code"> 邮编</span>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<input logPropertyUSER="number" id="number" type="text" autocomplete="off" style="font-size:14px;" class="inputstyle" />
+				    </td>
+				  </tr>
+				  <tr>
+				    <td>
+				    	<span i18n="UserSet.address"> 详细地址 </span>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<input logPropertyUSER="address" id="address" type="text" autocomplete="off" style="font-size:14px;" class="inputstyle" />
+				    </td>
+				  </tr>
+				  <tr>
+				    <td>
+				    	<span i18n="UserSet.language"> 语言 </span>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<select logPropertyUSER="language" id="language" type="text" name="language" class="inputstyle" >
+				      		 <option value='中文' i18n="userSet.systemNameCn">中文</option>
+							 <option value='英文' i18n="userSet.systemNameEn">英文</option>
+				      	</select>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<span i18n="UserSet.contactor"> 联系人 </span>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<input logPropertyUSER="contactor" id="contactor" type="text" autocomplete="off" style="font-size:14px;" class="inputstyle" />
+				    </td>
+				  </tr>
+				  <tr>
+				    <td>
+				    	<span i18n="UserSet.phone"> 联系电话 </span>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<input logPropertyUSER="phone" id="phone" autocomplete="off" type="text" style="font-size:14px;" class="inputstyle" />
+				    </td>
+				    <td id="send1" class="hidden" style="padding-left:15px;">
+				    	<span i18n="UserSet.sendphone"> 发送短信 </span>
+				    </td>
+				    <td id="send2" class="hidden" style="padding-left:15px;display:none;">
+				    	<select id="sendphone" type="text" name="sendphone" class="inputstyle" >
+				      		 <option value="是" i18n="PermissionsManage.yes">是</option>
+							 <option value="否" i18n="PermissionsManage.no">否</option>
+				      	</select>
+				    </td>
+				  </tr>
+				  
+				  <tr>
+				    <td>
+				    	<span i18n="UserSet.logo"> 头像 </span>
+				    </td>
+				    <td style="padding-left:15px;">
+				      <form enctype="multipart/form-data" id="editDevImgForm">
+				    	<div class="form-group">
+							<div style="height:150px;width:150px;">
+								<img id="devPreview" name="devPreview" src="images/touxiang.jpg" width=150 height=150> 
+								<input type="text" class="hidden" name="devImgText" value="" id="devImgText"> 
+								<a onClick="$(&#39;#devImg&#39;).click()" type="button" class="btn btn-primary m-bottom-sm" id="uploadImgBtn">
+									<i class="fa fa-file-image-o"></i>
+									<span i18n="UserSet.logo2">上传图片</span>
+								</a>
+								<input type="file" class="hidden" id="devImg" name="mainFile"
+									accept=".bmp,.jpg,.gif,.png,.ico"
+									onChange="javascript:setDevImagePreview();">
+							</div>
+						</div>
+					  </form>
+				    </td>
+				  </tr>
+				</table>
+		      	
+		      	<button style="margin-left:90%;cursor: pointer;" type="button" class="btn btn-primary" onclick="onbutton1()">
+					<i class="fa fa-check"></i>&nbsp;
+					<span i18n="UserSet.save">保存</span>
+				</button>
+		      	<br/>
+		      	
+				</div>
+	      	</div>
+	    </div>
+	    
+	  </div>
+	  
+	  <div class="panel panel-default">
+	    <div class="panel-heading" role="tab" id="heading2">
+	      <h4 class="panel-title">
+	      	<span class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse2" aria-expanded="false" aria-controls="collapse2">
+	        	<span i18n="UserSet.change">
+	         		   修改密码
+	        	</span>
+	        	<span class="fa fa-caret-down pull-right panel-title-indicator" ></span>
+	        </span>
+	      </h4>
+	    </div>
+	    <div id="collapse2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2">
+	      <div class="panel-body">
+	        <div class="base-info">
+		      	
+		      	<table style="border-collapse:separate; border-spacing:10px;">
+				  <tr>
+				    <td>
+				    	<span i18n="UserSet.oldpassword"> 原密码 </span>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<input logPropertyPassword="old password" id="oldpassword" type="text" style="font-size:14px;" autocomplete="off" name="oldpassword" class="inputstyle" />
+				    </td>
+				  </tr>
+				  <tr>
+				    <td>
+				    	<span i18n="UserSet.newpassword"> 新密码 </span>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<input logPropertyPassword="new password" id="newpassword" type="text"  style="font-size:14px;" autocomplete="off" name="newpassword" class="inputstyle" />
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<span i18n="UserSet.againpassword"> 确定密码 </span>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<input logPropertyPassword="again password" style="font-size:14px;" id="againpassword" type="text" name="againpassword" class="inputstyle" />
+				    </td>
+				  </tr>
+				</table>
+		      	
+		      	<button style="margin-left:90%;cursor: pointer;" type="button" class="btn btn-primary" onclick="onbutton2()">
+					<i class="fa fa-check"></i>&nbsp;
+					<span i18n="UserSet.save">保存</span>
+				</button>
+		      	<br/>
+		      	
+			</div>
+	      </div>
+	    </div>
+	  </div>
+	  
+	  <div class="panel panel-default" oprAuth='47'>
+	    <div class="panel-heading" role="tab" id="heading3">
+	      <h4 class="panel-title">
+	      	<span class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse3" aria-expanded="false" aria-controls="collapse3">
+	        	<span i18n="UserSet.sn" >
+	         	 	SN管理
+	       		</span>
+	        	<span class="fa fa-caret-down pull-right panel-title-indicator" ></span>
+	        </span>
+	      </h4>
+	    </div>
+	    <div id="collapse3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading3">
+	      <div class="panel-body">
+	         <div class="base-info" >
+		      	
+		      	<input id="searchSN" type="text" style="font-size:14px;width:200px;" i18n="UserSet.sscz" placeholder="搜索场站" name="search" class="inputstyle" />
+		      	<span style="margin-left:18px;margin-top:10px;font-size:14px;" i18n="UserSet.ying">应用程序类别 </span>：
+		      	<select id="ying" type="text" style="margin-top:10px;font-size:14px;cursor: pointer;" name="ying" class="inputstyle" >
+		      		 
+		      	</select>
+		      	<button style="margin-left:15px;cursor: pointer;font-size:14px;" type="button" class="btn btn-primary" onclick="onbutton31()">
+					<i class="fa fa-search"></i>&nbsp;
+					<span i18n="SystemLog.query">查询</span>
+				</button>
+				<button style="margin-left:15px;cursor: pointer;font-size:14px;" type="button" class="btn btn-primary" onclick="addSN()">
+					<i class="fa fa-plus"></i>&nbsp;
+					<span i18n="UserSet.add">新增</span>
+				</button>
+		      	</br>
+		      	
+				<div id="div1">
+					<table class="table" id="responsiveTable" style="margin-bottom:0px;border:3px solid rgba(0,0,0,0);">
+						<thead>
+							<tr style="height: 40px;">
+								<th style="text-align:center;" width="90px" i18n="UserSet.xh">序号</th>
+								<th style="text-align:center;" i18n="UserSet.cang">场站</th>
+								<th style="text-align:center;" i18n="UserSet.ying">应用程序类别</th>
+								<th style="text-align:center;" i18n="UserSet.istrue">是否禁止升级</th>
+								<th style="text-align:center;" i18n="UserSet.startTime">创建时间</th>
+								<th style="text-align:center;" i18n="UserSet.cz">操作</th>
+							</tr>
+						</thead>
+						<tbody id="tableBody">
+	
+							<tr id="templateTr">
+								<td style="text-align:center;"></td>
+								<td style="text-align:center;"></td>
+								<td style="text-align:center;"></td>
+								<td style="text-align:center;"></td>
+								<td style="text-align:center;"></td>
+								<td style="text-align:center;">
+								
+									<a id="xiugai1" oprAuth='64' title="修改" style="cursor:pointer;" onclick="xiugai1(this)">
+										<img src="images/edit.png" style="width: 25px;height: 25px;" />
+									</a>
+									<a id="shanchu1" oprAuth='65' title="删除" style="cursor:pointer;"  onclick="toDeletePage1(this)" >
+										<img src="images/trash.png" style="width: 25px;height: 25px;" />
+									</a>
+									
+								</td>
+							</tr>
+	
+						</tbody>
+					</table>
+					<div class="panel-footer clearfix " style="background:rgba(0, 0, 0, 0);color:white;">
+						<div class="form-group cy-panelfotter pull-right">
+							<label class="col-xs-4 col-md-4 control-label"></label>
+							<button style="float: left;margin-right: 10px;" id="jumpUserBtn1"> 
+								<span i18n="alarm.table.go">前往</span>
+							</button>
+							<div style="float: left;">
+								<input id="jumpUserPage1">
+							</div>
+							<label style="float:left;margin-left: 10px;" i18n="alarm.table.page">页</label>
+						</div>
+						<input type="hidden" id="currentUserPage1" value="1">
+						<div class="pagination2  m-top-none pull-right">
+									<div>
+										<a href="javascript:void(0);">
+												<span i18n="alarm.table.total">
+													共
+												</span> 
+												<span id="lblShowCnt1" >
+												   0
+												</span> 
+												<span  i18n="alarm.table.item">
+													条
+												</span> 
+										</a>
+									</div>
+									<div>
+										<a  href="javascript:void(0);" >
+												
+												<span id="numperpage1">
+													30
+												</span> 
+												<span i18n="alarm.table.pageitem">
+												   0
+												</span> 
+										</a>
+									</div>
+									<div>
+										<a id="toPre1" href="javascript:void(0);"><</a>
+									</div>
+									<div>
+										<span id="currpagenum1" href="javascript:void(0);" style="background-color: rgba(255,255,255,0.12);padding-left: 3px;padding-right: 3px;">
+												1
+										</span>
+									</div>
+									<div>
+										<a id="toNext1" href="javascript:void(0);">></a>
+									</div>
+								</ul>
+							  </div>
+					</div>
+			   </div>
+			</div>
+			<div id="div2" class="base-info" style="display:none;">
+		      	
+		      	<table style="border-collapse:separate; border-spacing:10px;">
+				  <tr>
+				    <td>
+				    	<span i18n="UserSet.cang"> 场站 </span>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<select logPropertySN="station" id="cang" type="text" style="font-size:14px;cursor: pointer;width:100%;" name="cang" class="inputstyle" >
+		      		 
+		      			</select>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<span i18n="UserSet.ying"> 应用程序类型 </span>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<select logPropertySN="application category" id="yingyong" type="text" style="font-size:14px;cursor: pointer;width:100%;" name="yingyong" class="inputstyle" >
+		      		 
+		      			</select>
+				    </td>
+				  </tr>
+				  <tr>
+				    <td>
+				    	<span i18n="UserSet.istrue"> 是否禁止升级 </span>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<select logPropertySN="prohibit upgrade" id="shengji" type="text" style="font-size:14px;cursor: pointer;width:100%;" name="shengji" class="inputstyle" >
+				      		 <option i18n="PermissionsManage.no" style="font-size:14px;"  value='否' >否</option>
+							 <option i18n="PermissionsManage.yes" style="font-size:14px;"  value='是' >是</option>
+				      	</select>
+				    </td>
+				    
+				  </tr>
+				</table>
+		      	
+		      	<button style="margin-left:75%;cursor: pointer;font-size:14px;" type="button" class="btn btn-primary" onclick="quSN()">
+					<span i18n="UserSet.qu">取消</span>
+				</button>
+		      	<button id="snAddBtn" oprAuth='61' style="margin-left:2%;cursor: pointer;font-size:14px;" type="button" class="btn btn-primary" onclick="onbutton33()">
+					<span i18n="UserSet.que">确定</span>
+				</button>
+				
+				
+			</div>
+	      </div>
+	    </div>
+	  </div>
+	  
+	  <div class="panel panel-default" oprAuth='48'>
+	    <div class="panel-heading" role="tab" id="heading4">
+	      <h4 class="panel-title">
+	      	<span class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse4" aria-expanded="false" aria-controls="collapse4">
+	        	<span i18n="UserSet.License" >
+	          		License管理
+	        	</span>
+	        	<span class="fa fa-caret-down pull-right panel-title-indicator" ></span>
+	        </span>
+	      </h4>
+	    </div>
+	    <div id="collapse4" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading4">
+	      <div class="panel-body">
+	         <div id="div3" class="base-info" >
+		      	
+		      	<input id="searchLi" type="text" style="font-size:14px;width:200px;" i18n="UserSet.sscz2" placeholder="搜索License" name="search" class="inputstyle" />
+		      	<span style="margin-left:18px;margin-top:10px;font-size:14px;" i18n="UserSet.userCat">用户类别 </span>：
+		      	<select id="userCat" type="text" style="margin-top:10px;font-size:14px;cursor: pointer;" name="userCat" class="inputstyle" >
+		      		
+		      	</select>
+		      	<button style="margin-left:15px;cursor: pointer;font-size:14px;" type="button" class="btn btn-primary" onclick="onbutton41()">
+					<i class="fa fa-search"></i>&nbsp;
+					<span i18n="SystemLog.query">查询</span>
+				</button>
+				<button style="margin-left:15px;cursor: pointer;font-size:14px;" type="button" class="btn btn-primary" onclick="addLi()">
+					<i class="fa fa-plus"></i>&nbsp;
+					<span i18n="UserSet.add">新增</span>
+				</button>
+		      	</br>
+		      	
+		      	<div>
+		      		<table class="table" id="responsiveTable2" style="margin-bottom:0px;border:3px solid rgba(0,0,0,0);width: 2000px;">
+						<thead>
+							<tr style="height: 40px;">
+								<th style="text-align:center;" width="90px" i18n="UserSet.xh">序号</th>
+								<th style="text-align:center;" >License</th>
+								
+								<th style="text-align:center;" i18n="UserSet.userCat">用户类别</th>
+								<th style="text-align:center;" i18n="UserSet.cjrq">创建日期</th>
+								<th style="text-align:center;" i18n="UserSet.sfqy">是否启用</th>
+								
+								<th style="text-align:center;" i18n="UserSet.gs">安装商公司</th>
+								<th style="text-align:center;" i18n="UserSet.dz">安装商地址</th>
+								<th style="text-align:center;" i18n="UserSet.lxr">安装商联系人</th>
+								<th style="text-align:center;" i18n="UserSet.dh">安装商电话</th>
+								<th style="text-align:center;" i18n="UserSet.yx">安装商邮箱</th>
+								<th style="text-align:center;" i18n="UserSet.bz">安装商备注</th>
+								
+								<th style="text-align:center;" i18n="UserSet.cz">操作</th>
+							</tr>
+						</thead>
+						<tbody id="tableBody2">
+	
+							<tr id="templateTr2">
+								<td style="text-align:center;"></td>
+								<td style="text-align:center;"></td>
+								
+								<td style="text-align:center;"><div style="width: 100%;overflow: auto;"></div></td>
+								<td style="text-align:center;"><div style="width: 100%;overflow: auto;"></div></td>
+								<td style="text-align:center;"></td>
+								
+								<td style="text-align:center;"></td>
+								<td style="text-align:center;"></td>
+								<td style="text-align:center;"></td>
+								<td style="text-align:center;"></td>
+								<td style="text-align:center;"></td>
+								<td style="text-align:center;"></td>
+								
+								<td style="text-align:center;">
+									<a id="xiugai2" oprAuth='66' title="修改" style="cursor:pointer;" onclick="xiugai2(this)">
+										<img src="images/edit.png" style="width: 25px;height: 25px;" />
+									</a>
+									<a id="shanchu2" oprAuth='67' title="删除" style="cursor:pointer;"  onclick="toDeletePage2(this)" >
+										<img src="images/trash.png" style="width: 25px;height: 25px;" />
+									</a>
+								</td>
+							</tr>
+	
+						</tbody>
+					</table>
+					<div class="panel-footer clearfix " style=" background:rgba(0, 0, 0, 0);color:white;">
+						<div class="form-group cy-panelfotter pull-right">
+							<label class="col-xs-4 col-md-4 control-label"></label>
+							<button style="float: left;margin-right: 10px;" id="jumpUserBtn2">
+								<span i18n="alarm.table.go">前往</span>
+							</button>
+							<div style="float: left;color:#000;">
+								<input id="jumpUserPage2">
+							</div>
+							<label style="float: left;margin-left: 10px;" i18n="alarm.table.page">页</label>
+						</div>
+						<input type="hidden" id="currentUserPage2" value="1">
+						<div class="pagination2  m-top-none pull-right">
+									<div>
+										<a href="javascript:void(0);">
+												<span i18n="alarm.table.total">
+													共
+												</span> 
+												<span id="lblShowCnt2" >
+												   0
+												</span> 
+												<span  i18n="alarm.table.item">
+													条
+												</span> 
+										</a>
+									</div>
+									<div>
+										<a  href="javascript:void(0);" >
+												
+												<span id="numperpage2">
+													30
+												</span> 
+												<span i18n="alarm.table.pageitem">
+												   0
+												</span> 
+										</a>
+									</div>
+									<div>
+										<a id="toPre2" href="javascript:void(0);"><</a>
+									</div>
+									<div>
+										<span id="currpagenum2" href="javascript:void(0);" style="background-color: rgba(255,255,255,0.12);padding-left: 3px;padding-right: 3px;">
+												1
+										</span>
+									</div>
+									<div>
+										<a id="toNext2" href="javascript:void(0);">></a>
+									</div>
+								</ul>
+							  </div>
+					</div>
+					
+		      	</div>
+		      	
+				
+			</div>
+			
+			<div id="div4" class="base-info" style="display:none;height:500px;">
+			
+				<table style="border-collapse:separate; border-spacing:10px;">
+				  <tr>
+				    <td>
+				    	<span style="color:red;">*</span>
+				    	<span> License</span>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<input logPropertyLicense="license" id="license" type="text" style="font-size:14px;" name="license" class="inputstyle" />
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<span style="color:red;">*</span>
+				    	<span i18n="UserSet.userCat">用户类别 </span>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<select logPropertyLicense="user type" id="userCat2" type="text" style="font-size:14px;width:100%;" name="userCat2" class="inputstyle" >
+		      		
+		      			</select>
+				    </td>
+				  </tr>
+				  <tr>
+				    <td>
+				    	<span style="color:red;">*</span>
+				    	<span i18n="UserSet.sfqy"> 是否启用 </span>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<select logPropertyLicense="is start" id="sfqy" type="text" style="font-size:14px;width:100%;" name="sfqy" class="inputstyle" >
+				      		 <option i18n-only="html"  value='是' style="font-size:14px;">是</option>
+							 <option i18n-only="html"   value='否' style="font-size:14px;">否</option>
+				      	</select>
+				    </td>
+				  </tr>
+				  <tr>
+				    <td>
+				    	<span i18n="UserSet.gs"> 安装商公司 </span>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<input logPropertyLicense="installer company" id="gs" type="text" style="font-size:14px;" name="gs" class="inputstyle" />
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<span i18n="UserSet.dz"> 安装商地址 </span>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<input logPropertyLicense="installer address" style="font-size:14px;" id="dz" type="text" name="dz" class="inputstyle" />
+				    </td>
+				  </tr>
+				  <tr>
+				    <td>
+				    	<span i18n="UserSet.lxr"> 安装商联系人 </span>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<input logPropertyLicense="installer person" id="lxr" type="text" style="font-size:14px;" name="lxr" class="inputstyle" />
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<span i18n="UserSet.dh"> 安装商电话 </span>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<input logPropertyLicense="installer phone" style="font-size:14px;" id="dh" type="text" name="dh" class="inputstyle" />
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<span i18n="UserSet.yx"> 安装商邮箱 </span>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<input logPropertyLicense="installer email" style="font-size:14px;" id="yx" type="text" name="yx" class="inputstyle" />
+				    </td>
+				  </tr>
+				  <tr>
+				    <td>
+				    	<span i18n="UserSet.bz"> 安装商备注 </span>
+				    </td>
+				    <td style="padding-left:15px;">
+				    	<textarea logPropertyLicense="installer remark" style="height:120px;font-size:14px;" id="bz" type="text" name="bz" class="inputstyle" >
+				    	</textarea>
+				    </td>
+				  </tr>
+				</table>
+		      	
+		      	<button style="margin-left:75%;cursor: pointer;font-size:14px;" type="button" class="btn btn-primary" onclick="quLi()">
+					<span i18n="UserSet.qu">取消</span>
+				</button>
+		      	<button oprAuth='62' style="margin-left:2%;cursor: pointer;font-size:14px;" type="button" class="btn btn-primary" onclick="onbutton43()">
+					<span i18n="UserSet.que">确定</span>
+				</button>
+				
+				
+			</div>
+	      </div>
+	    </div>
+	  </div>
+	  
+	  <div class="panel panel-default" oprAuth='46' style="overflow-y:scroll;overflow-y:hidden;">
+	    <div class="panel-heading" role="tab" id="heading5">
+	      <h4 class="panel-title">
+	      	<span  class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse5" aria-expanded="false" aria-controls="collapse5">
+	        	<span i18n="UserSet.userrz" >
+	          		用户日志
+	        	</span>
+	        	<span class="fa fa-caret-down pull-right panel-title-indicator" ></span>
+	        </span>
+	      </h4>
+	    </div>
+	    <div id="collapse5" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading5">
+	      <div class="panel-body">
+	         <div class="base-info">
+		      	<div style="float:left;">
+		      	    <div style="float:left;">
+				      	<span style="float:left;font-size:14px;line-height:40px;margin-right:10px;" i18n="UserSet.rzCat">日志类别 </span>
+				      	<select id="rzCat" type="text" style="font-size:14px;float:left;cursor: pointer;width:150px;" name="rzCat" class="inputstyle" >
+				      		 <option value='' >all</option>
+							 <option value='Account'>Account</option>
+							 <option value='System'>System</option>
+							 <option value='AppVersionUpdate'>AppVersionUpdate</option>
+							 <option value='License'>License</option>
+							 <option value='SN'>SN</option>
+							 <option value='Role'>Role</option>
+							 <option value='User'>User</option>
+							 <option value='Cmd'>Cmd</option>
+							 <option value='SocketLog'>SocketLog</option>
+							 <option value='Strategy'>Strategy</option>
+				      	</select>
+			        </div>
+			      	<span style="margin-left:5px;float:left;font-size:14px;line-height:40px;" i18n="UserSet.czr">操作人  </span>
+			      	<input id="searchsource" type="text" name="searchsource" style="float:left;margin-left:5px;font-size:14px;width:150px;line-height:40px;" class="inputstyle" />
+					<!-- 时间 -->
+					<div class="StatisPageTopDiv" style="width:390px;">
+						<label class="" style="float:left;width:80px;text-align:center;font-size:14px;font-weight: normal;line-height:40px;" i18n="UserSet.dateChoose">日期选择:</label>
+						<div style="width:calc(100% - 100px);height: 34px; float:left; border: 1px solid #0068b7;border-radius:6px;">
+							<div class="" style="float: left; width:130px;">
+								<div class="input-group">
+									<input type="text" class="datepicker form-control" name="yearTime" id="yearTime" value="" style="width: 100%;">
+									<span class="input-group-addon" onclick="$(this).prev().focus()" style="background-color: #004986;font-size:15px;cursor: pointer;"><i class="fa fa-calendar"></i></span>
+								</div>
+							</div>
+							<div style="float: left; width:20px;">
+								<span style="color: #0068b7;">
+											&nbsp;___
+										</span>
+							</div>
+							<div style="float:right;width:130px;">
+								<div class="input-group">
+									<input type="text" class="datepicker form-control" name="monthTime" id="monthTime" value="" style="width: 100%;">
+									<span class="input-group-addon" onclick="$(this).prev().focus()" style="background-color: #004986;font-size:15px;cursor: pointer;"><i class="fa fa-calendar"></i></span>
+								</div>
+							</div>
+						</div>
+	
+					</div>
+					
+					<div class="StatisPageTopDiv" style="width:200px;">
+						<div class="btn-group">
+						 	<button type="button" id="logSearchButton" class="btn btn-primary" onclick="onbutton5()">
+						 	   <i class="fa fa-search"></i>&nbsp;
+							   <span i18n="SystemLog.query">查询</span>
+						 	</button>
+							 <div oprAuth='63' class="btn-group">
+							  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" >
+							   	<i class="fa fa-download"></i>&nbsp;
+							   	<span i18n="statisticsPage.export">导出</span>
+							    <span class="caret"></span>
+							  </button>
+							  <ul class="dropdown-menu dark">
+							    	<li><a href="#" onclick="exportToExcel(2)" i18n="statisticsPage.exportPDF">导出PDF</a></li>
+									<li><a href="#" onclick="exportToExcel(3)" i18n="statisticsPage.exportCSV">导出CSV</a></li>
+									<li><a href="#" onclick="exportToExcel(1)"  i18n="statisticsPage.exportEXCEL">导出EXCEL</a></li>
+							  </ul>
+							 </div>
+						</div>
+					</div>
+					<form action="" id="statisticsForm"  method="post" style="display:none;"></form>
+				</div>
+		      	</br>
+		      	
+		      	<div id="div33">
+		      		<table class="table" id="responsiveTable3" style="margin-bottom:0px;border:3px solid rgba(0,0,0,0);">
+						<thead>
+							<tr style="height: 40px;">
+								<th width="90px"  i18n="UserSet.xh">序号</th>
+								<th  i18n="UserSet.time">时间</th>
+								<th  i18n="UserSet.rzCat">日志类别</th>
+								<th  i18n="UserSet.rznr">内容</th>
+								<th  i18n="UserSet.czr">操作人</th>
+								
+								<th style="text-align:center;" i18n="UserSet.cz">操作</th>
+							</tr>
+						</thead>
+						<tbody id="tableBody3">
+	
+							<tr id="templateTr3">
+								<td class="thclass2" style="text-align:center;"></td>
+								<td class="thclass2" style="text-align:center;"></td>
+								
+								<td class="thclass2" style="text-align:center;"></td>
+								<td class="thclass2" style="text-align:center;"></td>
+								<td class="thclass2" style="text-align:center;"></td>
+								
+								<td style="text-align:center;">
+									<a id="shanchu3" title="查看" style="cursor:pointer;"  onclick="watch(this)" >
+										<img src="./mapimage/ck.png" style="width: 25px;height: 25px;" />
+									</a>
+								</td>
+							</tr>
+	
+						</tbody>
+					</table>
+					<div class="panel-footer clearfix " style=" background:rgba(0, 0, 0, 0);color:white;">
+						<div class="form-group cy-panelfotter pull-right">
+							<label class="col-xs-4 col-md-4 control-label"></label>
+							<button style="float: left;margin-right: 10px;" id="jumpUserBtn3">
+								<span i18n="alarm.table.go">前往</span>
+							</button>
+							<div style="float: left;color:#000;">
+								<input id="jumpUserPage3">
+							</div>
+							<label style="float: left;margin-left: 10px;" i18n="alarm.table.page">页</label>
+						</div>
+						<input type="hidden" id="currentUserPage3" value="1">
+						<div class="pagination2  m-top-none pull-right">
+									<div>
+										<a href="javascript:void(0);">
+												<span i18n="alarm.table.total">
+													共
+												</span> 
+												<span id="lblShowCnt3" >
+												   0
+												</span> 
+												<span  i18n="alarm.table.item">
+													条
+												</span> 
+										</a>
+									</div>
+									<div>
+										<a  href="javascript:void(0);" >
+												
+												<span id="numperpage3">
+													30
+												</span> 
+												<span i18n="alarm.table.pageitem">
+												   0
+												</span> 
+										</a>
+									</div>
+									<div>
+										<a id="toPre3" href="javascript:void(0);"><</a>
+									</div>
+									<div>
+										<span id="currpagenum3" href="javascript:void(0);" style="background-color: rgba(255,255,255,0.12);padding-left: 3px;padding-right: 3px;">
+												1
+										</span>
+									</div>
+									<div>
+										<a id="toNext3" href="javascript:void(0);">></a>
+									</div>
+								</ul>
+							  </div>
+					</div>
+					
+		      	</div>
+		      	
+				
+			</div>
+	      </div>
+	    </div>
+	    <!-- 显示详细信息  -->
+			<div class="modal" tabindex="-1" role="dialog" aria-labelledby="sysLogDetailLabel" id="sysLogDetailModel" aria-hidden="true" data-backdrop="false" style="margin-top: 2%;"> 
+				<div class="modal-dialog text-left" role="document"  style="width:600px;"  id="firstPage_alarm_list_content">
+					<div class="modal-content" style="background:rgba(0,58,113,0.9);">
+					
+						<div class="modal-header" style="border:0;color:#00c2ff;">
+							<button type="button" class="close1" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true" style="color:white">×</span>
+							</button>
+							<h4 class="modal-title" id="sysLogDetailLabel" style="color:#00c2ff;">
+								<i class="fa fa-calendar-check-o"></i> 
+								<span i18n="UserSet.xiang">日志信息</span>
+							</h4>
+						</div>
+						<div class="modal-body" style=" height:660px;border-top: 1px solid;">
+						
+							<div style="height:100%;">
+								
+								<div style="display: inline-block;margin-top: 10px;">
+									<div style="float:left;"><span class="sysLogModalSpan" i18n="UserSet.time">时间</span></div>
+									<div style="float:left;"><input class="sysLogModalInput" value="" readonly="readonly"></div>
+								</div>
+								<div style="display: inline-block;margin-top: 10px;">
+									<div style="float:left;"><span class="sysLogModalSpan" i18n="UserSet.rzCat">日志类别</span></div>
+									<div style="float:left;"><input class="sysLogModalInput" value="" readonly="readonly"></div>
+								</div>
+								<div style="display: inline-block;margin-top: 10px;">
+									<div style="float:left;"><span class="sysLogModalSpan" i18n="UserSet.rznr">日志标题</span></div>
+									<div style="float:left;"><input class="sysLogModalInput" value="" readonly="readonly"></div>
+								</div>
+								<div style="margin-top: 10px;">
+									<div style="float:left;"><span class="sysLogModalSpan2" i18n="UserSet.beforemodification">修改前内容</span></div>
+									<div style="float:left;"><textarea class="sysLogModalInput2" value="" readonly="readonly" ></textarea></div>
+								</div>
+								<div style="margin-top: 10px;">
+									<div style="float:left;"><span class="sysLogModalSpan2" i18n="UserSet.aftermodification">修改后内容</span></div>
+									<div style="float:left;"><textarea class="sysLogModalInput2" value="" readonly="readonly" ></textarea></div>
+								</div>
+								<div style="display: inline-block;margin-top: 10px;">
+									<div style="float:left;"><span class="sysLogModalSpan" i18n="UserSet.czr">操作人</span></div>
+									<div style="float:left;"><input class="sysLogModalInput" value="" readonly="readonly"></div>
+								</div>
+							</div>
+							
+						</div>
+						<div class="modal-footer" style="background:rgba(255,255,255,0);">
+							<button type="button" class="btn btn-default" data-dismiss="modal">
+								<span i18n="UserSet.close">关闭</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+	  </div>
+	  
+	</div>
+	
+	<script type="text/javascript">
+	
+	var totalPageCnt1 = 0;
+	var currentPageCnt1 = 0;
+	var totalDataCnt1 = -1;
+	var rowPerPage1 = 10;
+	var currentData1 = [];
+	
+	var totalPageCnt2 = 0;
+	var currentPageCnt2 = 0;
+	var totalDataCnt2 = -1;
+	var rowPerPage2 = 10;
+	var currentData2 = [];
+	
+	var totalPageCnt3 = 0;
+	var currentPageCnt3 = 0;
+	var totalDataCnt3 = -1;
+	var rowPerPage3 = 10;
+	var currentData3 = [];
+	
+	var snid = 0;
+	var licenseid = 0;
+	var oldStr = "";
+	var newStr = "";
+	var againStr = "";
+	
+	var countryid = 0;
+	var proviceid = 0;
+	var cityid = 0;
+	
+	var isexecute= false;
+	//alert(getTodayStr());
+	//展示现在的时间
+	function showNowTime() {
+		$('.datepicker').datepicker({
+			format: 'yyyy-mm-dd',
+			language: localStorage["cLan"] == "cn" ?"zh-CN":"",
+			startView: "month",
+			autoclose: true,
+			minView: 2,
+			maxView: 2,
+			BackColor: '#000'
+		});
+		
+		$("#yearTime").val(getTodayStr());
+		$("#monthTime").val(getTodayStr());
+	}
+	showNowTime();
+	
+	//初始化数据
+	function chushihua(){
+		//第一部分
+		$("#username").attr("readOnly",true);
+		var proc_str = "procCQGetOperInfo('"+localStorage["loginUserName"]+"')" ;
+		
+		get_string_result(proc_str, function(data){
+			
+			var list = eval(data);
+			document.getElementById("username").value = list[0]["name_"];
+			document.getElementById("email").value = list[0].email_;
+			
+			countryid = list[0].countryid;
+			proviceid = list[0].provinceid;
+			cityid = list[0].cityid;
+			
+			if(localStorage["cLan"] == "cn"){
+				init_area_select(countryid,proviceid,cityid,list[0].cname,list[0].pname,list[0].cityname);	
+			}else{
+				init_area_select(countryid,proviceid,cityid,list[0].cname1,list[0].pname1,list[0].cityname1);	
+			}
+			
+			$("#language").val(list[0]["language"]);
+			//alert((list[0].sms == "1"));
+			if(list[0].sms == "1"){
+				$("#sendphone").val("是");
+			}else{
+				$("#sendphone").val("否");
+			}
+			document.getElementById("number").value = list[0].code;
+			document.getElementById("address").value = list[0]["address"];
+			document.getElementById("contactor").value = list[0]["contactor"];
+			document.getElementById("phone").value = list[0].phone_;
+			
+			$("#username").attr("oldData",list[0]["name_"]);
+			$("#email").attr("oldData",list[0].email_);
+			$("#number").attr("oldData",list[0].code);
+			$("#address").attr("oldData",list[0]["address"]);
+			$("#contactor").attr("oldData",list[0]["contactor"]);
+			$("#phone").attr("oldData",list[0].phone_);
+			
+			$("#seachcountry").attr("oldData",list[0].cname);
+			$("#seachprov").attr("oldData",list[0].pname);
+			$("#seachcity").attr("oldData",list[0].cityname);
+			
+			$("#devPreview").attr("src", list[0].img);
+		    $("#devImgText").val(list[0].img);
+			
+		},"json");
+		//SN管理 
+		$("#ying").empty();
+		$("#yingyong").empty();
+		$("#cang").empty();
+		$("#userCat").empty();
+		$("#userCat2").empty();
+		var proc_str = "procCQGetAppList()" ;
+
+		  var proc_string = "procIGetHardtype(0,'')";
+		  
+		  get_string_result(proc_string, function(data){
+			  $("#ying").empty();
+			  $("#yingyong").empty();
+		   for(var i = 0 ;i<data.length;i++){
+			    option="<option value='"+data[i].type+"' >"+data[i].type+"</option>";
+			    $("#ying").append(option);						
+				$("#yingyong").append(option);
+		   }
+		    $("#ying").select2({
+				//最多能够选择的个数
+				minimumResultsForSearch: -1
+			});
+		    $("#yingyong").select2({
+				//最多能够选择的个数
+				minimumResultsForSearch: -1
+			});
+		   loadTableData1(true);
+		  },"businessMap");
+		
+		var proc_str = "procCQGetStationList('"+localStorage["responseId"]+"')" ;
+		
+		get_string_result(proc_str, function(data){
+			
+			var list = eval(data);
+			for(var i=0; i<list.length; i++){
+				$("#cang").append("<option value='"+list[i].id+"'>"+list[i]["name"+ getLanIndex()+"_"]+"</option>");						
+			}
+			$("#cang").select2({
+				//最多能够选择的个数
+				minimumResultsForSearch: -1
+			});
+			$("#shengji").select2({
+				//最多能够选择的个数
+				minimumResultsForSearch: -1
+			});
+			$("#sfqy").select2({
+				//最多能够选择的个数
+				minimumResultsForSearch: -1
+			});
+			$("#rzCat").select2({
+				//最多能够选择的个数
+				minimumResultsForSearch: -1
+			});
+		},"json");
+		var proc_str = "procCQGetRoleList('"+localStorage["roleId"]+"','"+localStorage["loginUserName"]+"')" ;
+		
+		get_string_result(proc_str, function(data){
+			
+			var list = eval(data);
+			//$("#userCat").append("<option value='0'>全部</option>");	
+			for(var i=0; i<list.length; i++){
+				$("#userCat").append("<option value='"+list[i].id_+"'>"+list[i]["name"]+"</option>");						
+				$("#userCat2").append("<option value='"+list[i].id_+"'>"+list[i]["name"]+"</option>");						
+			}
+			$("#userCat").select2({
+				//最多能够选择的个数
+				minimumResultsForSearch: -1
+			});
+			$("#userCat2").select2({
+				//最多能够选择的个数
+				minimumResultsForSearch: -1
+			});
+			loadTableData2(true);
+		},"json");
+		loadTableData3(true);
+		
+	}
+	function init_area_select(value1,value2,value3,name1,name2,name3) {
+		var proc_string = "procGetIAreaList(0,'country','','','','')";
+
+		get_string_result(proc_string, function(data) {
+			$("#seachcountry").empty();
+			var option = "";
+			
+			for(var i = 0; i < data.length; i++) {
+				if (value1 > 0 && data[i].code_ == value1){
+					option = "<option value='" + value1 + "' selected='selected'>" + name1 + "</option>";
+				}else{
+					if(localStorage["cLan"] == "cn"){
+						option = "<option value='" + data[i].code_ + "' >" + data[i].name_ + "</option>";
+					}else{
+						option = "<option value='" + data[i].code_ + "' >" + data[i].name1_ + "</option>";
+					}
+				}
+				$("#seachcountry").append(option);
+			}
+			$("#seachcountry").select2({
+				//最多能够选择的个数
+				minimumResultsForSearch: -1
+			});
+		}, "businessMap");
+		var proc_string = "procGetIAreaList(0,'province','" + value1 + "','','','')";
+
+		get_string_result(proc_string, function(data) {
+			$("#seachprov").empty();
+			var option = "";
+			
+			for(var i = 0; i < data.length; i++) {
+				if (value2 > 0 && data[i].code_ == value2){
+					option = "<option value='" + value2 + "' selected='selected'>" + name2 + "</option>";
+				}else{
+					if(localStorage["cLan"] == "cn"){
+						option = "<option value='" + data[i].code_ + "' >" + data[i].name_ + "</option>";
+					}else{
+						option = "<option value='" + data[i].code_ + "' >" + data[i].name1_ + "</option>";
+					}
+				}
+				$("#seachprov").append(option);
+			}
+			$("#seachprov").select2({
+				//最多能够选择的个数
+				minimumResultsForSearch: -1
+			});//
+			$("#language").select2({
+				//最多能够选择的个数
+				minimumResultsForSearch: -1
+			});//
+			$("#sendphone").select2({
+				//最多能够选择的个数
+				minimumResultsForSearch: -1
+			});//
+		}, "businessMap");
+		var proc_string = "procGetIAreaList(0,'city','" + value1 + "','" + value2 + "','','')";
+
+		get_string_result(proc_string, function(data) {
+			$("#seachcity").empty();
+			var option = "";
+			
+			for(var i = 0; i < data.length; i++) {
+				if (value3 > 0 && data[i].code_ == value3){
+					option = "<option value='" + value3 + "' selected='selected'>" + name3 + "</option>";
+				}else{
+					if(localStorage["cLan"] == "cn"){
+						option = "<option value='" + data[i].code_ + "' >" + data[i].name_ + "</option>";
+					}else{
+						option = "<option value='" + data[i].code_ + "' >" + data[i].name1_ + "</option>";
+					}
+				}
+				$("#seachcity").append(option);
+			}
+			$("#seachcity").select2({
+				//最多能够选择的个数
+				minimumResultsForSearch: -1
+			});
+		}, "businessMap");
+	}
+	
+	var init_province = function() {
+		$('#seachprov').empty();
+		$('#seachcity').empty();
+		var option = "<option value='-1' selected='selected'>全部</option>";
+		if(localStorage["cLanIdx"] > 0) {
+			option = "<option value='-1' selected='selected'>All</option>";
+		}
+		$("#seachprov").append(option);
+		$('#seachcity').append(option);
+		
+	}
+	//修改国家产生变化
+	function changeCountry(value) {
+		//alert(value);
+		init_province();
+		var proc_string = "procGetIAreaList(0,'province','" + value + "','','','')";
+
+		get_string_result(proc_string, function(data) {
+
+			for(var i = 0; i < data.length; i++) {
+				option = "<option value='" + data[i].code_ + "' >" + data[i].name_ + "</option>";
+				if(localStorage["cLan"] == "en"){
+					option = "<option value='" + data[i].code_ + "' >" + data[i].name1_ + "</option>";
+				}
+				$("#seachprov").append(option);
+			}
+			$("#seachprov").select2({
+				//最多能够选择的个数
+				minimumResultsForSearch: -1
+			});
+		}, "businessMap");
+		proc_string = "procGetIArea('" + value + "')";
+		get_string_result(proc_string, function(re) {
+			
+			var iframe = window.document.getElementById("mapcluster");
+			iframe.contentWindow.czoomcenter(re[0].position);
+		}, "businessMap");
+		
+	}
+	//改变省市
+	function changerovince(value) {
+		init_city();
+		var coval = $('#seachcountry').val();
+		var pvalue = $('#seachprov').val();
+
+		var proc_string = "procGetIAreaList(0,'city','" + coval + "','" + value + "','','')";
+
+		get_string_result(proc_string, function(data) {
+
+			for(var i = 0; i < data.length; i++) {
+				option = "<option value='" + data[i].code_ + "' >" + data[i].name_ + "</option>";
+				if(localStorage["cLan"] == "en"){
+					option = "<option value='" + data[i].code_ + "' >" + data[i].name1_ + "</option>";
+				}
+				$("#seachcity").append(option);
+			}
+			$("#seachcity").select2({
+				//最多能够选择的个数
+				minimumResultsForSearch: -1
+			});
+		}, "businessMap");
+		proc_string = "procGetIArea('" + value + "')";
+		get_string_result(proc_string, function(re) {
+			
+			var iframe = window.document.getElementById("mapcluster");
+			iframe.contentWindow.centerpo(re[0].position);
+		}, "businessMap");
+	}
+	
+	var init_city = function() {
+		$('#seachcity').empty();
+		var option = "<option value='-1' selected='selected'>全部</option>";
+		if(localStorage["cLanIdx"] > 0) {
+			option = "<option value='-1' selected='selected'>All</option>";
+		}
+		$('#seachcity').append(option);
+	}
+	
+	var namep = "";
+
+	function setAreaNamep(ele) {
+		namep = $(ele).find("option:selected").text();
+		var iframe = window.document.getElementById("mapcluster");
+		if(localStorage["cLan"] == "en") {
+			iframe.contentWindow.centerm(en_cn[namep]);
+		} else {
+			iframe.contentWindow.centerm(namep);
+		}
+	}
+	
+	$(function() {
+		
+			if(localStorage["isSuperAdmin"] == 1){
+				document.getElementById("send1").style.display="";//
+				document.getElementById("send2").style.display="";//
+			}else{
+				document.getElementById("send1").style.display="none";//
+				document.getElementById("send2").style.display="none";//
+			}
+		
+			$('#oldpassword').keyup(function(){
+		        var value=$(this).val();    //输入的时候获取输入框的值  
+		        oldStr+=value.substr(value.length-1,1); //获取最后一个字符加到到str,因为除了最后一个字符，其他的已经为*
+		        $(this).val(value.replace(/./g,'*')) //输入框内容全部变为*
+		        //console.log(oldStr); //str即为输入框的内容
+		    });
+			
+			$('#newpassword').keyup(function(){
+		        var value=$(this).val();    //输入的时候获取输入框的值  
+		        newStr+=value.substr(value.length-1,1); //获取最后一个字符加到到str,因为除了最后一个字符，其他的已经为*
+		        $(this).val(value.replace(/./g,'*')) //输入框内容全部变为*
+		        //console.log(oldStr); //str即为输入框的内容
+		    });
+			
+			$('#againpassword').keyup(function(){
+		        var value=$(this).val();    //输入的时候获取输入框的值  
+		        againStr+=value.substr(value.length-1,1); //获取最后一个字符加到到str,因为除了最后一个字符，其他的已经为*
+		        $(this).val(value.replace(/./g,'*')) //输入框内容全部变为*
+		        //console.log(oldStr); //str即为输入框的内容
+		    });
+			
+			chushihua();
+			
+			//获取当前页
+			var curPage = $("#currentUserPage1").val();
+
+			//跳转页面
+			$("#jumpUserBtn1").click(function() {
+				// 获取跳转页数的值
+				var curPage=$("#jumpUserPage1").val();
+
+				//判断输入页数是否是数字，并且判断是否大于总页数
+				if(curPage<=0||curPage!=parseInt(curPage)){
+					sweetAlert('请输入正整数');
+					//$("#jumpUserPage").val(""+curPage);
+					return false;
+				}else if(curPage > totalPageCnt1 ){
+					sweetAlert('跳转页数不能大于总页数');
+					//$("#jumpUserPage").val(""+curPage);
+					return false;
+				}
+				currentPageCnt1 = curPage;
+				//删除既存行数据
+				deleteOldData1();
+				addDataToTable1();
+				arragePagingInfo1();
+				
+			});
+			
+			$(".pagination2 div a").click(function(event){
+			    var thisID = $(this).attr("id");
+			    if(totalDataCnt1 ==0) {
+			        return;
+			    }
+				event.preventDefault();
+				if(thisID=="toPre1") {
+				    if(currentPageCnt1==1) {
+				        return;
+				    }
+				    currentPageCnt1 =currentPageCnt1-1 ;
+				}else if(thisID=="toNext1") {
+				    if(currentPageCnt1==totalPageCnt1 ) {
+				        return;
+				    }
+				    currentPageCnt1 =currentPageCnt1 + 1 ;
+				}
+				
+				deleteOldData1();
+				addDataToTable1();
+				arragePagingInfo1();
+			});
+			
+			var curPage2 = $("#currentUserPage2").val();
+
+			//跳转页面
+			$("#jumpUserBtn2").click(function() {
+				// 获取跳转页数的值
+				var curPage2=$("#jumpUserPage2").val();
+
+				//判断输入页数是否是数字，并且判断是否大于总页数
+				if(curPage2<=0||curPage2!=parseInt(curPage2)){
+					sweetAlert('请输入正整数');
+					return false;
+				}else if(curPage2 > totalPageCnt2 ){
+					sweetAlert('跳转页数不能大于总页数');
+					return false;
+				}
+				currentPageCnt2  = curPage2;
+				//删除既存行数据
+				deleteOldData2();
+				addDataToTable2();
+				arragePagingInfo2();
+				
+			});
+			
+			$(".pagination2 div a").click(function(event){
+			    var thisID = $(this).attr("id");
+			    if(totalDataCnt2 ==0) {
+			        return;
+			    }
+				event.preventDefault();
+				if(thisID=="toPre2") {
+				    if(currentPageCnt2==1) {
+				        return;
+				    }
+				    currentPageCnt2 =currentPageCnt2-1 ;
+				}else if(thisID=="toNext2") {
+				    if(currentPageCnt2==totalPageCnt2 ) {
+				        return;
+				    }
+				    currentPageCnt2 =currentPageCnt2+1 ;
+				}
+				deleteOldData2();
+				addDataToTable2();
+				arragePagingInfo2();
+			});
+			
+			var curPage3 = $("#currentUserPage3").val();
+
+			//跳转页面
+			$("#jumpUserBtn3").click(function() {
+				// 获取跳转页数的值
+				var curPage3=$("#jumpUserPage3").val();
+
+				//判断输入页数是否是数字，并且判断是否大于总页数
+				if(curPage3<=0||curPage3!=parseInt(curPage3)){
+					sweetAlert('请输入正整数');
+					return false;
+				}else if(curPage3 > totalPageCnt3 ){
+					sweetAlert('跳转页数不能大于总页数');
+					return false;
+				}
+				currentPageCnt3  = curPage3;
+				//删除既存行数据
+				deleteOldData3();
+				addDataToTable3();
+				arragePagingInfo3();
+				
+			});
+			
+			$(".pagination2 div a").click(function(event){
+			    var thisID = $(this).attr("id");
+			    if(totalDataCnt3 ==0) {
+			        return;
+			    }
+				event.preventDefault();
+				if(thisID=="toPre3") {
+				    if(currentPageCnt3==1) {
+				        return;
+				    }
+				    currentPageCnt3 =currentPageCnt3-1 ;
+				}else if(thisID=="toNext3") {
+				    if(currentPageCnt3==totalPageCnt3 ) {
+				        return;
+				    }
+				    currentPageCnt3 =currentPageCnt3+1 ;
+				}
+				
+				deleteOldData3();
+				addDataToTable3();
+				arragePagingInfo3();
+			});
+			
+		});
+	
+		//下面用于图片上传预览功能
+		function setDevImagePreview() {
+			var name = $("#username").val();
+			var docObj=document.getElementById("devImg");
+			var imgObjPreview=document.getElementById("devPreview");
+			//获取当前图片的后缀
+			var photoLastName = docObj.value.toLowerCase().split(".")[1];
+			//判断图片的后缀是否正确
+			if(typeof(photoLastName)!="undefined" && photoLastName!='gif'&&photoLastName!='jpg'&&photoLastName!='png'&&photoLastName!='jpeg'){
+				sweetAlert("请上传正确的图片或者是格式不正确");
+				//将图片设置为默认图片
+				//$("#devPreview").attr("src","images/staff.png");
+				return false;
+			}
+			if(docObj.files &&docObj.files[0]){
+				//火狐下，直接设img属性
+				imgObjPreview.style.width = '150px';
+				imgObjPreview.style.height = '150px'; 
+				//imgObjPreview.src = docObj.files[0].getAsDataURL();
+				//火狐7以上版本不能用上面的getAsDataURL()方式获取，需要一下方式
+				imgObjPreview.src = window.URL.createObjectURL(docObj.files[0]);
+				$("#editDevImgForm").ajaxSubmit({
+					url:"uploadDevImg",
+					data:{devCode: name},
+					success:function(result){
+						//alert(JSON.stringify(result));
+						//设置路径
+						$("#devPreview").attr("src", result.resultString+"?a=1"+Math.random());
+						$("#mainPreview").attr("src", result.resultString+"?a=1"+Math.random());
+						//赋值
+						$("#devImgText").val(result.resultString+"?a=1"+Math.random());
+					}
+				});	
+			}else{
+				//IE下，使用滤镜
+				docObj.select();
+				var imgSrc = document.selection.createRange().text;
+				var localImagId = document.getElementById("localImag");
+				//必须设置初始大小
+				localImagId.style.width = "200px";
+				localImagId.style.height = "170px";
+				//图片异常的捕捉，防止用户修改后缀来伪造图片
+				try{
+					localImagId.style.filter="progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale)";
+					localImagId.filters.item("DXImageTransform.Microsoft.AlphaImageLoader").src = imgSrc;
+				}catch(e){
+					sweetAlert("您上传的图片格式不正确，请重新选择!");
+					return false;
+				}
+				imgObjPreview.style.display = 'none';
+				document.selection.empty();
+			}
+			return true;
+		}; 
+	
+	/* SN管理操作 */
+	function arragePagingInfo1() {
+		totalPageCnt1 = Math.ceil(totalDataCnt1 / rowPerPage1);
+		if(currentPageCnt1>totalPageCnt1) totalPageCnt1=totalPageCnt1;
+		if(currentPageCnt1<1) totalPageCnt1=1;
+					
+		$('#numperpage1').text(totalPageCnt1);
+		$("#lblShowCnt1").html(totalDataCnt1);
+		$("#currpagenum1").text(currentPageCnt1);
+		$("#jumpUserPage1").val(currentPageCnt1);
+	}
+
+	function deleteOldData1() {
+		var tableLen = $("#responsiveTable").find("tr").length;
+		for(var i = 0; i < tableLen - 1; i++) {
+			var tr_id = "tr" + i;
+			//alert(tr_id);
+			$('#' + tr_id).remove();
+		}
+	}
+
+	function addDataToTable1() {
+		deleteOldData1();
+		var colors = ['#1f3a57', '#1f3a57'];
+		$("#templateTr").show();
+		var  tr  =  $("#templateTr");
+		var startIdx = (currentPageCnt1-1)*rowPerPage1;
+		var endIdx = currentPageCnt1*rowPerPage1;
+		   if(endIdx >totalDataCnt1 ) {
+		        endIdx = totalDataCnt1;
+		   }
+		var trIdx = 0;
+		for(var i = startIdx; i < endIdx ; i++) {
+			var  clonedTr  =  tr.clone();
+			if(i >= endIdx) {
+				clonedTr.insertBefore(tr);  
+				continue;
+			}
+			clonedTr.attr("id", "tr" + trIdx);
+			clonedTr.children("td").each(function(inner_index) { 
+				switch(inner_index) {
+					case 0:
+						$(this).html(i+1);
+						break;
+					case 1:
+						$(this).html(currentData1[i]["stationName"+ getLanIndex()]);
+						break;
+					case 2:
+						$(this).html(currentData1[i]["appid"]);
+						break;
+					case 3:
+						if(localStorage["cLan"] == "cn"){
+							$(this).html(currentData1[i]["istrue"]);
+						}else{
+							if(currentData1[i]["istrue"] == "是"){
+								$(this).html("yes");
+							}else{
+								$(this).html("no");
+							}
+						}
+						break;
+					case 4:
+						$(this).html(currentData1[i].create_time);
+						break;
+					case 5:
+						var obj = $(this).find("a");
+						for(var idx = 0; idx < obj.length; idx++) {
+							if(localStorage["cLan"] == "cn"){
+								$(this).find("a[id=xiugai1]").attr("title", "修改");
+								$(this).find("a[id=shanchu1]").attr("title", "删除");
+							}else{
+								$(this).find("a[id=xiugai1]").attr("title", "update");
+								$(this).find("a[id=shanchu1]").attr("title", "delete");
+							}
+							obj.attr("id", currentData1[i].id);
+							obj.attr("appid", currentData1[i].appid);
+							obj.attr("appName", currentData1[i].appName);
+							obj.attr("appName1", currentData1[i].appName1);
+							obj.attr("stationCode", currentData1[i].stationCode);
+							obj.attr("stationName", currentData1[i].stationName);
+							obj.attr("stationName1", currentData1[i].stationName1);
+							obj.attr("istrue", currentData1[i].istrue);
+							obj.attr("istrue1", currentData1[i].istrue1);
+							obj.attr("create_time", currentData1[i].create_time);
+						}
+						break;
+
+				}
+			}); 
+			clonedTr.insertBefore(tr); 
+			trIdx++;
+		}
+		$("#templateTr").hide();
+	}
+
+	function loadTableData1(needChangePage) {
+		var searchSN = document.getElementById("searchSN").value;
+		var ying = $("#ying").val();
+		deleteOldData1();
+		$(document).progressDialog.showDialog("loading...");
+		var proc_str = "procCQGetSNList('"+searchSN+"','"+ying+"','"+localStorage["responseId"]+"')" ;
+		
+		get_string_result(proc_str, function(data){
+
+			//alert(JSON.stringify(data));
+			var resultArr = eval(data);
+			currentData1 = resultArr;
+			
+			if(resultArr == null || resultArr.length == 0) {
+				totalDataCnt1 = 0;
+				totalPageCnt1 = 1;
+				currentPageCnt1 = 1;
+				arragePagingInfo1();
+				$("#templateTr").hide();
+				$(document).progressDialog.hideDialog();
+				isexecute = false; 
+				return;
+			}
+			totalDataCnt1 = resultArr.length;
+			totalPageCnt1 = Math.ceil(totalDataCnt1 / rowPerPage1);
+			var datalen = rowPerPage1;
+			if(totalDataCnt1 < rowPerPage1) {
+				datalen = totalDataCnt1;
+			}
+			if(needChangePage) {
+				currentPageCnt1 = 1;
+			}
+			arragePagingInfo1();
+			addDataToTable1();
+			$(document).progressDialog.hideDialog();
+			isexecute= false;
+			
+		},"json");
+	}
+	/* SN管理结束 */
+	
+		//删除SN
+		function toDeletePage1(obj) {
+			var reportId = $(obj).attr("id");
+			swal({ 
+				 title: getLangData("SystemLog.areyousuredelete"),
+				 type: "warning",
+				 showCancelButton: true,
+				 confirmButtonColor: "#DD6B55",
+				 confirmButtonText:  getLangData("sweetalert.ok"),
+				 cancelButtonText: getLangData("sweetalert.cancel"),
+				 closeOnConfirm: false
+				},
+				function() { }).then(function(isConfirm) {
+				if(isConfirm === true) {
+					var proc_str = "procCQDeleteSN('"+reportId+"','"+localStorage["loginUserName"]+"')" ;
+					get_string_result(proc_str, function(data){
+						sweetAlert("删除成功!");
+						//刷新界面
+						loadTableData1(true);
+					},"json");
+				}
+			});
+		}
+	
+		//修改SN
+		function xiugai1(obj){
+			document.getElementById("div2").style.display="";//
+			document.getElementById("div1").style.display="none";//隐藏
+			
+			$("#cang").val([$(obj).attr("stationCode")]).trigger("change");
+			$("#yingyong").val([$(obj).attr("appid")]).trigger("change");
+			$("#shengji").val([$(obj).attr("istrue")]).trigger("change");
+			
+			$("#cang").attr("oldData",$(obj).attr("stationCode"));
+			$("#yingyong").attr("oldData",$(obj).attr("appName"));
+			$("#shengji").attr("oldData",$(obj).attr("istrue"));
+			snid = $(obj).attr("id");
+			
+		}
+	
+			/* license管理操作 */
+			function arragePagingInfo2() {
+				totalPageCnt2 = Math.ceil(totalDataCnt2 / rowPerPage2);
+				if(currentPageCnt2>totalPageCnt2) totalPageCnt2=totalPageCnt2;
+				if(currentPageCnt2<1) totalPageCnt2=1;
+							
+				$('#numperpage2').text(totalPageCnt2);
+				$("#lblShowCnt2").html(totalDataCnt2);
+				$("#currpagenum2").text(currentPageCnt2);
+				$("#jumpUserPage2").val(currentPageCnt2);
+			}
+
+			function deleteOldData2() {
+				var tableLen = $("#responsiveTable2").find("tr").length;
+				for(var i = 0; i < tableLen; i++) {
+					var tr_id = "trr" + i;
+					$('#' + tr_id).remove();
+				}
+			}
+
+			function addDataToTable2() {
+				deleteOldData2();
+				var colors = ['#1f3a57','#1f3a57'];
+				$("#templateTr2").show();
+				var tr  =  $("#templateTr2");
+				var startIdx = (currentPageCnt2-1)*rowPerPage2;
+			    var endIdx = currentPageCnt2*rowPerPage2;
+			    if(endIdx>totalDataCnt2 ) {
+			        endIdx = totalDataCnt2;
+			    }
+				var trIdx = 0;
+				for(var i = startIdx; i < endIdx ; i++) {
+					var  clonedTr  =  tr.clone();
+					if(i >= endIdx) {
+						clonedTr.insertBefore(tr);  
+						continue;
+					}
+					clonedTr.attr("id", "trr" + trIdx);
+					clonedTr.children("td").each(function(inner_index) { 
+						switch(inner_index) {
+							case 0:
+								$(this).html(i+1);
+								break;
+							case 1:
+								$(this).html(currentData2[i]["license"]);
+								//$(this).html(currentData2[i]["license" + getLanIndex()]);
+								break;
+							case 2:
+								$(this).html(currentData2[i]["role_name"]);
+								break;
+							case 3:
+								$(this).html(currentData2[i].create_time);
+								break;
+							case 4:
+								$(this).html(currentData2[i]["isopen" ]);
+								break;
+							case 5:
+								$(this).html(currentData2[i]["installer_company" ]);
+								break;
+							case 6:
+								$(this).html(currentData2[i]["installer_address" ]);
+								break;
+							case 7:
+								$(this).html(currentData2[i]["installer_contactor" ]);
+								break;
+							case 8:
+								$(this).html(currentData2[i]["installer_phone" ]);
+								break;
+							case 9:
+								$(this).html(currentData2[i]["installer_email" ]);
+								break;
+							case 10:
+								$(this).html(currentData2[i]["installer_remark" ]);
+								break;
+							case 11:
+								var obj = $(this).find("a");
+								for(var idx = 0; idx < obj.length; idx++) {
+									if(localStorage["cLan"] == "cn"){
+										$(this).find("a[id=xiugai2]").attr("title", "修改");
+										$(this).find("a[id=shanchu2]").attr("title", "删除");
+									}else{
+										$(this).find("a[id=xiugai2]").attr("title", "update");
+										$(this).find("a[id=shanchu2]").attr("title", "delete");
+									}
+									obj.attr("id", currentData2[i].id);
+									obj.attr("license", currentData2[i].license);
+									obj.attr("license1", currentData2[i].license1);
+									obj.attr("roleid", currentData2[i].roleid);
+									obj.attr("role_name", currentData2[i].role_name);
+									obj.attr("create_time", currentData2[i].create_time);
+									obj.attr("isopen", currentData2[i].isopen);
+									obj.attr("installer_company", currentData2[i].installer_company);
+									obj.attr("installer_address", currentData2[i].installer_address);
+									obj.attr("installer_contactor", currentData2[i].installer_contactor);
+									obj.attr("installer_phone", currentData2[i].installer_phone);
+									obj.attr("installer_email", currentData2[i].installer_email);
+									obj.attr("installer_remark", currentData2[i].installer_remark);
+									obj.attr("isopen1", currentData2[i].isopen1);
+									obj.attr("installer_company1", currentData2[i].installer_company1);
+									obj.attr("installer_address1", currentData2[i].installer_address1);
+									obj.attr("installer_contactor1", currentData2[i].installer_contactor1);
+									obj.attr("installer_phone1", currentData2[i].installer_phone1);
+									obj.attr("installer_email1", currentData2[i].installer_email1);
+									obj.attr("installer_remark1", currentData2[i].installer_remark1);
+								}
+								break;
+						}
+					}); 
+					clonedTr.insertBefore(tr); 
+					trIdx++;
+				}
+
+				$("#templateTr2").hide();
+			}
+
+			function loadTableData2(needChangePage) {
+				
+				var searchLi = document.getElementById("searchLi").value;
+				var userCat = $("#userCat").val();
+				$(document).progressDialog.showDialog("loading...");
+				deleteOldData2();
+				var proc_str = "procCQGetLicenseList('"+searchLi+"','"+userCat+"')" ;
+				
+				get_string_result(proc_str, function(data){
+		
+					//alert(JSON.stringify(data));
+					var resultArr = eval(data);
+					currentData2 = resultArr;
+					
+					if(resultArr == null || resultArr.length == 0) {
+						totalDataCnt2 = 0;
+						totalPageCnt2 = 1;
+						currentPageCnt2 = 1;
+						arragePagingInfo2();
+						$("#templateTr2").hide();
+						$(document).progressDialog.hideDialog();
+						isexecute = false;
+						return;
+					}
+					totalDataCnt2 = resultArr.length;
+					totalPageCnt2 = Math.ceil(totalDataCnt2 / rowPerPage2);
+					var datalen = rowPerPage2;
+					if(totalDataCnt2 < rowPerPage2) {
+						datalen = totalDataCnt2;
+					}
+					if(needChangePage) {
+						currentPageCnt2 = 1;
+					}
+					arragePagingInfo2();
+					addDataToTable2();
+					$(document).progressDialog.hideDialog();
+					isexecute = false;
+				},"json");
+				
+			}
+			/* license管理结束 */
+			
+		//删除license
+		function toDeletePage2(obj) {
+			var reportId = $(obj).attr("id");
+			swal({ 
+				  title: getLangData("UserSet.confirmtodeletelicense"),
+				 type: "warning",
+				 showCancelButton: true,
+				 confirmButtonColor: "#DD6B55",
+				 confirmButtonText:  getLangData("sweetalert.ok"),
+				  cancelButtonText: getLangData("sweetalert.cancel"),
+				 closeOnConfirm: false
+				},
+				function() { }).then(function(isConfirm) {
+				if(isConfirm === true) {
+					var proc_str = "procCQDeleteLicense('"+reportId+"','"+localStorage["loginUserName"]+"')" ;
+					
+					get_string_result(proc_str, function(data){
+			
+						sweetAlert(getLangData("operationManage.deleteSuccess"));
+						//刷新界面
+						loadTableData2(true);
+						
+					},"json");
+				}
+			});
+		}
+	
+		//修改license
+		function xiugai2(obj){
+			document.getElementById("div4").style.display="";//
+			document.getElementById("div3").style.display="none";//隐藏
+			
+			$("#license").val($(obj).attr("license"));
+			$("#userCat2").val($(obj).attr("roleid"));
+			$("#sfqy").val($(obj).attr("isopen"));
+			
+			$("#userCat2").val([$(obj).attr("roleid")]).trigger("change");
+			$("#sfqy").val([$(obj).attr("isopen")]).trigger("change");
+			
+			$("#gs").val($(obj).attr("installer_company"));
+			$("#dz").val($(obj).attr("installer_address"));
+			$("#lxr").val($(obj).attr("installer_contactor"));
+			$("#dh").val($(obj).attr("installer_phone"));
+			$("#yx").val($(obj).attr("installer_email"));
+			$("#bz").val($(obj).attr("installer_remark"));
+			
+			$("#license").attr("oldData",$(obj).attr("license"));
+			$("#userCat2").attr("oldData",$(obj).attr("role_name"));
+			$("#sfqy").attr("oldData",$(obj).attr("isopen"));
+			
+			$("#gs").attr("oldData",$(obj).attr("installer_company"));
+			$("#dz").attr("oldData",$(obj).attr("installer_address"));
+			$("#lxr").attr("oldData",$(obj).attr("installer_contactor"));
+			
+			$("#dh").attr("oldData",$(obj).attr("installer_phone"));
+			$("#yx").attr("oldData",$(obj).attr("installer_email"));
+			$("#bz").attr("oldData",$(obj).attr("installer_remark"));
+			
+			licenseid = $(obj).attr("id");
+			
+		}
+		
+		/* 用户日志操作 */
+		function arragePagingInfo3() {
+			totalPageCnt3 = Math.ceil(totalDataCnt3 / rowPerPage3);
+			if(currentPageCnt3>totalPageCnt3) totalPageCnt3=totalPageCnt3;
+			if(currentPageCnt3<1) totalPageCnt3=1;
+						
+			$('#numperpage3').text(totalPageCnt3);
+			$("#lblShowCnt3").html(totalDataCnt3);
+			$("#currpagenum3").text(currentPageCnt3);
+			$("#jumpUserPage3").val(currentPageCnt3);
+		}
+
+		function deleteOldData3() {
+			
+			$("#tableBody3 tr:not(:last)").empty("");
+			return;
+			var tableLen = $("#responsiveTable3").find("tr").length;
+			for(var i = 0; i < tableLen; i++) {
+				var tr_id = "trrr" + i;
+				$('#' + tr_id).remove();
+			}
+		}
+
+		function addDataToTable3() {
+			deleteOldData3();
+			var colors = ['#1f3a57', '#1f3a57'];
+			$("#templateTr3").show();
+			var tr  =  $("#templateTr3");
+			var startIdx = (currentPageCnt3-1)*rowPerPage3;
+		    var endIdx = currentPageCnt3*rowPerPage3;
+		    if(endIdx>totalDataCnt3 ) {
+		        endIdx = totalDataCnt3;
+		    }
+			var trIdx = 0;
+			for(var i = startIdx; i < endIdx ; i++) {
+				var  clonedTr  =  tr.clone();
+				if(i >= endIdx) {
+					clonedTr.insertBefore(tr);  
+					continue;
+				}
+				clonedTr.attr("id", "trrr" + trIdx);
+				clonedTr.children("td").each(function(inner_index) { 
+					switch(inner_index) {
+						case 0:
+							$(this).html(i+1);
+							break;
+						case 1:
+							$(this).html(currentData3[i].log_time);
+							break;
+						case 2:
+							$(this).html(currentData3[i].log_level);
+							break;
+						case 3:
+							$(this).html(currentData3[i].log_name);
+							break;
+						case 4:
+							$(this).html(currentData3[i]["log_from" ]);
+							break;
+						case 5:
+							var obj = $(this).find("a");
+							for(var idx = 0; idx < obj.length; idx++) {
+								if(localStorage["cLan"] == "cn"){
+									$(this).find("a[id=shanchu3]").attr("title", "查看");
+								}else{
+									$(this).find("a[id=shanchu3]").attr("title", "look");
+								}
+								obj.attr("log_time", currentData3[i].log_time);
+								obj.attr("log_level", currentData3[i].log_level);
+								obj.attr("log_from", currentData3[i].log_from);
+								obj.attr("log_from1", currentData3[i].log_from1);
+								obj.attr("log_name", currentData3[i].log_name);
+								obj.attr("log_name1", currentData3[i].log_name1);
+								obj.attr("log_ct", currentData3[i].log_ct);
+								obj.attr("log_ct1", currentData3[i].log_ct1);
+								obj.attr("log_remark", currentData3[i].log_remark);
+								obj.attr("log_result", currentData3[i].log_result);
+							}
+							break;
+					}
+				}); 
+				clonedTr.insertBefore(tr); 
+				trIdx++;
+			}
+
+			$("#templateTr3").hide();
+		}
+
+		function loadTableData3(needChangePage) {
+			deleteOldData3();
+			var rzCat = $("#rzCat").val();
+			var searchsource = document.getElementById("searchsource").value;
+			
+			var yearTime = $("#yearTime").val();
+			var monthTime = $("#monthTime").val();
+			$(document).progressDialog.showDialog("loading...");
+			
+			var proc_str = "procCQGetLogList('"+rzCat+"','"+searchsource+"','"+localStorage["loginUserName"]+"','"+yearTime+"','"+monthTime+"')" ;
+			
+			get_string_result(proc_str, function(data){
+	
+				//alert(JSON.stringify(data));
+				var resultArr = eval(data);
+				currentData3 = resultArr;
+				
+				if(resultArr == null || resultArr.length == 0) {
+					totalDataCnt3 = 0;
+					totalPageCnt3 = 1;
+					currentPageCnt3 = 1;
+					arragePagingInfo3();
+					$("#templateTr3").hide();
+					$(document).progressDialog.hideDialog();
+					isexecute = false;
+					return;
+				}
+				totalDataCnt3 = resultArr.length;
+				totalPageCnt3 = Math.ceil(totalDataCnt3 / rowPerPage3);
+				var datalen = rowPerPage3;
+				if(totalDataCnt3 < rowPerPage3) {
+					datalen = totalDataCnt3;
+				}
+				if(needChangePage) {
+					currentPageCnt3 = 1;
+				}
+				arragePagingInfo3();
+				addDataToTable3();
+				$(document).progressDialog.hideDialog();
+				isexecute = false;
+			},"json");
+			
+		}
+		/* 用户日志结束 */
+		
+		//删除用户日志
+		function toDeletePage3(obj) {
+			var reportId = $(obj).attr("log_time");
+			swal({ 
+				  title: "确定删除时间为 " + $(obj).attr("log_time") + "的用户日志吗？",
+				 type: "warning",
+				 showCancelButton: true,
+				 confirmButtonColor: "#DD6B55",
+				 confirmButtonText: "确定删除！",
+				 closeOnConfirm: false
+				},
+				function() { }).then(function(isConfirm) {
+				if(isConfirm === true) {
+					var proc_str = "procCQDeleteLog('"+reportId+"')" ;
+					
+					get_string_result(proc_str, function(data){
+			
+						sweetAlert("删除成功!");
+						//刷新界面
+						loadTableData3(true);
+						
+					},"json");
+				}
+			});
+		}
+		
+		//查看
+		function watch(obj){
+			 var reportId = $(obj).attr("log_time");
+	         $(".sysLogModalInput:eq(0)").val($(obj).attr("log_time"));
+	         $(".sysLogModalInput:eq(1)").val($(obj).attr("log_level"));
+	         $(".sysLogModalInput2:eq(0)").val($(obj).attr("log_remark"));
+	         $(".sysLogModalInput2:eq(1)").val($(obj).attr("log_result"));
+	         $(".sysLogModalInput:eq(2)").val($(obj).attr("log_name"));
+	         $(".sysLogModalInput:eq(3)").val($(obj).attr("log_from"));
+			 $("#sysLogDetailModel").modal("show");
+		}
+	
+	initPage();
+	
+	function initPage(){
+		//初始化页面需要的js内容
+		//添加滚动区
+		var containerH = $('#main-container').height()-200;
+		var headingH = $('.panel-heading').height();
+		var contentH = containerH-3*headingH;
+		$(".panel-body").css("max-height",contentH+"px");
+		$(".panel-body").css("overflow-y","scroll");
+		//面板标题右侧的三角形的动态变化
+		var indis = $('.panel-title-indicator');
+		for(var i=1;i<=5;i++){
+			var colla = $("#collapse"+i);
+			colla.on('hide.bs.collapse', function () {
+				var index = parseInt(this.id.slice(-1));
+				$(indis[index-1]).addClass("fa-caret-down").removeClass("fa-caret-up");
+			})
+			colla.on('show.bs.collapse', function () {
+				var index = parseInt(this.id.slice(-1));
+				$(indis[index-1]).addClass("fa-caret-up").removeClass("fa-caret-down");
+			})
+		}
+		
+		var panelGroup = $(".panel-group");
+		panelGroup.height();
+	}
+	
+	//增加SN管理
+	function addSN(){
+		snid=0;
+		document.getElementById("div2").style.display="";//
+		document.getElementById("div1").style.display="none";//隐藏
+		chushihua();
+	}
+	//取消SN管理
+	function quSN(){
+		snid=0;
+		document.getElementById("div1").style.display="";//
+		document.getElementById("div2").style.display="none";//隐藏
+		loadTableData1(true);
+	}
+	
+	//增加Li管理
+	function addLi(){
+		document.getElementById("license").value = "";
+		document.getElementById("gs").value = "";
+		document.getElementById("dz").value = "";
+		document.getElementById("lxr").value = "";
+		document.getElementById("dh").value = "";
+		document.getElementById("yx").value = "";
+		document.getElementById("bz").value = "";
+		
+		document.getElementById("div4").style.display="";//
+		document.getElementById("div3").style.display="none";//隐藏
+		chushihua();
+	}
+	
+	//取消Li管理
+	function quLi(){
+		
+		document.getElementById("div3").style.display="";//
+		document.getElementById("div4").style.display="none";//隐藏
+		loadTableData2(true);
+		
+	}
+	
+	//点击用户信息设置的保存
+	function onbutton1(){
+		
+		var img = $("#devImgText").val();
+		var username = document.getElementById("username").value;
+		var email = document.getElementById("email").value;
+		
+		var number = document.getElementById("number").value;
+		var address = document.getElementById("address").value;
+		var contactor = document.getElementById("contactor").value;
+		var phone = document.getElementById("phone").value;
+		var country =$("#seachcountry").find("option:selected").val(); 
+		var province = $("#seachprov").find("option:selected").val(); 
+		var city =$("#seachcity").find("option:selected").val(); 
+		var language = $("#language").val();
+		var sendphone = $("#sendphone").val() == "是"? 1 : 0;
+		var clan = localStorage["cLan"];
+		
+		var reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+		var myReg=/^[a-zA-Z0-9_-]+@([a-zA-Z0-9]+\.)+(com|cn|net|org)$/;
+		
+		if(!myReg.test(email.trim())){		
+			swal(getLangData("UserSet.emailReg"));
+			return;
+		}
+		
+		var phoneReg=/^[1][3,4,5,6,7,8,9][0-9]{9}$/;
+		
+		if(!isEmpty(phone.trim())&&!phoneReg.test(phone.trim())){			
+			swal(getLangData("UserSet.phoneReg"));
+			return;
+			
+		}
+		if(country=="全部" || country=="All"){
+			country="";
+		}
+		if(province=="全部" || province=="All"){
+			province="";
+		}
+		if(city=="全部" || city=="All"){
+			city="";
+		}
+		
+		saveAUserLog("User","UserChange","logPropertyUSER");
+		
+		var proc_str = "procCQUpdateOperator('"+localStorage["loginUserName"]+"','"+username+"','"+email.trim()+"','"+country+"','"+province+"','"+city+"','"+address+"','"+number+"','"+contactor+"','"+phone.trim()+"','"+language+"','"+img+"','"+clan+"','"+sendphone+"')" ;
+		
+		get_string_result(proc_str, function(data){
+			swal(getLangData("UserSet.saveSuccess"));
+			chushihua();
+			
+		},"json");
+		
+	}
+	
+	//验证是否为邮箱
+	function checkEmail(str){
+	  var re = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
+	  if(re.test(str)){
+	    return true;
+	  }else{
+		return false;
+	  }
+	}
+	//验证是否为数字
+	function isNumber(value) {         
+	    var patrn = /^(-)?\d+(\.\d+)?$/;
+	    if (patrn.exec(value) == null || value == "") {
+	        return false
+	    } else {
+	        return true
+	    }
+	}
+	
+	//修改密码的保存
+	function onbutton2(){
+		var newpassword = document.getElementById("newpassword").value+"";
+		var againpassword = document.getElementById("againpassword").value+"";
+		var oldpassword = document.getElementById("oldpassword").value+"";
+		
+		var mima1 = oldStr.substring(oldStr.length-oldpassword.length);
+		var mima2 = newStr.substring(newStr.length-newpassword.length);
+		var mima3 = againStr.substring(againStr.length-againpassword.length);
+		
+		if($("#oldpassword").val().length == 0 || $("#oldpassword").val()==" "){
+			// sweetAlert("旧密码必须填写");
+			sweetAlert(getLangData("UserSet.mustwriteold"));
+			return;
+		}
+		
+		if($("#newpassword").val().length == 0 || $("#newpassword").val()==" "){
+			// sweetAlert("新密码必须填写");
+			sweetAlert(getLangData("mustwritenew"));
+			return;
+		}
+		
+		if( mima2 != mima3 ){
+			// sweetAlert("新密码和确认密码必须保持一致");
+			sweetAlert(getLangData("UserSet.newmustsameold"));
+			return;
+		}
+		
+		/* if(!isNumber(mima1)){
+			sweetAlert("旧密码不是有效数字");
+			return;
+		}
+		
+		if(!isNumber(mima2)){
+			sweetAlert("新密码不是有效数字");
+			return;hex_md5
+		} */
+		
+		var proc_str = "procCQEXISOper('"+localStorage["loginUserName"]+"','"+hex_md5(mima1)+"')" ;
+		
+		get_string_result(proc_str, function(data){
+
+			var list = eval(data);
+			
+			if(list[0].counts > 0){
+				
+				saveAUserLog("User","UserChange","logPropertyPassword");
+				
+				var proc_str = "procCQUpdatePass('"+localStorage["loginUserName"]+"','"+hex_md5(mima2)+"')" ;
+				
+				get_string_result(proc_str, function(data){
+
+					if(localStorage["cLan"] == "cn"){
+						sweetAlert("修改密码成功");
+					}else{
+						sweetAlert("Password changed successfully");
+					}
+					chushihua();
+					document.getElementById("newpassword").value = "";
+					document.getElementById("againpassword").value = "";
+					
+				},"json");
+			}else{
+				if(localStorage["cLan"] == "cn"){
+					sweetAlert("修改密码失败，原密码不正确");
+				}else{
+					sweetAlert("Password changed fail，old password is not true");
+				}
+			}
+			
+		},"json");
+		
+	}
+	
+	//SN管理的搜索
+	function onbutton31(){
+		if(isexecute){
+			return;
+		}
+		isexecute= true;
+		loadTableData1(true);
+		
+	}
+	
+	//SN管理的确认点击
+	function onbutton33(){
+		$("#snAddBtn").attr("disabled","true");
+		if( snid > 0 ){
+			var proc_str = "procCQDeleteSN('"+ snid +"','"+localStorage["loginUserName"]+"')" ;
+				
+			get_string_result(proc_str, function(data){
+			
+			var proc_str = "procCqCheckSnExists('"+ $("#cang").val() +"','"+$("#yingyong").val()+"')" ;
+				
+				get_string_result(proc_str, function(data){
+		
+					if(data!=null&&data!=undefined&&data.length==1){
+						if(data[0].dataCnt!=0){
+							sweetAlert(getLangData('UserSet.snruleexists'));
+							$("#snAddBtn").attr("disabled",false);
+							return;
+						}
+					}
+					dealSnInsert();
+					
+				},"json");
+			},"json");
+		 }else{
+			 
+			 var proc_str = "procCqCheckSnExists('"+ $("#cang").val() +"','"+$("#yingyong").val()+"')" ;
+				
+				get_string_result(proc_str, function(data){
+		
+					if(data!=null&&data!=undefined&&data.length==1){
+						if(data[0].dataCnt!=0){
+							sweetAlert(getLangData('UserSet.snruleexists'));
+							$("#snAddBtn").attr("disabled",false);
+							return;
+						}
+					}
+					dealSnInsert();
+					
+				},"json");
+		 }
+		
+	}
+	
+	function dealSnInsert(){
+		var cang = $("#cang").val();
+		var yingyong = $("#yingyong").val();
+		var shengji = $("#shengji").val();
+		
+		saveAUserLog("SN","SNChange","logPropertySN");
+		
+		var proc_str = "procCQInsertSN('"+cang+"','"+yingyong+"','"+shengji+"','"+localStorage["loginUserName"]+"')" ;
+		
+		get_string_result(proc_str, function(data){
+			
+			document.getElementById("div1").style.display="";//
+			document.getElementById("div2").style.display="none";//隐藏
+			$("#snAddBtn").attr("disabled",false);
+			loadTableData1(true);
+			
+		},"json");
+	}
+	
+	//License管理的搜索
+	function onbutton41(){
+		if(isexecute){
+			return;
+		}
+		isexecute= true;
+		loadTableData2(true);
+		
+	}
+	//License管理的确认点击
+	function onbutton43(){
+		
+		if($("#license").val().length == 0 || $("#license").val()==" "){
+			if(localStorage["cLan"] == "cn"){
+				sweetAlert("license必须填写");
+			}else{
+				sweetAlert("license must be filled in");
+			}
+			return;
+		}
+		
+		if($("#userCat2").val().length == 0 || $("#userCat2").val()==" "){
+			if(localStorage["cLan"] == "cn"){
+				sweetAlert("用户类别必须选择");
+			}else{
+				sweetAlert("user category must be filled in");
+			}
+			return;
+		}
+		
+		if($("#sfqy").val().length == 0 || $("#sfqy").val()==" "){
+			if(localStorage["cLan"] == "cn"){
+				sweetAlert("是否启用必须选择");
+			}else{
+				sweetAlert("is start or not must be filled in");
+			}
+			return;
+		}
+		
+		var email = $("#yx").val();
+		var phone = $("#dh").val();
+		
+		var reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+		
+		if(!isEmpty(email)&&!reg.test(email)){		
+			swal(getLangData("UserSet.emailReg"));
+			return;
+		}
+		var phoneReg=/^[1][3,4,5,6,7,8,9][0-9]{9}$/;
+		
+		if(!isEmpty(phone)&&!phoneReg.test(phone)){			
+			swal(getLangData("UserSet.phoneReg"));
+			return;
+		}
+		
+		if( licenseid > 0 ){
+			var proc_str = "procCQDeleteLicense('"+ licenseid +"','"+localStorage["loginUserName"]+"')" ;
+				
+			get_string_result(proc_str, function(data){
+				
+			},"json");
+		 }else{
+			 
+		 }
+		
+		var license = $("#license").val();
+		var userCat2 = $("#userCat2").val();
+		var isopen = $("#sfqy").val();
+		var gs = $("#gs").val();
+		var dz = $("#dz").val();
+		var lxr = $("#lxr").val();
+		var dh = $("#dh").val();
+		var yx = $("#yx").val();
+		var bz = $("#bz").val();
+		
+		saveAUserLog("License","LicenseChange","logPropertyLicense");
+		
+		var proc_str = "procCQInsertLicense('"+userCat2+"','"+license+"','"+isopen+"','"+gs+"','"+dz+"','"+lxr+"','"+dh+"','"+yx+"','"+bz+"')" ;
+		
+		get_string_result(proc_str, function(data){
+
+			document.getElementById("div3").style.display="";//
+			document.getElementById("div4").style.display="none";//隐藏
+			loadTableData2(true);
+			
+		},"json");
+		
+	}
+	
+	//用户日志的查询
+	function onbutton5(){
+		if(isexecute){
+			return;
+		}
+		isexecute = true;
+		loadTableData3(true);
+		
+	}
+
+	//导出
+	function exportToExcel(ele){
+		
+		  event.preventDefault();
+		  
+		  var yearTime = $("#yearTime").val();
+		  var monthTime = $("#monthTime").val();
+		  var rzCat = $("#rzCat").val();
+		  var searchsource = $("#searchsource").val();
+		  var userName = localStorage["loginUserName"];
+		  var language = localStorage["cLan"];
+		
+	 	  var stationName = localStorage["currentStationName"];
+		  var ajaxPath= "exportSystemLogInfo.action?startdate=" + yearTime + "&language="+ encodeURI(encodeURI(language.toString())) + "&enddate="+ monthTime+ "&fileType="+ ele + "&levelStr="+ rzCat+ "&names="+ encodeURI(encodeURI(searchsource))+ "&userName="+ userName+ "&stationName="+encodeURI(encodeURI(stationName));
+    	  //alert(ajaxPath);
+    	  $('#statisticsForm').attr('action', ajaxPath);
+		  $('#statisticsForm').submit();
+		  
+	}
+	
+	
+	</script>
+</body>
+</html>

@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>计划曲线</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <style>
+        #divTable td input[type=checkbox]{
+            opacity: 1;
+            position: relative;
+        }
+        .timeSpan{
+            font-weight: bold;
+            /*border: 1px solid;*/
+            padding: 0 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="col-md-12" style="height:100%;">
+    <div id="divLeft" class="col-md-2 panel panel-default " style ="height:100%;width: 45%;">
+        <div class="panel panel-default" style="height: 10%;">
+            <div class="row" style="margin-top: 25px">
+                <div class="StatisPageTopDiv" >
+                    <label>RTU</label>&nbsp;&nbsp;
+                    <select id="rtuSelect" onchange="loadTable()" name="rtuSelect" style="min-width: 150px;"></select>&nbsp;&nbsp;
+                    <a type="button" class="btn btn-info btn-sm"  i18n="common.sx" onclick="refreshData1(1);"><i class="fa fa-refresh"></i> 刷新</a>
+                    <a type="button" class="btn btn-info btn-sm"  i18n="Strategy.ctlparamopr" onclick="sendSome()"><i class="fa fa-save"></i> 下发</a>
+
+                </div>
+            </div>
+            <div></div>
+        </div>
+        <div class="panel panel-default" style="height: 90%">
+            <table class="table" style="width: 100%;">
+                <tr id="headTr">
+                    <td width="8%" align="left">#</td>
+                    <td width="16%" i18n="Strategy.ctlparamname">名称</td>
+                    <td width="28%"  i18n="Strategy.zftimelbl">时间段</td>
+                    <td width="20%" i18n="Strategy.ssgl">实时功率</td>
+                    <td width="20%" i18n="Strategy.sdgl">设定功率</td>
+                    <td width="8%" i18n="Strategy.ctlparamopr">下发</td>
+                </tr>
+            </table>
+            <div id="scrollTable" style="overflow-y: auto;max-height: 100%;">
+                <table class="table" id ="realTBody" style="width: 100%;height:calc(100% - 40px);">
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <div id="divRight" class="col-md-2 panel panel-default " style ="height:100%;width:50%;margin-left: 1%">
+        <div class="panel panel-default" style="height: 60%;">
+            <div class="row" style="margin-top: 25px;height: 12%">
+                <div class="StatisPageTopDiv">
+                    <label>RTU</label>&nbsp;&nbsp;
+                    <select id="rtuSelect1" style="min-width: 150px;"></select>&nbsp;&nbsp;
+                    <a type="button" class="hidden"  onclick="refreshData1(2);"><i class="fa fa-refresh"></i> 刷新</a>
+                </div>
+            </div>
+            <div id="ytDiv" style="width:49%;height:95%;display: inline-block">
+                <table class="table" style="width: 100%;">
+                    <tr id="headTr1">
+                        <td width="40%" i18n="Strategy.ctlparamyt">遥调</td>
+                        <td width="38%" i18n="Strategy.value">值</td>
+                        <td width="22%" i18n="Strategy.ctlparamopr">下发</td>
+                    </tr>
+                </table>
+                <div id="scrollTable1" style="overflow-y: auto;height:70%; ">
+                    <table id ="realTBody1" style="width: 100%;max-height:calc(100% - 40px);">
+                    </table>
+                </div>
+            </div>
+            <div id="yKDiv" style="width:49%;height:95%;display: inline-block">
+                <table class="table" style="width: 100%;">
+                    <tr id="headTr2">
+                        <td width="40%">遥控</td>
+                        <td width="38%">值</td>
+                        <td width="22%">下发</td>
+                    </tr>
+                </table>
+                <div id="scrollTable2" style="overflow-y: auto;height:70%; ">
+                    <table id ="realTBody2" style="width: 100%;max-height:calc(100% - 40px);">
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default" style="height: 40%;">
+            <div id="SA_chart2" style="height: 80%;width: 100%"></div>
+        </div>
+    </div>
+</div>
+<script>
+    var stationCode=localStorage["currentStationCd"]==STA_ALL?localStorage["currentStationCd_seconds"]:localStorage["currentStationCd"];
+    var rtu_id = '';
+    var stimeData=[];
+    var SA_chart_xdata=[];
+    var SA_chart_power=[];
+    var SA_chart_power1=[];
+    var SA_myChart2=null;
+    var rtuId1='';
+    var rtuId2='';
+    var tableData1 = [];
+    var tableData2 = [];
+    var ycCodes = [];
+
+
+    function setCtrlCss(){
+        $("#scrollTable").css("max-height",getContainerHeight() -$("#groupDiv").height()-$("#headTr").height()-67);
+        $("#scrollTable1").css("max-height",getContainerHeight() -$("#groupDiv").height()-$("#headTr1").height()-134);
+        $("#scrollTable2").css("max-height",getContainerHeight() -$("#groupDiv").height()-$("#headTr1").height()-134);
+    }
+    $(function() {
+        setCtrlCss();
+        initSelect();
+        initSelect2();
+    });
+    $('#rtuSelect1').change(function(){
+       loadTable1()
+       loadTable2()
+    });
+    function refreshData1(buttonNO) {
+        loadTable();
+    }
+    // function refreshData2() {
+    //     var rtuId = $("#rtuSelect1").val();
+    //     // initTable1(rtuId)
+    //     var sql = "getYcControlPointByRtu";
+    //     var controlCategory = '-1';
+    //     get_promapper_result(sql,"'"+rtuId+ "'," + controlCategory, function(data){
+    //
+    //     })
+    // }
+    function changeTableBySetData(){
+        // console.log(SA_chart_power)
+        SA_chart_power1=[];
+        $("input[name='tosetvalue']").each(function (){
+            var newVal = $(this).val();
+            SA_chart_power1.push(newVal)
+        })
+        initSAChart()
+    }
+    function initSelect(){
+        var sql = "getRtuParaDataByType";
+        //var rtu_type = '999';//计划曲线的type
+        $("#rtuSelect").html("");
+        // $("#rtuSelect1").html("");
+        get_promapper_result(sql,stationCode,function (data){
+            let str = '';
+            for (var k=0;k<data.length;k++){
+                str += "<option value='" + data[k].name + "'>" + data[k].name + "</option>";
+            }
+            $("#rtuSelect").html(str);
+
+            // console.log('2')
+            // console.log($("#rtuSelect").val())
+            // rtuId1= $("#rtuSelect").val();
+            loadTable()
+
+        })
+    }
+    function initSelect2(){
+        var sql = "getRtu2ParaData";
+        //var rtu_type = '997';//策略控制的type
+        $("#rtuSelect1").html("");
+        // $("#rtuSelect1").html("");
+        get_promapper_result(sql,stationCode,function (data){
+            let str = '';
+            for (var k=0;k<data.length;k++){
+                str += "<option value='" + data[k].id_ + "'>" + data[k].name_ + "</option>";
+            }
+            $("#rtuSelect1").html(str);
+
+            // console.log('2')
+            // console.log($("#rtuSelect").val())
+            // rtuId2 = $("#rtuSelect1").val();
+            // initTable1(rtuId2)
+            loadTable1();
+            loadTable2();
+
+        })
+    }
+    function queryRealData(ycSnames){
+        console.log(ycSnames);
+        $.ajax({
+            url: "getYcYxKwhRealData",
+            type: "post",
+            data: {
+                // "ycSnames": ycCodes.join(",")
+                "ycSnames": ycSnames
+            },
+            success: function (result){
+                console.log(result)
+                if(result.success != "true"){
+                    sweetAlert(result.errStr);
+                }
+                var ycData = result.resultObject;
+                var showData = "-";
+                if (ycData!=null&&JSON.stringify(ycData)!='{}'){
+                    SA_chart_power1=[];
+                }
+                for(let idx in ycCodes){
+                    let code = ycCodes[idx];
+                    if (ycData!=null&&JSON.stringify(ycData)!='{}'){
+                        showData = ycData[code].data;
+                        SA_chart_power.push(showData);
+                        SA_chart_power1.push(showData);
+                    }
+                    $('span[name='+code+']').html(showData);
+                    $('#'+code+'').html(showData);
+                }
+                initSAChart();
+            }
+        })
+    }
+    //初始化、查询计划曲线数据
+    function loadTable(){
+        rtuId1= $("#rtuSelect").val();
+        rtuId = $("#rtuSelect").val();
+        var sql = "getYcControlPointByRtu";
+        //var controlCategory = '-1';
+        get_promapper_result(sql,stationCode+","+rtuId1, function(data){
+            console.log(data);
+            ycCodes = [];
+            var datalength = data.length;
+            for (var i in data){
+                ycCodes.push(data[i].code_)
+            }
+            console.log(ycCodes.join(","));
+            $("#realTBody").html("");
+
+            SA_chart_xdata=[];
+            SA_chart_power=[];
+            SA_chart_power1=[];
+            var realTbodyStr = "";
+             if(data==null){
+                realTbodyStr = "<tr><td>"+getLangData("powerstationinfo.noData")+"</td><td></td></tr>";
+                $("#realTBody").html(realTbodyStr);
+                initSAChart();
+                return;
+            }
+            var num=Math.floor(86400/datalength);//计算数据间隔时间
+            var k = 0;
+            for(let idx in ycCodes){
+
+                let code = ycCodes[idx];
+                // console.log(code)
+                //处理时间段
+                var sec=num*k;//00
+                var a1=Math.floor(sec/3600);//0
+                var a2=Math.floor((sec-(a1*3600))/60);
+                var a3=sec-(a1*3600)-(a2*60);
+                sec=num*(k+1)-1;//1800
+                var b1=Math.floor(sec/3600);
+                var b2=Math.floor((sec-(b1*3600))/60);
+                var b3=sec-(b1*3600)-(b2*60);
+                a1=a1>=10?a1:"0"+a1;
+                a2=a2>=10?a2:"0"+a2;
+                a3=a3>=10?a3:"0"+a3;
+                b1=b1>=10?b1:"0"+b1;
+                b2=b2>=10?b2:"0"+b2;
+                b3=b3>=10?b3:"0"+b3;
+                var time=a1+":"+a2+":"+a3+"-"+b1+":"+b2+":"+b3;
+                SA_chart_xdata.push(a1+":"+a2+":"+a3);
+
+                var showData=getLangData("common.jzz");
+
+                SA_chart_power1.push(0);
+
+                var trStr="<tr name='"+data[k]["name" + getLanIndex()]+"'>";
+                trStr =trStr+"<td name='id' align='left' width='8%'>" +(k+1) +"</td>";
+                trStr =trStr+"<td name='' width='16%'>" +data[k].name_ +"</td>";
+                trStr =trStr+"<td name='stime' width='28%' class='timeSpan'>" +time +"</td>";
+                trStr =trStr+"<td width='20%'><span class='svalue' name='"+data[k].code_+"'>" +  showData +"</td>";
+                trStr =trStr+'<td width="20%"><input type="number" id="'+code+'" onchange="changeTableBySetData()" style="width: 100%;text-align: center;" class="input-sm" name="tosetvalue" value="0" /></td>';
+                trStr =trStr+'<td width="8%"><a class="btn btn-primary btn-xs" class="tooltip-show" data-toggle="tooltip" title="Set" onclick="sendOne(this)" ><i class="fa fa-arrow-circle-down fa-lg"></i> </a></td>';
+                trStr =trStr+"<td class='hidden' name='func'>" +  data[k].func +"</td>";
+                trStr =trStr+"<td class='hidden' name='addr'>" +  data[k].addr +"</td>";
+                trStr =trStr+"<td class='hidden' name='scale'>" +  data[k].scale +"</td>";
+                trStr = trStr+"</tr>";
+                realTbodyStr = realTbodyStr+trStr;
+                k++;
+            }
+            $("#realTBody").html(realTbodyStr);
+            queryRealData(ycCodes.join(","));
+        });
+    }
+    //加载遥控数据
+    function loadTable2(){
+        var rtu = $("#rtuSelect1").val();
+        var sql1 = "getYkDataByRtu";
+        get_promapper_result(sql1,"'"+rtu+ "'", function(data){
+
+            var ykCodes = [];
+            for (var i in data){
+                ykCodes.push(data[i].code)
+            }
+
+            $("#realTBody2").html("");
+            $.ajax({
+                url: "getYcYxKwhRealData",
+                type: "post",
+                data: {
+                    "yxSnames": ykCodes.join(",")
+                },
+                success: function (result){
+                    if(result.success != "true"){
+                        sweetAlert(result.errStr);
+                    }
+                    var ykData = result.resultObject1;
+                    tableData2 = ykData;
+
+                    var k=0;
+                    var realTbodyStr = "";
+                    if(ykData==null||JSON.stringify(ykData)=='{}'){
+                        ykData = [];
+                        realTbodyStr = "<tr><td>"+getLangData("powerstationinfo.noData")+"</td><td></td></tr>";
+                        $("#realTBody2").html(realTbodyStr);
+                        return;
+                    }
+                    var showData=0;
+                    for(let idx in ykCodes){
+                        var code = ykCodes[idx];
+                        if (ykData[code].data==''||ykData[code].data==0.0){
+                            showData=0;
+                        }else {
+                            showData=ykData[code].data;
+                        }
+                        var trStr='';
+                        trStr="<tr style='height:40px'>";
+                        trStr =trStr+"<td name='' width='40%' align='center'>" +ykData[code].name_ +"</td>";
+                        // trStr =trStr+"<td name='' width='25%'>" +ycData[code].data +"</td>";
+                        trStr =trStr+'<td width="38%" align="center"><input type="number" id="'+code+'" style="width: 100%;text-align: center;" class="input-sm" name="tosetvalue2" value="'+showData+'" /></td>';
+                        trStr =trStr+'<td width="22%" align="center"><a class="btn btn-primary btn-xs" class="tooltip-show" data-toggle="tooltip" title="Set" onclick="sendOne1(\''+code+'\',\''+data[k].func +'\',\''+data[k].addr+'\',\'1\',\''+data[k].id+'\',\''+ykData[code].name_+'\',\'0\')" ><i class="fa fa-arrow-circle-down fa-lg"></i> </a></td>';
+                        trStr =trStr+"<td name='id' class='hidden'>" + data[k].id +"</td>";
+                        trStr = trStr+"</tr>";
+
+                        realTbodyStr = realTbodyStr+trStr;
+                        k++;
+                    }
+                    $("#realTBody2").html(realTbodyStr)
+                }
+            })
+        })
+    }
+    //加载遥调的数据
+    function loadTable1(){
+        rtuId2=$("#rtuSelect1").val();
+        rtuId = $("#rtuSelect1").val();
+        var sql = "getYtControlPointByRtu";
+        var controlCategory = '-1';
+        get_promapper_result(sql,"'"+rtuId+ "'," + controlCategory, function(data){
+            var ycCodes1 = [];
+            for (var i in data){
+                ycCodes1.push(data[i].code)
+            }
+            // console.log(ycCodes.join(","))
+            $("#realTBody1").html("");
+            $.ajax({
+                url: "getYcYxKwhRealData",
+                type: "post",
+                data: {
+                    "ycSnames": ycCodes1.join(",")
+                },
+                success: function (result){
+                    if(result.success != "true"){
+                        sweetAlert(result.errStr);
+                    }
+                    // console.log("77")
+                    var ycData = result.resultObject;
+                    tableData1 = ycData;
+                    // console.log(datalength)
+                    var realTbodyStr = "";
+                     if(ycData==null||JSON.stringify(ycData)=='{}'){
+                        ycData = [];
+                        realTbodyStr = "<tr><td>"+getLangData("powerstationinfo.noData")+"</td><td></td><td></td><td></td></tr>";
+                        $("#realTBody1").html(realTbodyStr);
+                        return;
+                    }
+                    var k=0;
+                    var showData =0;
+                    for(let idx in ycCodes1){
+                        var code = ycCodes1[idx];
+                        if (ycData[code].data==''||ycData[code].data==0.0){
+                            showData=0;
+                        }else {
+                            showData=ycData[code].data;
+                        }
+
+                        var trStr='';
+                        trStr="<tr style='height:40px'>";
+                        trStr =trStr+"<td name='' width='40%' align='center'>" +ycData[code].name_ +"</td>";
+                        // trStr =trStr+"<td name='' width='25%'>" +ycData[code].data +"</td>";
+                        trStr =trStr+'<td  width="38%" align="center"><input type="number" id="'+code+'" style="width: 100%;text-align: center;" class="input-sm" name="tosetvalue2" value="'+showData+'" /></td>';
+                        trStr =trStr+'<td  width="22%" align="center"><a class="btn btn-primary btn-xs" class="tooltip-show" data-toggle="tooltip" title="Set" onclick="sendOne1(\''+code+'\',\''+data[k].func +'\',\''+data[k].addr+'\',\''+data[k].scale+'\',\''+data[k].id+'\',\''+ycData[code].name_+'\',\'1\')" ><i class="fa fa-arrow-circle-down fa-lg"></i> </a></td>';
+                        trStr =trStr+"<td name='id' class='hidden'>" + data[k].id +"</td>";
+                        trStr = trStr+"</tr>";
+
+                        realTbodyStr = realTbodyStr+trStr;
+                        k++;
+                    }
+                    $("#realTBody1").html(realTbodyStr)
+
+                }
+            })
+        })
+    }
+
+    function sendOne(obj){
+        sendCtlVal($(obj).parent().parent());
+    }
+    function sendSome(){
+        let eles = $("#realTBody tr input");
+        sendCtlVal(eles.parent().parent());
+    }
+    function sendOne1(code,funcData,addrData,scaleData,idData,name1,ytFlag){
+        console.log('testXIAFA');
+        var childLen = 1;
+        var param3="";
+        var preStr="";
+        var sufStr="";
+        let rtuno = rtuId1;
+        var logStr="rtuid:"+rtuno+",||";
+        let func = "";
+
+        for(var k = 0 ;k<childLen;k++){
+            var scale = scaleData;
+            func = funcData;
+            let addr = addrData;
+            if(func==null||func==undefined||addr==null||addr==undefined){
+                if (ytFlag=="1"){
+                    sweetAlert('未配置遥调功能码，无法下发！');
+                }else {
+                    sweetAlert('未配置遥控功能码，无法下发！');
+                }
+
+                return;
+            }
+            if(addr==null||addr==undefined){
+                if (ytFlag=="1"){
+                    sweetAlert('未配置遥调地址，无法下发！');
+                }else {
+                    sweetAlert('未配置遥控地址，无法下发！');
+                }
+
+                return;
+            }
+            param3 = param3+rtuno+","+addr+",";
+            // var dataVal = tr.find("input[name=tosetvalue]").val();
+            var dataVal = $('#'+code+'').val();
+            if(isEmpty(dataVal)||isNaN(dataVal)){
+                sweetAlert(getLangData("common.isnotanumber"));
+                return;
+            }
+            if(isEmpty(scale)){
+                scale =1;
+            }else{
+                scale = parseInt(scale);
+            }
+            dataVal = Math.round(parseFloat(dataVal).toFixed(2)*scale);
+            // let point = tr.children('[name=id]').text();
+            let point = idData;
+            let oldData = '';
+            if (ytFlag=="1"){
+                oldData = tableData1[code].data;
+            }else {
+                oldData = tableData2[code].data;
+            }
+            let name = name1;
+            logStr=logStr+"point:"+point+",oldData:"+oldData+",";
+            logStr =logStr +"newData:"+dataVal+"||";
+            preStr = preStr+name+":"+oldData+" \n";
+            sufStr = sufStr+name+":"+dataVal+" \n";
+            param3 = param3 +dataVal;
+            if(k!=childLen-1){
+                param3 = param3+",";
+            }
+        }
+        var logTitle="";
+        if (ytFlag==1){
+            logTitle="Strategy-SetRemoteAdjustValues";
+        }else {
+            logTitle="Strategy-SetRemoteControlValues";
+        }
+        var logDataJson ={
+            level:"Strategy",
+            title:logTitle,
+            // level:"PlanCurve",
+            // title:"PlanCurve-SetValues",
+            preStr:preStr,
+            sufStr:sufStr
+        }
+        // console.log('6')
+        swal({
+                title: getLangData("common.confirmremoteset"),
+                text: getLangData("Strategy.mstTypeChange"),
+                showCancelButton: true,
+                confirmButtonText: getLangData("sweetalert.ok"),
+                cancelButtonText: getLangData("sweetalert.cancel"),
+                closeOnConfirm: false
+            },
+            function() {}).then(function(isConfirm) {
+            if (isConfirm === true) {
+                sendARemoteCmdParam(7,func,childLen,param3,null,logDataJson);
+            }
+        });
+    }
+    function sendCtlVal(TrList){
+
+        var childLen = TrList.length;
+        var param3="";
+        var preStr="";
+        var sufStr="";
+        let rtuno = rtuId1;
+        var logStr="rtuid:"+rtuno+",||";
+        let func = "";
+
+        for(var k = 0 ;k<childLen;k++){
+            let tr = $(TrList[k]);
+            var scale = tr.children('td[name=scale]').text();
+            func = tr.children('td[name=func]').text();
+            let addr = tr.children('td[name=addr]').text();
+
+            param3 = param3+rtuno+","+addr+",";
+            var dataVal = tr.find("input[name=tosetvalue]").val();
+            if(isEmpty(dataVal)||isNaN(dataVal)){
+                sweetAlert(getLangData("common.isnotanumber"));
+                return;
+            }
+            if(isEmpty(scale)){
+                scale =1;
+            }else{
+                scale = parseInt(scale);
+            }
+            dataVal = Math.round(parseFloat(dataVal).toFixed(2)*scale);
+            let point = tr.children('[name=id]').text();
+            let oldData = tr.children('.svalue').text();
+            let name = tr.children('[name=name]').text();
+            logStr=logStr+"point:"+point+",oldData:"+oldData+",";
+            logStr =logStr +"newData:"+dataVal+"||";
+            preStr = preStr+name+":"+oldData+" \n";
+            sufStr = sufStr+name+":"+dataVal+" \n";
+            param3 = param3 +dataVal;
+            if(k!=childLen-1){
+                param3 = param3+",";
+            }
+        }
+
+        var logDataJson ={
+            // level:"Strategy",
+            // title:"Strategy-SetRemoteAdjustValues",
+            level:"PlanCurve",
+            title:"PlanCurve-SetValues",
+            preStr:preStr,
+            sufStr:sufStr
+        }
+
+        swal({
+                title: getLangData("common.confirmremoteset"),
+                text: getLangData("Strategy.mstTypeChange"),
+                showCancelButton: true,
+                confirmButtonText: getLangData("sweetalert.ok"),
+                cancelButtonText: getLangData("sweetalert.cancel"),
+                closeOnConfirm: false
+            },
+            function() {}).then(function(isConfirm) {
+            if (isConfirm === true) {
+                sendARemoteCmdParam(7,func,childLen,param3,null,logDataJson);
+            }
+        });
+    }
+    function initSAChart(){
+        console.log(SA_chart_xdata);
+        console.log(SA_chart_power);
+        console.log(SA_chart_power1);
+        var option = {
+            // title: {
+            //     text: 'Stacked Line'
+            // },
+            color:['#FF0000','#66FF00'],
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                textStyle:{
+                    color:'#fff',
+                    fontWeight:'normal',
+                    fontSize:'12'
+                },
+                data: [ '实时功率','设定功率'],
+            },
+            SA_grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '0%',
+
+                containLabel: true
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                //坐标轴标签
+                axisLabel:{
+                    show:true,
+                    color:'#fff'
+                },
+                //grid的分割线
+                splitLine:{
+                    show: false
+                },
+                data: SA_chart_xdata
+            },
+            yAxis: [{
+                type: 'value',
+                //坐标轴
+                axisLine:{
+                    show:true,
+                    lineStyle:{
+                        color:'#fff'
+                    }
+                },
+                //坐标轴标签
+                axisLabel:{
+                    show:true,
+                    color:'#fff',
+                },
+                //grid的分割线
+                splitLine:{
+                    show: false
+                },
+                name:"kW"
+
+            }],
+            series: [
+                {
+                    name: '实时功率',
+                    type: 'line',
+                    smooth: true,
+                    lineStyle:{
+                        width:3,
+                    },
+                    data: SA_chart_power
+                },
+                {
+                    name: '设定功率',
+                    type: 'line',
+                    smooth: true,
+                    lineStyle:{
+                        width:3,
+
+                    },
+                    data: SA_chart_power1
+                }
+            ]
+        };
+        var chartDom = document.getElementById('SA_chart2');
+        SA_myChart2 = echarts.init(chartDom);
+        SA_myChart2.setOption(option);
+    }
+</script>
+</body>
+</html>

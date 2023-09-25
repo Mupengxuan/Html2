@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>微信告警设置</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta name="description" content="">
+</head>
+<style type="text/css">
+    @media screen and (min-width:1600px){
+        body {
+            background: #00274F;
+        }
+
+        .bottom-group{
+            height:50px;
+            text-align:right;
+            padding:15px;
+            width:100%;
+        }
+        #wxEditDlg .modal-body{
+            margin:0px;
+            /*border:1px solid white;*/
+            border-radius:5px;
+            background:#102236;
+        }
+        #wxEditDlg .form-group{
+            font-size:14px;
+            font-weight:normal;
+        }
+        #wxEditDlg .form-group .control-label{
+            font-size:14px;
+            font-weight:normal;
+            text-align:right;
+            padding-right:0px;
+            padding-top:5px;
+            width:180px;
+            padding-left:0px;
+        }
+        #wxEditDlg .form-group .control-label + div .radio-inline{
+            padding-top:5px;
+        }
+        #wxEditDlg .form-group .control-input{
+            width:250px;
+        }
+        #wxEditDlg .form-group .control-input.control-input-long{
+            width:250px;
+        }
+
+        #responsiveTable tr {
+            border-left: 0;
+            border-right: 0;
+        }
+
+        .StatisPageTopDiv {
+            height: 100%;
+            width: 100%;
+            float: left;
+            margin-left: 10px;
+        }
+
+        .StatisPageTopDiv div select {
+            height: 31px;
+            padding-right: 10px;
+            /*background-color: rgba(255, 255, 255, 0.1);*/
+            width: 100%;
+            font-size: 14px;
+        }
+
+        input {
+            /*height: 31px;
+            padding-right: 10px;*/
+            background-color: rgba(255, 255, 255, 0.1);
+            /*width: 100%;*/
+            font-size: 14px;
+            color: #fff;
+            height: 31px;
+        }
+
+        input {
+            background-color: rgba(223, 228, 232, 0.12);
+            height: 30px;
+            border: solid 1px rgba(0, 186, 189, 0.4);
+            color: #ccc;
+        }
+
+        .panel-footer div>button {
+            background-color: rgba(223, 228, 232, 0);
+            /*height: 30px;*/
+            font-size: 14px;
+            border: solid 1px rgba(0, 186, 189, 0);
+            color: #fff;
+            padding-bottom: 2px;
+        }
+
+        .pagination2 div,
+        .pagination2 div>a {
+            background-color: rgba(223, 228, 232, 0);
+            /*height: 30px;*/
+            float: left;
+            font-size: 14px;
+            margin-left: 10px;
+            border: solid 1px rgba(0, 186, 189, 0);
+            color: #fff;
+        }
+
+        .StatisPageTopDiv div select option {
+            /*background-color: rgba(66, 60, 60, 1);*/
+        }
+
+        .StatisPageTopDiv .divSpan {
+            padding: 4.5px 10px;
+            font-size: 14px;
+            float: left;
+            border: 1px solid #a4b8bb;
+            cursor: pointer;
+        }
+
+        .dlg-panel{
+            border-radius:5px;
+            color:white;
+        }
+
+        .StatisPageTopDiv div div .datepicker {
+            background-color: #004986;
+            color: #fff;
+            font-size: 14px;
+            height: 31px;
+            border: 0;
+            padding-left: 10px;
+        }
+
+        .StatisPageTopDiv div div>span {
+            /* 	         	background-color: #004986; */
+            color: #fff;
+            font-size: 14px;
+            height: 31px;
+            border: 0;
+        }
+
+        .ms-drop input[type="checkbox"] {
+            opacity: 1;
+            left: 10px;
+        }
+
+        .ms-drop .bottom ul li label {
+            float: left;
+        }
+
+        .ms-choice span {
+            background-color: rgba(255, 255, 255, 0.08);
+            height: 31px;
+            color: #fff;
+            font-size: 14px;
+            line-height: 32px;
+        }
+
+        .ms-drop ul {
+            background-color: rgba(66, 60, 60, 1);
+        }
+
+        .ms-drop ul>li label {
+            font-size: 14px;
+            color: #fff;
+        }
+
+        .ms-parent button>div {
+            background-color: rgba(255, 255, 255, 0.08);
+            height: 31px;
+        }
+
+        .panel-footer {
+            padding: 10px 15px;
+            background-color: rgba(0, 0, 0, 0);
+            border-top: 1px solid #020e2d;
+        }
+
+    }
+
+</style>
+<body>
+<div class="col-md-12" style="height:100%;">
+    <!--搜索栏-->
+    <div class="panel panel-default" style="height: 10%;">
+        <div class="row" style="margin-top: 25px">
+            <div class="StatisPageTopDiv" >
+                <label i18n="akbm.bz">备注:</label>&nbsp;&nbsp;
+                <input id="nickname" placeholder="请输入备注" i18n="akbm.please">
+                <a type="button" class="btn btn-info btn-sm" onclick="searchInfo()"i18n="alarm.cx"  style="margin-left: 15px;margin-top: 0"><i class="fa fa-search"></i>查询</a>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default" style="height: 90%">
+        <table class="table" style="width: 100%;" id="responsiveTable">
+            <thead>
+            <tr id="headTr">
+                <td width="5%"  i18n="PermissionsManage.xh"  >序号</td>
+                <td width="20%"  i18n="chargemanage.xh"  >微信ID</td>
+                <td width="10%"  i18n="akbm.bz" >备注</td>
+                <td width="20%"  i18n="wc.user" >关系系统用户</td>
+                <td width="10%"  i18n="wc.rightalarm" >告警权限</td>
+                <!--                <td width="10%">权限1/2/3</td>-->
+                <td width="10%"  i18n="wc.time" >关注时间</td>
+                <td width="5%"   i18n="wc.right123" >权限1/2/3</td>
+                <td width="10%"  i18n="SystemLog.operation" >操作</td>
+            </tr>
+            </thead>
+            <tbody id="tableBody" >
+            <tr id="templateTr">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="panel-footer clearfix " style=" background:rgba(0, 0, 0, 0);color:white;">
+            <div class="form-group cy-panelfotter pull-right">
+                <label class="col-xs-4 col-md-4 control-label"></label>
+                <button style="float: left;margin-right: 10px;" id="jumpBtn" i18n="alarm.table.go">前往</button>
+                <div style="float: left;">
+                    <input id="jumpUserPage" value="1">
+                </div>
+                <label style="float: left;margin-left: 10px;" i18n="alarm.table.page">页</label>
+            </div>
+            <input type="hidden" id="currentUserPage" value="1">
+            <div class="pagination2  m-top-none pull-right">
+                <div>
+                    <a href="javascript:void(0);">
+									<span i18n="alarm.table.total">
+										共
+									</span>
+                        <span id="lblShowCnt">
+									   0
+									</span>
+                        <span i18n="alarm.table.item">
+										条
+									</span>
+                    </a>
+                </div>
+                <div>
+                    <a href="javascript:void(0);">
+
+									<span id="numperpage">
+										30
+									</span>
+                        <span i18n="alarm.table.pageitem">
+									   页
+									</span>
+                    </a>
+                </div>
+                <div>
+                    <a id="toPre" href="javascript:void(0);">
+                        <</a>
+                </div>
+                <div>
+								<span id="currpagenum" href="javascript:void(0);" style="background-color: rgba(255,255,255,0.12);padding-left: 3px;padding-right: 3px;">
+									1
+							</span>
+                </div>
+                <div>
+                    <a id="toNext" href="javascript:void(0);">></a>
+                </div>
+                </ul>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!--编辑窗口-->
+    <div id="wxEditDlg" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" wxEditDlg  i18n="wc.editPage">微信用户设置--修改页面</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="dlg-panel">
+                        <div class="form-group row">
+                            <label class="col-lg-2 col-xs-4 control-label" >
+                                <span i18n="chargemanage.xh">微信ID</span>：
+                            </label>
+                            <div class="col-lg-4 col-xs-8">
+                                <input class="control-input" disabled="disabled" id="wxInfoID" width="50%">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-lg-2 col-xs-4 control-label">
+                                <span i18n="azjl.nine">备注</span>：
+                            </label>
+                            <div class="col-lg-4 col-xs-8" style="padding-top:5px;">
+                                <input class="control-input"  id="wxNickName" >
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-lg-2 col-xs-4 control-label" >
+                                <span i18n="wc.user">关联系统用户</span>：
+                            </label>
+                            <div class="col-lg-4 col-xs-8" style="padding-top:5px;">
+                                <select id="AssociatedSysUser" class="control-input control-input-long">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-lg-2 col-xs-4 control-label" >
+                                <span  i18n="wc.rightalarm">告警权限</span>：
+                            </label>
+                            <div class="col-xs-8" style="padding-top:5px;">
+                                <select id="alarmOrNot" class="control-input control-input-long">
+                                    <option value="1" i18n="alarm.gj">告警</option>
+                                    <option value="0" i18n="alarm.bgj">不告警</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-lg-2 col-xs-4 control-label" >
+                                <span i18n="wc.time">关注公众号时间</span>：
+                            </label>
+                            <div class="col-lg-4 col-xs-8" style="padding-top:5px;">
+                                <input class="control-input" disabled="disabled" id="subscribeTime" >
+                            </div>
+                        </div>
+                        <div class="form-group row bottom-group">
+                            <button id="cancelEditSystemBtn" i18n="stationmanage.cancel" class="btn btn-sm btn-default ">取消</button>
+                            <button id="commitEditSystemBtn" i18n="stationmanage.save" class="btn btn-sm btn-info">保存</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var totalPageCnt = 0 ;
+    var currentPageCnt = 1;
+    var totalDataCnt = -1;
+    var rowPerPage = 10;
+    var currentData =null;
+    var dlg = $('#wxEditDlg');
+$(function() {
+    showTableData(null)
+});
+
+function searchInfo(){
+    currentPageCnt = 1;
+    var nickName = $("#nickname").val();
+    showTableData(nickName)
+}
+function showTableData(nickName){
+        var sql = "getWxUserInfo";
+
+        if (nickName==''||nickName==""){
+            nickName=null;
+        }
+        if (nickName==null){
+            sql = "getWxUserAllInfo";
+        }
+        get_promapper_result(sql,nickName, function(data){
+        var resultArr = eval(data);
+        currentData = resultArr;
+        if(resultArr == null || resultArr.length == 0) {
+            totalDataCnt = 0;
+            totalPageCnt= 1;
+            currentPageCnt = 1;
+            arrangePagingInfo();3
+            // $("#templateTr").hide();
+            return;
+        }
+        totalDataCnt = resultArr.length;
+        totalPageCnt = Math.ceil(totalDataCnt / rowPerPage);
+        arrangePagingInfo();
+        addDataToTable();
+    })
+}
+function addDataToTable(){
+    var startIdx = (currentPageCnt-1)*rowPerPage;
+    var endIdx = currentPageCnt*rowPerPage;
+    if(endIdx>totalDataCnt) {
+        endIdx = totalDataCnt;
+    }
+    $("#tableBody").empty();
+    var realTbodyStr = '';
+    // console.log(startIdx)
+    // console.log(endIdx)
+    // console.log(currentData)
+    if(localStorage["cLan"] == "cn"){
+        for(var i = startIdx ;i<endIdx;i++){
+            var alarmAuthority = '不告警';
+            if (currentData[i].alarm_authority!=null&&parseFloat(currentData[i].alarm_authority)==1){
+                alarmAuthority = '告警';
+            }
+            var trStr="<tr>";
+            trStr =trStr+"<td name='id' align='center' width='10%'>" +(i+1) +"</td>";
+            trStr =trStr+"<td name='' width='20%'>" +currentData[i].wx_Id+"</td>";
+            trStr =trStr+"<td name='' width='10%'>" +currentData[i].nickname+"</td>";
+            trStr =trStr+"<td name='' width='20%'>" +currentData[i].wx_name+"</td>";
+            trStr =trStr+"<td name='' width='10%'>" +alarmAuthority+"</td>";
+            trStr =trStr+"<td name='' width='10%'>" +currentData[i].addtime+"</td>";
+            trStr =trStr+"<td name='' width='10%'>" +""+"</td>";
+            trStr =trStr+"<td width='10%'>"
+                +"<a id='editInfo' title='获取备注' style='cursor:pointer;' detailData='"+JSON.stringify(currentData[i])+"' onclick='toRemark(this)'><img src='images/remark.png' style='width: 23px;height: 23px;'/></a>"
+                +"<a id='editInfo' title='修改' style='cursor:pointer;' detailData='"+JSON.stringify(currentData[i])+"' onclick='toEdit(this)'><img src='images/edit.png' style='width: 25px;height: 25px;'/></a>"
+                +"<a id='deleteInfo' title='删除' style='cursor:pointer;' detailData='"+JSON.stringify(currentData[i])+"' onclick='toDelete(this)'><img src='images/trash.png' style='width: 25px;height: 25px;'/></a>"
+                +"</td>";
+            trStr = trStr+"</tr>";
+
+            realTbodyStr = realTbodyStr+trStr;
+        }
+    }else{
+        for(var i = startIdx ;i<endIdx;i++){
+            var alarmAuthority = 'No Alarm';
+            if (currentData[i].alarm_authority!=null&&parseFloat(currentData[i].alarm_authority)==1){
+                alarmAuthority = 'Alarm';
+            }
+            var trStr="<tr>";
+            trStr =trStr+"<td name='id' align='center' width='10%'>" +(i+1) +"</td>";
+            trStr =trStr+"<td name='' width='20%'>" +currentData[i].wx_Id+"</td>";
+            trStr =trStr+"<td name='' width='10%'>" +currentData[i].nickname+"</td>";
+            trStr =trStr+"<td name='' width='20%'>" +currentData[i].wx_name+"</td>";
+            trStr =trStr+"<td name='' width='10%'>" +alarmAuthority+"</td>";
+            trStr =trStr+"<td name='' width='10%'>" +currentData[i].addtime+"</td>";
+            trStr =trStr+"<td name='' width='10%'>" +""+"</td>";
+            trStr =trStr+"<td width='10%'>"
+                +"<a id='editInfo' title='Remark' style='cursor:pointer;' detailData='"+JSON.stringify(currentData[i])+"' onclick='toRemark(this)'><img src='images/remark.png' style='width: 23px;height: 23px;'/></a>"
+                +"<a id='editInfo' title='Edit' style='cursor:pointer;' detailData='"+JSON.stringify(currentData[i])+"' onclick='toEdit(this)'><img src='images/edit.png' style='width: 25px;height: 25px;'/></a>"
+                +"<a id='deleteInfo' title='Delete' style='cursor:pointer;' detailData='"+JSON.stringify(currentData[i])+"' onclick='toDelete(this)'><img src='images/trash.png' style='width: 25px;height: 25px;'/></a>"
+                +"</td>";
+            trStr = trStr+"</tr>";
+
+            realTbodyStr = realTbodyStr+trStr;
+        }
+    }
+
+    $("#tableBody").html(realTbodyStr)
+}
+    $('#cancelEditSystemBtn').click(function(){
+        dlg.modal('hide');
+    })
+    $('#commitEditSystemBtn').click(function(){
+
+        var wxId = $('#wxInfoID').val();
+        var nickName = $('#wxNickName').val();
+        var alarmFlag = $('#alarmOrNot').val();
+        var wxName = $('#AssociatedSysUser').val();
+        console.log(wxId)
+        console.log(nickName)
+        console.log(alarmFlag)
+        console.log(wxName)
+        if(nickName == null || "" == nickName){
+            swal({
+                text:'</span>'+getLangData("stationmanage.IncompleteInformation")+'</span>',
+                confirmButtonText: getLangData("sweetalert.ok")// 确定按钮的 文字
+            });
+            return;
+        }
+        if(nickName.length > 80){
+            swal({
+                text:'<span>'+getLangData("stationmanage.WordOverrun")+'</span>',
+                confirmButtonText: getLangData("sweetalert.ok")// 确定按钮的 文字
+            });
+            return;
+        }
+        var sql = "updateWXUserTableInfo";
+
+        get_promapper_result(sql,wxId+ ","+ nickName+ ","+ wxName+ "," +alarmFlag, function(result){
+            if(localStorage["cLan"] == "cn"){
+                sweetAlert("修改成功!");
+            }else{
+                sweetAlert("update successfully!");
+            }
+            dlg.modal('hide');
+            //刷新界面
+            showTableData(null);
+        },"json");
+
+
+    });
+function toDelete(ele){
+    var obj = JSON.parse($(ele).attr("detailData"));
+    var wxId = obj.wx_Id;
+    // console.log(wxId);
+    swal({
+            title: localStorage["cLan"] == "cn"?"确定删除此条信息吗？":"sure to delete this "+ $(obj).attr("name_")+"?",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: localStorage["cLan"] == "cn"?"确定":"sure to delete",
+            cancelButtonText:localStorage["cLan"] == "cn"?"取消":"cancel",
+            closeOnConfirm: false
+        },
+        function() { }).then(function(isConfirm) {
+        if(isConfirm === true) {
+            var sql = "deleteWxUserInfo";
+
+            get_promapper_result(sql,wxId, function(result){
+                if(localStorage["cLan"] == "cn"){
+                    sweetAlert("删除成功!");
+                }else{
+                    sweetAlert("delete the success");
+                }
+                //刷新界面
+                showTableData(null);
+            },"json");
+        }
+    });
+}
+function toRemark(ele){
+    var obj = JSON.parse($(ele).attr("detailData"));
+    var wxId = obj.wx_Id;
+    $(document).progressDialog.showDialog("正在打开，请稍候...");
+    $.ajax({
+        url: "getWxUserInfo",
+        data: {
+            openId:wxId
+        },
+        type: "post",
+        success: function(result) {
+            console.log('result');
+            console.log(result);
+            $(document).progressDialog.hideDialog();
+            if(result==null||result.success == "false") {
+                console.log(result.errString);
+                sweetAlert(getLangData("wc.hqsb"));
+            } else {
+                //刷新页面
+                sweetAlert(getLangData("alert.common.success"));
+                var nickName = $("#nickname").val();
+                showTableData(nickName)
+            }
+        }
+    });
+}
+function toEdit(ele){
+    $("#wxEditDlg").modal("show");
+    var obj = JSON.parse($(ele).attr("detailData"));
+    // var wxid = obj.wx_Id;
+    // var nickname = obj.nickname;
+    // var addtime = obj.addtime;
+    // console.log('')
+    console.log(obj)
+
+    $('#wxInfoID').val( obj.wx_Id);
+    $('#wxNickName').val( obj.nickname);
+    $('#subscribeTime').val( obj.addtime);
+    var alarmFlag = obj.alarm_authority;
+    $('#alarmOrNot').find('option[value='+alarmFlag+']').prop("selected","selected")
+    var sql = "getAllOperatorIds";
+    get_promapper_result(sql,null, function(data){
+        // console.log('data')
+        // console.log(data)
+        if (data!=null){
+            for (var i=0;i<data.length;i++){
+                var option = "<option value='" + data[i].id_ + "'>" + data[i].id_ + "</option>";
+                $('#AssociatedSysUser').append(option)
+            }
+        }
+    })
+}
+    //分页a标签的跳转成异步跳转
+    $(".pagination2 div a").click(function(event) {
+        var thisID = $(this).attr("id");
+        if(totalDataCnt == 0) {
+            return;
+        }
+        event.preventDefault();
+
+        if(thisID=="toPre") {
+            if(currentPageCnt==1) {
+                return;
+            }
+            currentPageCnt =currentPageCnt-1 ;
+            addDataToTable();
+
+        }else if(thisID=="toNext") {
+            if(currentPageCnt==totalPageCnt ) {
+                return;
+            }
+            currentPageCnt =currentPageCnt+1 ;
+            addDataToTable();
+
+        }
+
+        arrangePagingInfo();
+    });
+    //跳转页面
+    $('#jumpBtn').click(function (){
+        // 获取跳转页数的值
+        var curPage=$("#jumpUserPage").val();
+        //判断输入页数是否是数字，并且判断是否大于总页数
+        if(curPage<=0||curPage!=parseInt(curPage)){
+            sweetAlert(getLangData("akbm.jump"));
+            return false;
+        }else if(curPage > totalPageCnt ){
+            sweetAlert(getLangData("akbm.jumperror"));
+            return false;
+        }
+        currentPageCnt  = curPage;
+        //删除既存行数据
+        deleteOldData();
+        addDataToTable();
+        arrangePagingInfo();
+    })
+function arrangePagingInfo() {
+    totalPageCnt = Math.ceil(totalDataCnt / rowPerPage);
+    if(currentPageCnt>totalPageCnt) totalPageCnt=totalPageCnt;
+    if(currentPageCnt<1) totalPageCnt=1;
+    begin = (currentPageCnt - 1) * rowPerPage + 1;
+    end = currentPageCnt * rowPerPage;
+    $('#numperpage').text(totalPageCnt);
+    $("#lblShowCnt").html(totalDataCnt);
+    $("#currpagenum").text(currentPageCnt);
+    $("#jumpUserPage").val(currentPageCnt);
+}
+function deleteOldData() {
+    $("#tableBody").empty();
+}
+</script>
+</body>
+</html>

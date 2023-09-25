@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html>
+	<title>告警</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta name="description" content="">
+	<style type="text/css">
+		#responsiveTable tr {
+			border-left: 0;
+			border-right: 0;
+		}
+
+		input {
+			/*height: 31px;
+			padding-right: 10px;*/
+			background-color: rgba(255, 255, 255, 0.1);
+			/*width: 100%;*/
+			font-size: 14px;
+			color: #fff;
+			height: 31px;
+		}
+		
+		input {
+			background-color: rgba(223, 228, 232, 0.12);
+			height: 30px;
+			border: solid 1px rgba(0, 186, 189, 0.4);
+			color: #ccc;
+		}
+		
+		.panel-footer div>button {
+			background-color: rgba(223, 228, 232, 0);
+			/*height: 30px;*/
+			font-size: 14px;
+			border: solid 1px rgba(0, 186, 189, 0);
+			color: #fff;
+			padding-bottom: 2px;
+		}
+		
+		.pagination2 div,
+		.pagination2 div>a {
+			background-color: rgba(223, 228, 232, 0);
+			/*height: 30px;*/
+			float: left;
+			font-size: 14px;
+			margin-left: 10px;
+			border: solid 1px rgba(0, 186, 189, 0);
+			color: #fff;
+		}
+		
+		.panel-footer {
+			padding: 10px 15px;
+			background-color: rgba(0, 0, 0, 0);
+			border-top: 1px solid #020e2d;
+		}
+		
+	</style>
+
+	<body>
+		<div id="breadcrumb">
+			<ul class="breadcrumb hidden">
+				<li style="background:#00274F;color:white;">
+					<i class="fa fa-bell" style="background:#00274F;color:white;"></i>
+					<a href="" id="systemConfig" style="background:#00274F;color:white;" i18n="alarm.gjgl"> 告警管理</a>
+				</li>
+				<li class="active" style="background:#00274F;color:white;">
+					告警
+				</li>
+			</ul>
+		</div>
+		<div class="col-md-12 ">
+			<div class="panel panel-default " style="margin-top:0px;">
+				<div class="panel-body ">
+					<div class="row" style="margin-top:10px;">
+						<div style="height:44px;width:100%;padding-left:5px;">
+							<!-- 时间 -->
+							<div class="StatisPageTopDiv" style="width:320px;">
+								<label i18n="alarm.rqxz">日期</label>
+								<div style="float: left; width:270px;border: 1px solid #0068b7;border-radius:6px;">
+									<div style="float: left; width:130px;">
+										<div class="input-group">
+											<input type="text" class="datepicker form-control" name="beginTime" id="beginTime" value="" style="width: 100%;">
+											<span class="input-group-addon" onclick="$(this).prev().focus()" style="background-color: #004986;font-size:16px;"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div style="float: left; width:10px;">
+										<span style="color: #0068b7;"></span>
+									</div>
+									<div style="float:right;width:130px;">
+										<div class="input-group">
+											<input type="text" class="datepicker form-control" name="endTime" id="endTime" value="" style="width: 100%;">
+											<span class="input-group-addon" onclick="$(this).prev().focus()" style="background-color: #004986;font-size:16px;"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="StatisPageTopDiv" style="width:200px;">
+								<label class="" style="float:left;line-height: 33px;width:100px;text-align:center;font-size:15px;font-weight: normal;" i18n="alarm.gjlx">告警类型：</label>
+								<div class="" style="float:left;width:calc(100% - 100px);">
+									<select id="alarmTypeSelect" name="alarmTypeSelect" style="" onChange="onAlarmTypeSelectChange();">
+										<option value='-1' selected='selected'>全部</option>
+									</select>
+								</div>
+							</div>
+							<div class="StatisPageTopDiv" style="width:150px;">
+								<label class="" style="float:left;line-height: 33px;width:80px;text-align:center;font-size:15px;font-weight: normal;" i18n="alarm.zxt">子系统：</label>
+								<div class="" style="float:left;width:calc(100% - 80px);">
+									<select id="subname" name="subname" style="" onChange="initdevname();">
+										<option value='-1' selected='selected'>全部</option>
+									</select>
+								</div>
+							</div>
+							<div id="devTypeDiv" class="StatisPageTopDiv" style="width:150px;">
+								<label class="" style="float:left;line-height: 33px;width:80px;text-align:center;font-size:15px;font-weight: normal;" i18n="alarm.sblx">设备类型：</label>
+								<div class="" style="float:left;width:calc(100% - 80px);">
+									<select id="devtype" name="devtype" style="" onChange="initdevname();">
+										<option value='-1' selected='selected'>全部</option>
+									</select>
+								</div>
+							</div>
+
+							<div id="devNameDiv" class="StatisPageTopDiv" style="width:150px;">
+								<label class="" style="float:left;line-height: 33px;width:80px;text-align:center;font-size:15px;font-weight: normal;" i18n="alarm.sbmc">设备名称：</label>
+								<div class="" style="float:left;width:calc(100% - 80px);">
+									<select id="devname" name="devname" style="">
+										<option value='-1' selected='selected'>全部</option>
+									</select>
+								</div>
+							</div>
+							<div class="StatisPageTopDiv" style="width:150px;">
+								<label class="" style="float:left;line-height: 33px;width:80px;text-align:center;font-size:15px;font-weight: normal;" i18n="alarm.table.gjdj">告警等级：</label>
+								<div class="" style="float:left;width:calc(100% - 80px);">
+									<select id="selAlarmLevel" name="selAlarmLevel" style="">
+										<option value='-1'  i18n="alarm.table.All" i18n-only="html">所有</option>
+										<option value='1' i18n="alarm.table.yj" i18n-only="html">一级</option>
+										<option value='2' i18n="alarm.table.ej" i18n-only="html">二级</option>
+										<option value='3' i18n="alarm.table.sj" i18n-only="html">三级</option>
+										<option value='0' i18n="alarm.table.qt" i18n-only="html">其他</option>
+									</select>
+								</div>
+							</div>
+							<div class="StatisPageTopDiv" style="float:left;width:180px;">
+								<!-- 查询 -->
+								<div type="button" class="btn btn-primary" id="queryBtn">
+									<i class="fa fa-search"></i>&nbsp;&nbsp;<span i18n="SystemLog.query">查询</span>
+								</div>
+								<div id="downloadBtn" oprAuth='103' type="button" class="btn btn-primary" onclick="DownloadExcel();return false;" style="float:right;margin-right:0%;">
+									<i class="fa fa-download"></i>&nbsp;&nbsp;<span i18n="SystemLog.export">导出</span>
+								</div>
+							</div>
+							<div class="StatisPageTopDiv" style="float:right;">
+								<div id="confirmAllBtn" type="button" class="btn btn-primary" onclick="confirmAll();return false;" style="float:right;margin-right:0%;">
+									<span i18n="alarm.confirmAll">确认全部</span>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<div class="panel panel-default table-responsive" id="table_parent" style="margin-top:-35px;">
+				<div class="panel-body" style="padding:10px;height: 40px;background-image: linear-gradient(rgb(40, 76, 115) 30%, rgb(31, 59, 91) 60%, rgb(20, 40, 63) 80%);">
+					<h4 class="panel-title">
+				        <span i18n="alarm.gjlb" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse1" aria-expanded="true" aria-controls="collapse1">
+				          	告警列表
+				          	<span class="fa fa-caret-up pull-right panel-title-indicator">
+				       		</span>
+				        </span>
+				      </h4>
+				</div>
+				<div style="height: calc(100% - 40px);overflow-y: auto;">
+					<table class="table" id="responsiveTable" style="margin-bottom:0px;border:3px solid rgba(0,0,0,0);">
+						<thead>
+							<tr>
+								<th width="90px" i18n="alarm.table.index" style="width:60px;">序号</th>
+								<th id="deviceNameTh" i18n="alarm.table.sbmc">设备名称</th>
+								<th i18n="alarm.table.xhmc" class="hidden">信号名称</th>
+								<th i18n="alarm.table.gzmc" style="width:190px;">故障描述</th>
+								<th i18n="alarm.table.gjdj">告警等级</th>
+								<th i18n="alarm.table.fssj">发生时间</th>
+								<th i18n="alarm.table.hfsj" class="hidden">恢复时间</th>
+								<th class="hidden">故障处理</th>
+								<th i18n="alarm.table.gzcl">故障处理</th>
+								<th class="hidden"></th>
+							</tr>
+						</thead>
+						<tbody id="tableBody">
+
+							<tr id="templateTr">
+								<td></td>
+								<td name="deviceNameTd"></td>
+								<td class="hidden"></td>
+								<td style="text-align:left;"></td>
+								<td></td>
+								<td></td>
+								<td class="hidden"></td>
+								<td class="hidden"></td>
+								<td>
+
+									<a oprauth="101" class="btn  btn-xs cy-userinf-tablebutton" onclick="toConfirmPage(this)" name="confirmAlarm" siteid="9" style="">
+										<div style="background-image: url('./mapimg/xq.png');width: 30px;height: 30px;background-size: 100% 100%;"></div>
+									</a>
+									<a oprauth="102" class="btn btn-xs cy-userinf-tablebutton" onclick="confirmtask(this)" name="confirmAlarm" style="">
+										<div style="background-image: url('./mapimage/zxcg.png');width: 20px;height: 20px;background-size: 100% 100%;"></div>
+									</a>
+
+								</td>
+								<td class="hidden"></td>
+							</tr>
+
+						</tbody>
+					</table>
+					<div class="panel-footer clearfix " style=" background:rgba(0, 0, 0, 0);color:white;">
+						<div class="form-group cy-panelfotter pull-right">
+							<label class="col-xs-4 col-md-4 control-label"></label>
+							<button style="float: left;margin-right: 10px;" id="jumpUserBtn" i18n="alarm.table.go">前往</button>
+							<div style="float: left;">
+								<input id="jumpUserPage" value="1">
+							</div>
+							<label style="float: left;margin-left: 10px;" i18n="alarm.table.page">页</label>
+						</div>
+						<input type="hidden" id="currentUserPage" value="1">
+						<div class="pagination2  m-top-none pull-right">
+							<div>
+								<a href="javascript:void(0);">
+									<span i18n="alarm.table.total">
+										共
+									</span>
+									<span id="lblShowCnt">
+									   0
+									</span>
+									<span i18n="alarm.table.item">
+										条
+									</span>
+								</a>
+							</div>
+							<div>
+								<a href="javascript:void(0);">
+
+									<span id="numperpage">
+										30
+									</span>
+									<span i18n="alarm.table.pageitem">
+									   页
+									</span>
+								</a>
+							</div>
+							<div>
+								<a id="toPre" href="javascript:void(0);">
+									<</a>
+							</div>
+							<div>
+								<span id="currpagenum" href="javascript:void(0);" style="background-color: rgba(255,255,255,0.12);padding-left: 3px;padding-right: 3px;">
+									1
+							</span>
+							</div>
+
+							<div>
+								<a id="toNext" href="javascript:void(0);">></a>
+							</div>
+							</ul>
+
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+		<!--告警窗口-->
+		<div class="modal" tabindex="-1" role="dialog" aria-labelledby="firstPage_alarm_list" id="firstPage_alarm_list" aria-hidden="true" data-backdrop="false" style="margin-top: 70px;">
+			<div class="modal-dialog text-left" role="document" style="width:400px;">
+				<div class="modal-content" style="background:rgba(1,14,46,1); border:solid 1px #18478a;">
+
+					<div class="modal-header" style="border:0;color:#fff;">
+						<button type="button" class="close1" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true" style="color:black">×</span>
+						</button>
+						<h4 class="modal-title" style="color: #ffffff;">
+							<i class="fa fa-calendar-check-o"></i> 
+							<span i18n="alarm.common.info">
+								信息
+							</span>
+						</h4>
+					</div>
+					<div class="modal-body" style=" height:200px;">
+						<div class="StatisPageTopDiv" style="width:300px;height: 40px;margin-top:10px;">
+							<label class="" style="float:left;line-height: 33px;width:80px;text-align:center;font-size:15px;font-weight: normal;color: rgba(255,255,255,0.8);">
+									
+									<span i18n="alarm.win.handle" style="color: rgba(255,255,255,0.8);">处理人：</span>
+								</label>
+							<div class="" style="float:left;width:calc(100% - 100px);">
+								<select id="handlename" name="handlename" style="border-color: rgb(169, 169, 169);color: rgba(255,255,255,0.8);width:90%;">
+									<option value='testadmin' selected='selected'>testadmin</option>
+								</select>
+							</div>
+						</div>
+						<div class="StatisPageTopDiv" style="width: 280px;margin-top:25px ;margin-left: 10px;">
+							<div class="" style="padding:0;float: right;">
+								<div class="StatisPageBtn" onclick="sendtask();return false;" style="margin-left: 40px;cursor:pointer;">
+									<i class="fa fa-send"></i>&nbsp;&nbsp;
+									<span i18n="alarm.table.dispatch">
+											派送工单
+										</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<!--告警窗口-->
+
+		<div class="modal" tabindex="-1" role="dialog" aria-labelledby="firstPage_alarm_list" id="confirm_content_win" aria-hidden="true" data-backdrop="false" style="margin-top: 70px;">
+			<div class="modal-dialog text-left" role="document" style="width:400px;" >
+				<div class="modal-content" style="background:rgba(1,14,46,1); border:solid 1px #18478a;">
+
+					<div class="modal-header" style="border:0;color:#fff;">
+						<button type="button" class="close1" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true" style="color:black">×</span>
+						</button>
+						<h4 class="modal-title" style="color: #ffffff;">
+							<i class="fa fa-calendar-check-o"></i> 
+							<span i18n="alarm.common.info">
+								信息
+							</span>
+						</h4>
+					</div>
+					<div class="modal-body" style=" height:200px;">
+						<label class="" style="float:left;line-height: 33px;text-align:center;font-size:12px;font-weight: normal;color: rgba(255,255,255,0.8);">
+									
+									<span i18n="sys.content.confirm" style="color: rgba(255,255,255,0.8);">确认内容</span>
+								</label>
+						<div class="StatisPageTopDiv" style="width:100%;height: 40px;margin-top:10px;">
+
+							<input id="confirm_content" style="display: block;width:calc(100% - 20px);height: 100%;border: solid 1px rgba(0,0,0,0.5);color: rgba(255,255,255,0.8);">
+
+							</input>
+
+						</div>
+						<div class="StatisPageTopDiv" style="width: 280px;margin-top:25px ;margin-left: 10px;">
+							<div class="" style="padding:0;float: right;">
+								<div class="StatisPageBtn" onclick="confirmtaskgo();return false;" style="margin-left: 40px;cursor:pointer;">
+									<i class="fa fa-send"></i>&nbsp;&nbsp;
+									<span i18n="sweetalert.ok">
+											确定
+										</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<!--告警窗口-->
+
+		<form action="" id="realhisexeclform" method="post" style="display:none;"></form>
+		
+		<script type="text/javascript" src="js/DateFormatUtil.js"/>
+		<script type="text/javascript">
+			var sendperson = [];
+			var sendid = localStorage["loginUserName"];//localStorage["roleId"]
+			var totalPageCnt = 0;
+			var currentPageCnt = 1;
+			var totalDataCnt = -1;
+			var rowPerPage = 10;
+			var currentData = [];
+			var begin = 1;
+			var end = rowPerPage;
+			var checkob = null;
+
+			var confirmel = '';
+
+
+			$(function() {
+				console.log("realTimeAlarm");
+				$('#table_parent').height($(document).height() - 150);
+				$(window).on("onPageResize",function() {
+						$('#table_parent').height($(document).height() - 150);
+					}
+				);
+				if(localStorage["cLan"] == "en") {
+					$('#selAlarmLevel').empty();
+					$('#selAlarmLevel').append('<option value="-1">All</option>');
+					$('#selAlarmLevel').append('<option value="1">FirstLevel</option>');
+					$('#selAlarmLevel').append('<option value="2">SecondLevel</option>');
+					$('#selAlarmLevel').append('<option value="3">ThirdLevel</option>');
+					$('#selAlarmLevel').append('<option value="0">Other</option>');
+				}
+				$("#selAlarmLevel").select2({
+					minimumResultsForSearch: -1
+				});
+				initAlarmType();
+				initperson();
+				initsubname();
+
+				if(localStorage["hideDevice"] && localStorage["hideDevice"] == "true"){
+					$("#devTypeDiv").addClass("hidden");
+					$("#devNameDiv").addClass("hidden");
+					$("#deviceNameTh").addClass("hidden");
+					$("[name=deviceNameTd]").addClass("hidden");
+				}else{
+					initdevtype();
+					initdevname();
+				}
+				showNowTime();
+
+				$("#queryBtn").click(function() {
+					query();
+				});
+
+				addPageListener();
+				query();
+
+				initperson();
+			});
+
+			function initAlarmType(){
+				var proc_string = "procSelectAlarmShield('" + localStorage["currentStationCd"] + "')"
+				get_string_result(proc_string, function(data) {
+					let str =  "<option value='-1' >" + getLangData("statisticsPage.all") + "</option>";
+					let typeClassMap = [];
+					for(var i = 0; i < data.length; i++) {
+						let d = data[i];
+						if(!typeClassMap[d.type_class_]){
+							typeClassMap[d.type_class_] = [d];
+						}else{
+							typeClassMap[d.type_class_].push(d);
+						}
+					}
+					for(let typeClass in typeClassMap){
+						let d = typeClassMap[typeClass][0];
+						let name = "";
+						switch(d.type_class_){
+							case 1:name = getLangData("alarm.sbjcxsj");break;
+							case 2:name = getLangData("alarm.scada");break;
+							case 3:name = getLangData("alarm.zhbhsj");break;
+							case 4:name = getLangData("alarm.pdyysj");break;
+							case 5:name = getLangData("alarm.czsj");break;
+							case 6:name = getLangData("alarm.ssksj");break;
+							default:name =  getLangData("alarm.qtsj");
+						}
+						str += "<option value='" + d.type_class_ + "' >" + name + "</option>";
+					}
+					$("#alarmTypeSelect").html(str);
+
+					$("#alarmTypeSelect").select2({
+						minimumResultsForSearch: -1
+					});
+				}, "json");
+			}
+
+			function initperson() {
+				var proc_string = "procSystemSelectAllInspectionUser('" +sendid + "','" + localStorage["currentStationCd"] + "')"
+				get_string_result(proc_string, function(data) {
+					sendperson = data;
+					$("#handlename").empty();
+					for(var i = 0; i < data.length; i++) {
+						option = "<option value=" + i + " >" + data[i].realName + "</option>";
+						$("#handlename").append(option);
+					}
+					
+					$("#handlename").select2({
+								minimumResultsForSearch: -1
+							});
+				}, "businessMap");
+			}
+
+			function initsubname(){
+				var proc_string = "procGetStationWorkShopInfoWithDeviceCountByStationCd('"+localStorage["currentStationCd"]+"')";
+				get_string_result(proc_string, function(data) {
+					var ele = $('#subname');
+					ele.empty();
+					var option = "<option value='-1' selected='selected'>"+getLangData("statisticsPage.all")+"</option>";
+					ele.append(option);
+					for(var i = 0; i < data.length; i++) {
+						option = "<option value='" + data[i].sn + "' >" + data[i].name + "</option>";
+						if(localStorage["cLanIdx"] > 0) {
+							option = "<option value='" + data[i].sn + "' >" + data[i]['name' + localStorage["cLanIdx"]] + "</option>";
+						}
+						ele.append(option);
+					}
+			
+					ele.select2({
+						minimumResultsForSearch: -1
+					});
+				}, "businessMap");
+			}
+
+			function initdevtype() {
+				//getDeviceType
+				get_promapper_result("getDeviceType",null, function(data) {
+					$("#devtype").empty();
+					var option = "<option value='-1' selected='selected'>"+getLangData("statisticsPage.all")+"</option>";
+					$("#devtype").append(option);
+					for(var i = 0; i < data.length; i++) {
+						option = "<option value='" + data[i].value + "' >" + data[i].name + "</option>";
+						if(localStorage["cLanIdx"] > 0) {
+							option = "<option value='" + data[i].value + "' >" + data[i]['name' + localStorage["cLanIdx"] + "_"] + "</option>";
+						}
+						$("#devtype").append(option);
+					}
+					$("#devtype").select2({
+						minimumResultsForSearch: -1
+					});
+				});
+			}
+
+			function initdevname() {
+				var type = $('#devtype').val();
+				var sel=document.getElementsByName("subname")[0];
+				var subsys= sel.options[sel.options.selectedIndex].value;//你要的值
+				var proc_string = "procIGetSystemDevName('" + localStorage["currentStationCd"] + "','"+subsys+"','" + type + "')";
+			
+				get_string_result(proc_string, function(data) {
+					$("#devname").empty();
+					var option = "<option value='-1' selected='selected'>"+getLangData("statisticsPage.all")+"</option>";
+					var idx = "";
+					if(localStorage["cLanIdx"] > 0) {
+						idx = localStorage["cLanIdx"];
+					}
+					$("#devname").append(option);
+					for(var i = 0; i < data.length; i++) {
+						option = "<option value='" + data[i].value + "' >" + data[i]["name"+idx] + "</option>";
+						$("#devname").append(option);
+					}
+					$("#devname").select2({
+						minimumResultsForSearch: -1
+					});
+				}, "businessMap");
+			}			
+
+			function confirmtask(el) {
+				confirmel = el;
+				$("#confirm_content_win").modal("show");
+				return;
+				swal({
+					text: '<span style="color:#fff">' + getLangData("sys.content.confirm") + '</span>',
+					input: "text",
+					showCancelButton: true, // 是否显示取消按钮
+					cancelButtonText: getLangData("stationmanage.cancel"), // 取消按钮的 文字
+					confirmButtonText: getLangData("sweetalert.ok")
+				}).then(function(value) {
+					if(value == false) {
+						return;
+					}
+					confirmtaskgo(el, value);
+				});
+			}
+
+			function confirmtaskgo(el, value) {
+				$("#confirm_content_win").modal("hide");
+				el = confirmel;
+				value = $('#confirm_content').val();
+				el = $(el).closest('tr');
+				var num = parseInt($(el).attr('id').replace('tr', ''));
+				var data = currentData[num];
+				var stationid = data.team;
+				//$(el).find('td:eq(9)').html();
+				var deta = $(el).find('td:eq(3)').html();
+				var person = localStorage["loginUserName"];
+				var kp = [];
+				kp.push("'" + data.team + "'");
+				kp.push("'" + data.event0 + "'");
+				kp.push("'" + data.event1 + "'");
+				kp.push("'" + data.event2 + "'");
+				kp.push("'" + data.event3 + "'");
+				kp.push(data.event_type);
+				kp.push(data.time.split(" ")[1].replaceAll(":","").replace(".",""));
+				kp.push(data.time.split(" ")[0].replaceAll("-",""));
+				var proc_string = "procIConfirmEvent('','" + stationid + "','" + getTodayStr() + "'," + 0 + ",'" + person + "','" + deta + "'," + kp.join(',') + ",'" + localStorage["loginUserName"] + "','" + value + "')";
+				get_string_result(proc_string, function(ds) {
+					swal({
+						text: '<span style="color:white;font-size:15px;">' + getLangData("alarm.common.consend") + '</span>',
+						confirmButtonText: getLangData("sweetalert.ok"), // 确定按钮的 文字
+					});
+					let oldParam = {
+						team:data.team,
+						event0:data.event0,
+						event1:data.event1,
+						event2:data.event2,
+						event3:data.event3,
+						time:data.time,
+						station:stationid,
+						isConfirm:0
+					};
+					let oldStr = formatIstr(oldParam);
+					oldParam.isConfirm = 1;
+					oldParam.confirmDesc = value;
+					let newStr = formatIstr(oldParam);
+					saveAUserLogWithData('User', 'ConfirmAlarm', oldStr,newStr);
+					loadTableData();
+				}, "businessMap");
+			}
+
+			function sendtask(el) {
+				el = $(checkob).closest('tr');
+				var num = parseInt($(el).attr('id').replace('tr', ''));
+				var data = currentData[num];
+				var stationid = data.team;
+				//$(el).find('td:eq(9)').html();
+				var stationName = data.stationName || " ";
+				var deta = $(el).find('td:eq(3)').html();
+				var person = sendperson[$("#handlename").val()].userName;
+				var email = sendperson[$("#handlename").val()].email;
+				var orderID = "";
+				var kp = [];
+				kp.push("'" + data.team + "'");
+				kp.push("'" + data.event0 + "'");
+				kp.push("'" + data.event1 + "'");
+				kp.push("'" + data.event2 + "'");
+				kp.push("'" + data.event3 + "'");
+				kp.push(data.event_type);
+				kp.push(new Date(data.time).Format("hhmmss")+data.time.substr(-3));
+				kp.push(new Date(data.date).Format("yyyyMMdd"));
+				var adata = {
+					station: stationid,
+					from: localStorage["loginUserName"],
+					to: person
+				}
+				var proc_string = "procISendTask('','" + stationid + "','" + getTodayStr() + "'," + 1 + ",'" + person
+						+ "','" + deta + "'," + kp.join(',') + ",'" + localStorage["loginUserName"] + "','" + data.time + "','"+ (data.devCd||-1) + "')";
+				
+				get_string_result(proc_string, function(data) {
+						orderID = data[0].orderID;
+						adata.orderID = orderID;
+						try {
+							saveAUserLogWithData('User', 'SendTask', formatIstr(adata), formatIstr(adata));
+						} catch(w) {}
+						swal({
+							text: '<span style="color:white;font-size:15px;">' + getLangData("alarm.table.patchfinish") + '</span>',
+							confirmButtonText: getLangData("sweetalert.ok"), // 确定按钮的 文字
+						});
+						loadTableData();
+						$("#firstPage_alarm_list").modal("hide");
+
+						//屏蔽发邮件和发短信功能
+					//	sendEmail(stationName,orderID,email);
+					//	sendSms(stationName,orderID);
+				}, "businessMap");
+			}
+			function sendSms(stationName,orderID){
+				var proc_string = "procIGetSmsInfo('3')";
+				get_string_result(proc_string, function(re) {
+					$(document).progressDialog.hideDialog();
+					try {
+						if(re == null) {
+
+						}
+						var accessKeyId = re[0].accessKeyId;
+						var accessKeySecret = re[0].accessKeySecret;
+						var templateCode = re[0].templateCode;
+						var signName = re[0].signName;
+						var telephone = sendperson[$("#handlename").val()].phone;
+						var smscontent = {
+							"station": stationName || '',
+							"type": orderID,
+							"param": ""
+						}
+						var param = {
+							accessKeyId: accessKeyId,
+							accessKeySecret: accessKeySecret,
+							signName: signName,
+							templateCode: templateCode,
+							telephone: telephone,
+							stationName: stationName,
+							templateparam: JSON.stringify(smscontent)
+						}
+
+						function checkPhone(phone) {
+							if(!(/^1[3456789]\d{9}$/.test(phone))) {
+								return false;
+							}
+							return true;
+						}
+						if(checkPhone(telephone) == true) {
+							$.ajax({
+								url: "../air/sendtaskSms",
+								data: param,
+								type: "post",
+								success: function(result) {
+									$(document).progressDialog.hideDialog();
+									if(result.data == "success") {} else {
+										//								swal({
+										//									text: '<span style="color:white;font-size:15px;">' + getLangData("common.sendfault") + '</span>',
+										//									confirmButtonText: getLangData("sweetalert.ok")
+										//								});
+									}
+								}
+							});
+						}
+					} catch(e){
+						$(document).progressDialog.hideDialog();
+					}
+				}, "businessMap");
+			}
+			function sendEmail(stationName,orderID,email){
+				var macontent = "您好，" + stationName + "有工单" + orderID + "，请及时查看";
+				var mparam = {
+					telephone: email,
+					templateparam: macontent
+				}
+
+				function isEmail(strEmail) {
+					if(strEmail.search(/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/) != -1) return true;
+					else return false;
+				}
+				$.ajax({
+					url: "../air/sendmail",
+					data: mparam,
+					type: "post",
+					success: function(result) {}
+				});
+			}
+			function showNowTime() {
+				$('.datepicker').datepicker({
+					format: 'yyyy-mm-dd',
+					language: localStorage["cLan"] == "cn" ? "zh-CN" : "",
+					startView: "month",
+					autoclose: true,
+					minView: 2,
+					maxView: 2,
+					BackColor: '#000'
+				});
+				$("#endTime").val(new Date().Format("yyyy-MM-dd"));
+
+				date = new Date(getCurrentTime().getTime() - 1000 * 24 * 60 * 60 * 7);
+				$("#beginTime").val(date.Format("yyyy-MM-dd"));
+			}
+
+			function query(){
+				var beginTime = $("#beginTime").val();
+				var endTime = $("#endTime").val();
+				if(!DateFormatUtil.isFormatDateString(beginTime) || !DateFormatUtil.isFormatDateString(endTime)){
+					swal({
+						text:getLangData("operationManage.dateFormatError"),//日期输入格式有误
+						confirmButtonText: getLangData("sweetalert.ok")
+					});
+					return;
+				}
+				if(beginTime > endTime) {
+					swal({
+						text: '<span style="color:white;font-size:15px;">' + getLangData("common.time.alert") + '</span>',
+						confirmButtonText: getLangData("sweetalert.ok"), // 确定按钮的 文字
+					});
+					return;
+				}
+				begin = 1;
+				currentPageCnt = 1;
+				loadTableData();
+			}
+
+			function arragePagingInfo() {
+				totalPageCnt = Math.ceil(totalDataCnt / rowPerPage);
+				if(currentPageCnt>totalPageCnt) totalPageCnt=totalPageCnt;
+				if(currentPageCnt<1) totalPageCnt=1;
+				begin = (currentPageCnt - 1) * rowPerPage + 1;
+				end = currentPageCnt * rowPerPage;
+							
+				$('#numperpage').text(totalPageCnt);
+				$("#lblShowCnt").html(totalDataCnt);
+				$("#currpagenum").text(currentPageCnt);
+				$("#jumpUserPage").val(currentPageCnt);
+				
+			}
+
+			function deleteOldData() {
+				var tableLen = $("#responsiveTable").find("tr").length;
+				for(var i = 0; i < tableLen - 1; i++) {
+					var tr_id = "tr" + i;
+					$('#' + tr_id).remove();
+				}
+			}
+
+			function addDataToTable() {
+				deleteOldData();
+				let dj = [getLangData("alarm.table.qt"), getLangData("alarm.table.yj"), getLangData("alarm.table.ej"),
+					getLangData("alarm.table.sj")];
+				let title = [getLangData("alarm.fsgd"),getLangData("alarm.qrsj")];
+				$("#templateTr").show();
+				let  tr  =  $("#templateTr");
+				let startIdx = 0;
+				let endIdx = 0;
+				if(currentData.length < rowPerPage)
+					endIdx = currentData.length;
+				else
+					endIdx = rowPerPage;
+				let trIdx = 0;
+				for(let i = startIdx; i < endIdx; i++) {
+					let clonedTr = tr.clone();
+					if(i >= endIdx) {
+						clonedTr.insertBefore(tr);    
+						continue;
+					}
+					clonedTr.attr("id", "tr" + trIdx);
+					clonedTr.children("td").each(function(inner_index) { 
+						switch(inner_index) {
+							case 0:
+								$(this).html((currentPageCnt - 1) * rowPerPage + 1 + i);
+								break;
+							case 1:
+								var namec = currentData[i].devName;
+								$(this).html(namec);
+								break;
+							case 2:
+								$(this).html(currentData[i].typeName);
+								break;
+							case 3:
+								$(this).html(currentData[i].description);
+								break;
+							case 4:
+								$(this).html(dj[currentData[i].level]);
+								break;
+							case 5:
+								$(this).html(currentData[i].time);
+								break;
+							case 6:
+								$(this).html(currentData[i].time);
+								break;
+							case 8:
+								var obj = $(this).find("a");
+								for(var j = 0; j < obj.length; j++) {
+									$(obj[j]).attr('title', title[j]);
+								}
+								break;
+							case 9:
+								$(this).html(currentData[i].stationCd);
+								break;
+						}
+					});
+					clonedTr.insertBefore(tr);    
+					trIdx++;
+				}
+
+				$("#templateTr").hide(); 
+			}
+
+			function onAlarmTypeSelectChange(){
+				if($("#alarmTypeSelect").val() == "2" || $("#alarmTypeSelect").val() == "-1"){
+					$("#subname").removeAttr("disabled");
+					$("#devtype").removeAttr("disabled");
+					$("#devname").removeAttr("disabled");
+				}else{
+					$("#subname").val("-1").change();
+					$("#devtype").val("-1").change();
+					$("#devname").val("-1").change();
+					$("#subname").attr("disabled","disabled");
+					$("#devtype").attr("disabled","disabled");
+					$("#devname").attr("disabled","disabled");
+				}
+			}
+			function loadTableData(beginTime,endTime) {
+				beginTime = beginTime?beginTime:$("#beginTime").val();
+				endTime = endTime?endTime:$("#endTime").val() + " 23:59:59";
+
+				var stations = [localStorage["currentStationCd"]];
+				var state = $("#selAlarmLevel").val();
+
+				var devname = $("#devname").val();
+				var devtype = $('#devtype').val();
+				var subname = $('#subname').val();
+				$(document).progressDialog.showDialog("loading..."); //0 告警 1 故障 2 保护
+
+				$.ajax({
+					url: "selectHistoryAlarm",
+					data: {
+						"beginTime": beginTime,
+						"endTime": endTime,
+						"begin": begin - 1,
+						"end": begin - 1 + rowPerPage,
+						"stationCds": localStorage["currentStationCd"],
+						"subSys": subname,
+						"devtype": devtype,
+						"devname": devname,
+						"alarmLevel": $("#selAlarmLevel").val(),
+						"order": "time",
+						"typeClass":$("#alarmTypeSelect").val(),
+						"isConfirm": 0
+					},
+					type: "post",
+					success: function (result) {
+						$(document).progressDialog.hideDialog();
+						if (result.success == "false") {
+							console.log(result.errString);
+						} else {
+							resultArr = result.list;
+							currentData = resultArr;
+							if (resultArr == null || resultArr.length == 0) {
+								totalDataCnt = 0;
+								totalPageCnt = 1;
+								currentPageCnt = 1;
+								arragePagingInfo();
+								$("#templateTr").hide();
+								deleteOldData();
+								return;
+							}
+							totalDataCnt = resultArr[0].totalCnt;
+
+							arragePagingInfo();
+							addDataToTable();
+						}
+					}
+				});
+			}
+
+			function toConfirmPage(obj) {
+				checkob = obj;
+				$("#firstPage_alarm_list").modal("show");
+				return;
+			}
+
+			function DownloadExcel() {
+				var init_time_range_check = function(beginTime, endTime) {
+					var	time_range=60 * 24 * 50;
+					function TimeDifference(time1, time2) {
+						var begin1 = time1.split("-");
+						var end1 = time2.split("-");
+						function formatThree(arr) {
+							if(arr.length < 3) {
+								arr.push('-01');
+								formatThree(arr);
+							}
+						}
+						formatThree(begin1);
+						formatThree(end1);
+
+						var date1 = new Date(begin1[0],begin1[1],begin1[2]);
+						var date2 = new Date(end1[0],end1[1],end1[2]);
+
+						var m = parseInt(Math.abs(date2 - date1) / 1000 / 60);
+						var minutes = m;
+						return minutes;
+					}
+					var timeDif = TimeDifference(beginTime, endTime);
+
+					if(timeDif > time_range) {
+						var txt = '<span style="color:white;font-size:15px;">天数不能超过50天</span>';
+							if(localStorage["cLan"] == "en") {
+								txt ='<span style="color:white;font-size:15px;">The number of days cannot exceed 50 days</span>';
+							}
+							swal({
+								text: txt+'',
+								confirmButtonText: getLangData("sweetalert.ok"),
+							});
+						return false;
+					} else {
+						return true;
+					}
+
+				}
+
+				var beginTime = $("#beginTime").val();
+				var endTime = $("#endTime").val();
+
+				if(!DateFormatUtil.isFormatDateString(beginTime) || !DateFormatUtil.isFormatDateString(endTime)){
+					swal({
+						text:getLangData("operationManage.dateFormatError"),//日期输入格式有误
+						confirmButtonText: getLangData("sweetalert.ok")
+					});
+					return;
+				}
+				if(beginTime > endTime) {
+					swal({
+						text: '<span style="color:white;font-size:15px;">' + getLangData("common.time.alert") + '</span>',
+						confirmButtonText: getLangData("sweetalert.ok"), // 确定按钮的 文字
+					});
+					return;
+				}
+				if(init_time_range_check(beginTime,endTime)==false){
+					return;
+				}
+				var state = $("#selAlarmLevel").val();
+
+				var devname = $("#devname").val();
+				var devtype = $('#devtype').val();
+				var subname = $('#subname').val();
+				var lang = 0;
+				if(localStorage["cLan"] == "en") {
+					lang = 1;
+				}
+				var fileName = 'realhistory.xls';
+				var filePre=encodeURI(encodeURI(beginTime+'_'+endTime+localStorage["currentStationName"]+'活动告警.xls'));
+				if(localStorage["cLanIdx"]>0){
+					filePre=encodeURI(encodeURI(beginTime+'_'+endTime+localStorage["currentStationName"]+'activealarm.xls'));
+				}
+				let param = {
+					lang: lang,
+					beginTime: beginTime,
+					endTime: endTime,
+					stationCds: localStorage["currentStationCd"],
+					subSys: subname,
+					devType: devtype,
+					devCd: devname,
+					alarmLevel:$("#selAlarmLevel").val(),
+					order: "time",
+					isConfirm:0,
+					exportType:"realhistory",
+					filePre:filePre,
+					fileName:fileName,
+					typeClass:$("#alarmTypeSelect").val()
+				};
+				var ajaxPath = 'exportHistoryAlarm.action?'+genObjParam(param);
+				try {
+					$('#realhisexeclform').attr('action', ajaxPath);
+					$('#realhisexeclform').submit();
+				} catch(e) {
+
+				}
+			}
+			function genObjParam(obj){
+				let str = [];
+				for(let i in obj){
+					str.push(i+"="+obj[i]);
+				}
+				return str.join("&");
+			}
+			function formatIstr(adata) {
+				var old = "";
+				for(var key in adata) {
+					old += (key + " : " + adata[key] + " \n");
+				}
+				return old;
+			}
+			function addPageListener(){
+				// 获取当前页
+				var curPage = $("#currentUserPage").val();
+
+				//跳转页面
+				$("#jumpUserBtn").click(function() {
+					// 获取跳转页数的值
+					var curPage = $("#jumpUserPage").val();
+
+					//判断输入页数是否是数字，并且判断是否大于总页数
+					if(curPage <= 0 || curPage != parseInt(curPage)) {
+						//						alert('请输入正整数');
+						//$("#jumpUserPage").val(""+curPage);
+						return false;
+					} else if(curPage > totalPageCnt) {
+						//						alert('跳转页数不能大于总页数');
+						//$("#jumpUserPage").val(""+curPage);
+						return false;
+					}
+					currentPageCnt = parseInt(curPage);
+
+					arragePagingInfo();
+					loadTableData();
+				});
+
+				//分页a标签的跳转成异步跳转
+				$(".pagination2 div a").click(function(event) {
+					var thisID = $(this).attr("id");
+					if(totalDataCnt == 0) {
+						return;
+					}
+					event.preventDefault();
+					if(thisID == "toFirst") {
+						currentPageCnt = 1;
+					} else if(thisID == "toLast") {
+						currentPageCnt = totalPageCnt;
+					} else if(thisID == "toPre") {
+						if(currentPageCnt == 1) {
+							return;
+						}
+						currentPageCnt = currentPageCnt - 1;
+					} else if(thisID == "toNext") {
+						if(currentPageCnt == totalPageCnt) {
+							return;
+						}
+						currentPageCnt = currentPageCnt + 1;
+					}
+
+					arragePagingInfo();
+					loadTableData();
+				});
+			}
+			function confirmAll(){
+				if(totalDataCnt == 0){
+				//	return;
+				}
+
+				swal({
+					title: getLangData("alarm.qdqrqbm"),
+					type: "warning",
+					showCancelButton: true,
+					confirmButtonText: getLangData("alarm.confirmAll"),
+					closeOnConfirm: false,
+					cancelButtonText: getLangData("SystemLog.cancel")
+				},
+				function(){
+
+				}).then(function(isConfirm) {
+					if (isConfirm === true) {
+						$.ajax({
+							url:"confirmAllAlarm",
+							type:"post",
+							data:{
+								"currentStationCd":localStorage["currentStationCd"]
+							},
+							success:function(result){
+								if(result.success == false){
+								}else{
+									sweetAlert(getLangData("alarm.yqrgj"));
+									saveAUserLogWithData('User', 'ConfirmAllAlarm', "station:"+localStorage["currentStationCd"],"");
+									query();
+								}
+							}
+						});
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

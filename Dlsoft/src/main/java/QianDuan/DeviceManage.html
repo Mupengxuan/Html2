@@ -1,0 +1,1652 @@
+<!DOCTYPE html>
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>设备管理</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+<style type="text/css">
+    .addTextTr span,.addTextTr input{
+        font-size: 22px;
+        color: #09ff00;
+    }
+    .typeGP{
+        width:100%;
+        padding-left:3px;
+    }
+    .mtable thead th{
+        text-align: center;
+    }
+    #yxRealTBody td,#ycRealTBody td,#kwhRealTBody td{
+        padding-left: 1px;
+        padding-right: 1px;
+    }
+    #yxRealTBody td input,#ycRealTBody td input,#kwhRealTBody td input,
+    #yxRealTBody td select,#ycRealTBody td select,#kwhRealTBody td select
+    {
+        border-radius: 0;
+    }
+    .setPointTd{
+        background:#64c2de38;
+        box-shadow:1px 1px 1px #00bef5;
+        cursor:pointer;
+    }
+    .setPointTd:hover{
+        background:#00a25f88;
+    }
+    .setPointTd.selected {
+        background:#00a25f;
+    }
+    .setPointTdCode input {
+        width:100%;
+    }
+    .table>tbody>tr.trClass.selectedRow{
+        background:black;
+    }
+</style>
+<div id="container" class="col-md-12" style="height:100%;overflow:hidden;">
+    <div style="display:inline-block;width:100%;height:100%;">
+        <div id="treeDiv" class="col-md-2 panel panel-default " style ="height:calc(100% - 10px);overflow:auto;margin-top:10px; margin-bottom:0;">
+            <div class="panel-heading" style = "color:white;" i18n="panel-heading" >设备列表</div>
+            <div id="menuTreeBox" class="cy-tree " style="background-color: transparent">
+                <ul id="devTree" class="ztree">
+                </ul>
+            </div>
+        </div>
+        <div id="rightDiv" class="col-md-10 panel panel-default" style="overflow:hidden;margin-top:10px;height:calc(100% - 10px);">
+            <ul id="rightLiDiv" class="nav nav-tabs">
+                <li><div style="font-weight: bolder;align-items: center;padding: 5px 15px;font-size: 16px;"><span id="rightTitle"></span></div></li>
+                <li id="devTab" class="hidden" style="float:right"> <a href="#devTabContent" data-toggle="tab">设备信息</a> </li>
+                <li id="devParamTab" class="hidden" style="float:right"> <a href="#devParamTabContent" data-toggle="tab">点位信息</a> </li>
+                <li id="childrenTab" class="active" style="float:right"> <a href="#childrenTabContent" data-toggle="tab">子设备</a> </li>
+            </ul>
+            <div class="tab-content" style="overflow-y: auto;height: calc(100% - 40px);">
+                <div id="devTabContent" class="tab-pane fade in" style="overflow:auto;height:100%;">
+                    <div class="" style="margin-top:10px;">
+                        <a class="btn btn-info btn-sm" onclick="batchAddTab.deleteChildren()" type="button"><i class="fa fa-trash" style="margin-right: 5px;"></i>删除所有子设备</a>
+                        <a class="btn btn-info btn-sm" onclick="batchAddTab.deleteDeviceAndChildren()" type="button"><i class="fa fa-trash"></i>删除本设备和所有子设备</a>
+                    </div>
+                    <div class="panel-body">
+                        <div>
+                            <div class="blue-title">
+                                <span>设备信息</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="form-group row">
+                                <label class="col-md-2 control-label">
+                                    <span>名称</span><span>：</span>
+                                </label>
+                                <div class="col-md-10">
+                                    <input class="control-input control-input-long" id="devName"  placeholder="名称">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="manufacturer" class="col-md-2 control-label">
+                                    <span>生产厂家</span><span>：</span>
+                                </label>
+                                <div class="col-md-10">
+                                    <input class="control-input control-input-long" id="manufacturer"  placeholder="生产厂家">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-2 control-label">
+                                    <span>关联图形</span><span></span>
+                                </label>
+                                <div class="col-md-10">
+                                    <select id="deviceGraphSelect"  class="control-input control-input-short blue-select" >
+                                    </select>
+                                    ?
+                                    <input class="control-input" id="deviceGraphParam" placeholder="参数">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-2 control-label">
+                                    <span>关联图片</span><span>：</span>
+                                </label>
+                                <div class="col-lg-10">
+                                    <form enctype="multipart/form-data" id="editDevImgForm" method="POST">
+                                        <div class="row">
+                                            <div class="col-xs-2">
+                                                <a  class="btn btn-info m-bottom-sm" onClick="$(&#39;#devImg&#39;).click();"> <i class="fa fa-picture-o"></i>选择图片
+                                                </a>
+                                                <!-- 上传头像按钮 -->
+                                                <input type="file" class="hidden" id="devImg" name="mainFile" accept=".bmp,.jpg,.gif,.png,.ico" onChange="deviceTab.setDevImagePreview();">
+                                            </div>
+                                            <div class="col-xs-9 ">
+                                                <img id="devModelPreview" src="./images/camera8.png" style="height:160px;width:200px;" >
+                                                <input type="text" class="hidden"  value="" id="devImgText" />
+                                            </div>
+
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <a class="btn btn-info pull-right" style="margin:10px 30px;" onclick="deviceTab.saveDevice()" type="button">保存</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="devParamTabContent" class="tab-pane fade in" style="overflow:auto;height:100%;">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#paramTabYc" aria-controls="paramTabYc" role="tab" data-toggle="tab">遥测</a></li>
+                        <li role="presentation"><a href="#paramTabYx" aria-controls="paramTabYx" role="tab" data-toggle="tab">遥信</a></li>
+                        <li role="presentation"><a href="#paramTabKwh" aria-controls="paramTabKwh" role="tab" data-toggle="tab">电度</a></li>
+                        <li class="pull-right">
+                            <button type="button" style="margin-top:5px;" class="btn btn-success btn-sm" data-toggle="collapse" href="#templateModal">另存为参数模板</button>
+                            <div class="collapse" id="templateModal" style="width: 300px;float:right;position:absolute;right:0;top:35px;z-index: 100;">
+                                <div style="width: 100%;">
+                                    <table class="table table-bordered">
+                                        <tr>
+                                            <td>
+                                                模板名称
+                                            </td>
+                                            <td>
+                                                <input id="templateName" style="width: 100%;">
+                                            </td>
+                                            <td>
+                                                <a onclick="devParamTab.saveDeviceTypeParam()"  class="btn btn-primary btn-sm">保存</a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="tab-content" style="height:calc(100% - 40px);overflow:hidden;">
+                        <div role="tabpanel" class="tab-pane fade in active" style="height:100%;overflow: hidden;" id="paramTabYc">
+                            <div class="col-md-9" style="height: calc(100% - 5px);">
+                                <div class="form-group" style="border:0px;height:30px;">
+                                    <label class="control-label SameColor">遥测点数量</label>
+                                    <input type="number" name="trNum" class="form-control input-sm parsley-validated" style="width:60px;display:inline-block;" min=0  id="ycTrNum" value="0">
+                                    <a type="button" class="btn btn-success btn-sm" onclick="devParamTab.saveDeviceParam('yc');"><i class="fa fa-check"></i>保存</a>
+                                    <a type="button" class="btn btn-info btn-sm" onclick="devParamTab.clearTable('yc');"><i class="fa fa-remove"></i>清空</a>
+                                    <a id="ycBatchAdd" data-toggle="collapse" href="#ycBatchAddCollapse" class="btn btn-primary btn-sm pull-right">批量追加</a>
+                                    <div class="collapse" id="ycBatchAddCollapse" style="width: 300px;float:right;position:absolute;right:0;">
+                                        <div style="width: 100%;">
+                                            <table id="ycFirstPointTable" class="table table-bordered">
+                                                <tr>
+                                                    <td>起始</td>
+                                                    <td>结束</td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="setPointTd" onclick="devParamTab.onClickSetPointTd(this)" ondblclick="devParamTab.clearRtuPoint(this)">
+                                                        <span name="ycyxkwh_code_text"></span>
+                                                        <input id="ycBatchAddStart" name="ycyxkwh_code" class="hidden">
+                                                    </td>
+                                                    <td class="setPointTd" onclick="devParamTab.onClickSetPointTd(this)" ondblclick="devParamTab.clearRtuPoint(this)">
+                                                        <span name="ycyxkwh_code_text"></span>
+                                                        <input id="ycBatchAddEnd" name="ycyxkwh_code" class="hidden">
+                                                    </td>
+                                                    <td>
+                                                        <a name="batchAdd" onclick="devParamTab.batchAddTable('yc')"  class="btn btn-primary btn-sm">追加</a>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="width: 100%;height:calc(100% - 40px);">
+                                    <div style="width: 100%;">
+                                        <table class="mtable" style="width:100%;">
+                                            <thead id="ycHeadTr">
+                                            <tr>
+                                                <!--            <th rowspan="2" style="width:40px;">批量修改</th>-->
+                                                <th rowspan="2" style="width:3%;"></th>
+                                                <th rowspan="2" style="width:5%;">采集标志</th>
+                                                <th rowspan="2" style="width:10%;">类别</th>
+                                                <th rowspan="2" style="width:11%;">名称</th>
+                                                <th rowspan="2" style="width:11%;">代码</th>
+                                                <th rowspan="2" style="width:7%;">处理级别</th>
+                                                <th colspan="2" style="width:12%;">预警</th>
+                                                <th colspan="2" style="width:12%;">一级告警</th>
+                                                <th colspan="2" style="width:12%;">二级告警</th>
+                                                <th colspan="2" style="width:12%;">三级告警</th>
+                                                <th rowspan="2" style="width:5%;">操作</th>
+                                            </tr>
+                                            <tr>
+                                                <th>上限</th>
+                                                <th>下限</th>
+                                                <th>上限</th>
+                                                <th>下限</th>
+                                                <th>上限</th>
+                                                <th>下限</th>
+                                                <th>上限</th>
+                                                <th>下限</th>
+                                            </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                    <div id="ycScrollTable" style="overflow-y: auto;height: calc(100% - 40px);width: 100%;">
+                                        <table class="table" id ="ycTableBody">
+                                            <tbody id="ycRealTBody">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3" style="height:100%;">
+                                <div class="form-inline">
+                                    <select id="ycTabRtuSelect" class="" style="width:100px;" onchange="devParamTab.initTree('ycTree')" name="tabRtuSelect"></select>
+                                    <input id="ycTreeSearch" class="input-sm" onchange="devParamTab.searchTree(this,'ycTree')" style="width:calc(100% - 120px);" placeholder="搜索名称 / 代码">
+                                </div>
+                                <div style="height:calc(100% - 30px);overflow:auto;">
+                                    <ul id="ycTree" class="ztree" style="height:100%;"></ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" style="height:100%;overflow: hidden;" id="paramTabYx">
+                            <div class="col-md-9" style="height: calc(100% - 5px);">
+                                <div class="form-group" style="border:0px;height:30px;">
+                                    <label class="control-label SameColor">遥信点数量</label>
+                                    <input type="number" name="trNum" class="form-control input-sm parsley-validated" style="width:60px;display:inline-block;" min=0  id="yxTrNum" value="0">
+                                    <a type="button" class="btn btn-success btn-sm" onclick="devParamTab.saveDeviceParam('yx');"><i class="fa fa-check"></i>保存</a>
+                                    <a type="button" class="btn btn-info btn-sm" onclick="devParamTab.clearTable('yx');"><i class="fa fa-remove"></i>清空</a>
+                                    <a id="yxBatchAdd" data-toggle="collapse" href="#yxBatchAddCollapse" class="btn btn-primary btn-sm pull-right">批量追加</a>
+                                    <div class="collapse" id="yxBatchAddCollapse" style="width: 300px;float:right;position:absolute;right:0;">
+                                        <div style="width: 100%;">
+                                            <table id="yxFirstPointTable" class="table table-bordered">
+                                                <tr>
+                                                    <td>起始</td>
+                                                    <td>结束</td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="setPointTd" onclick="devParamTab.onClickSetPointTd(this)" ondblclick="devParamTab.clearRtuPoint(this)">
+                                                        <span name="ycyxkwh_code_text"></span>
+                                                        <input id="yxBatchAddStart" name="ycyxkwh_code" class="hidden">
+                                                    </td>
+                                                    <td class="setPointTd" onclick="devParamTab.onClickSetPointTd(this)" ondblclick="devParamTab.clearRtuPoint(this)">
+                                                        <span name="ycyxkwh_code_text"></span>
+                                                        <input id="yxBatchAddEnd" name="ycyxkwh_code" class="hidden">
+                                                    </td>
+                                                    <td>
+                                                        <a name="batchAdd" onclick="devParamTab.batchAddTable('yx')"  class="btn btn-primary btn-sm">追加</a>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="width: 100%;height:calc(100% - 40px);">
+                                    <div style="width: 100%;">
+                                        <table class="mtable" style="width:100%;">
+                                            <thead id="yxHeadTr">
+                                            <tr>
+                                                <!--            <th rowspan="2" style="width:40px;">批量修改</th>-->
+                                                <th rowspan="2" style="width:3%;"></th>
+                                                <th rowspan="2" style="width:5%;">采集标志</th>
+                                                <th rowspan="2" style="width:10%;">类别</th>
+                                                <th rowspan="2" style="width:11%;">名称</th>
+                                                <th rowspan="2" style="width:11%;">代码</th>
+                                                <th rowspan="2" style="width:7%;">处理级别</th>
+                                                <th colspan="2" style="width:12%;">预警</th>
+                                                <th colspan="2" style="width:12%;">一级告警</th>
+                                                <th colspan="2" style="width:12%;">二级告警</th>
+                                                <th colspan="2" style="width:12%;">三级告警</th>
+                                                <th rowspan="2" style="width:5%;">操作</th>
+                                            </tr>
+                                            <tr>
+                                                <th>上限</th>
+                                                <th>下限</th>
+                                                <th>上限</th>
+                                                <th>下限</th>
+                                                <th>上限</th>
+                                                <th>下限</th>
+                                                <th>上限</th>
+                                                <th>下限</th>
+                                            </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                    <div id="yxScrollTable" style="overflow-y: auto;height: calc(100% - 40px);width: 100%;">
+                                        <table class="table" id ="yxTableBody">
+                                            <tbody id="yxRealTBody">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3" style="height:100%;">
+                                <div class="form-inline">
+                                    <select id="yxTabRtuSelect" class="" style="width:100px;" onchange="devParamTab.initTree('yxTree')" name="tabRtuSelect"></select>
+                                    <input id="yxTreeSearch" class="input-sm" onchange="devParamTab.searchTree(this,'yxTree')" style="width:calc(100% - 120px);" placeholder="搜索名称 / 代码">
+                                </div>
+                                <div style="height:calc(100% - 30px);overflow:auto;">
+                                    <ul id="yxTree" class="ztree" style="height:100%;"></ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" style="height:100%;overflow: hidden;" id="paramTabKwh">
+                            <div class="col-md-9" style="height: calc(100% - 5px);">
+                                <div class="form-group" style="border:0px;height:30px;">
+                                    <label class="control-label SameColor">电度点数量</label>
+                                    <input type="number" name="trNum" class="form-control input-sm parsley-validated" style="width:60px;display:inline-block;" min=0  id="kwhTrNum" value="0">
+                                    <a type="button" class="btn btn-success btn-sm" onclick="devParamTab.saveDeviceParam('kwh');"><i class="fa fa-check"></i>保存</a>
+                                    <a type="button" class="btn btn-info btn-sm" onclick="devParamTab.clearTable('kwh');"><i class="fa fa-remove"></i>清空</a>
+                                    <a id="kwhBatchAdd" data-toggle="collapse" href="#kwhBatchAddCollapse" class="btn btn-primary btn-sm pull-right">批量追加</a>
+                                    <div class="collapse" id="kwhBatchAddCollapse" style="width: 300px;float:right;position:absolute;right:0;">
+                                        <div style="width: 100%;">
+                                            <table id="kwhFirstPointTable" class="table table-bordered">
+                                                <tr>
+                                                    <td>起始</td>
+                                                    <td>结束</td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="setPointTd" onclick="devParamTab.onClickSetPointTd(this)" ondblclick="devParamTab.clearRtuPoint(this)">
+                                                        <span name="ycyxkwh_code_text"></span>
+                                                        <input id="kwhBatchAddStart" name="ycyxkwh_code" class="hidden">
+                                                    </td>
+                                                    <td class="setPointTd" onclick="devParamTab.onClickSetPointTd(this)" ondblclick="devParamTab.clearRtuPoint(this)">
+                                                        <span name="ycyxkwh_code_text"></span>
+                                                        <input id="kwhBatchAddEnd" name="ycyxkwh_code" class="hidden">
+                                                    </td>
+                                                    <td>
+                                                        <a name="batchAdd" onclick="devParamTab.batchAddTable('kwh')"  class="btn btn-primary btn-sm">追加</a>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="width: 100%;height:calc(100% - 40px);">
+                                    <div style="width: 100%;">
+                                        <table class="mtable" style="width:100%;">
+                                            <thead id="kwhHeadTr">
+                                            <tr>
+                                                <!--            <th rowspan="2" style="width:40px;">批量修改</th>-->
+                                                <th rowspan="2" style="width:3%;"></th>
+                                                <th rowspan="2" style="width:5%;">采集标志</th>
+                                                <th rowspan="2" style="width:10%;">类别</th>
+                                                <th rowspan="2" style="width:11%;">名称</th>
+                                                <th rowspan="2" style="width:11%;">代码</th>
+                                                <th rowspan="2" style="width:7%;">处理级别</th>
+                                                <th colspan="2" style="width:12%;">预警</th>
+                                                <th colspan="2" style="width:12%;">一级告警</th>
+                                                <th colspan="2" style="width:12%;">二级告警</th>
+                                                <th colspan="2" style="width:12%;">三级告警</th>
+                                                <th rowspan="2" style="width:5%;">操作</th>
+                                            </tr>
+                                            <tr>
+                                                <th>上限</th>
+                                                <th>下限</th>
+                                                <th>上限</th>
+                                                <th>下限</th>
+                                                <th>上限</th>
+                                                <th>下限</th>
+                                                <th>上限</th>
+                                                <th>下限</th>
+                                            </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                    <div id="kwhScrollTable" style="overflow-y: auto;height: calc(100% - 40px);width: 100%;">
+                                        <table class="table" id ="kwhTableBody">
+                                            <tbody id="kwhRealTBody">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3" style="height:100%;">
+                                <div class="form-inline">
+                                    <select id="kwhTabRtuSelect" class="" style="width:100px;" onchange="devParamTab.initTree('kwhTree')" name="tabRtuSelect"></select>
+                                    <input id="kwhTreeSearch" class="input-sm" onchange="devParamTab.searchTree(this,'kwhTree')" style="width:calc(100% - 120px);" placeholder="搜索名称 / 代码">
+                                </div>
+                                <div style="height:calc(100% - 30px);overflow:auto;">
+                                    <ul id="kwhTree" class="ztree" style="height:100%;"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="childrenTabContent" class="tab-pane fade in active" style="overflow:auto;height:100%;">
+                    <div class="" style="margin-top:10px;">
+                        <a class="btn btn-info btn-sm" onclick="batchAddTab.deleteChildren()" type="button"><i class="fa fa-trash" style="margin-right: 5px;"></i>删除所有子设备</a>
+                        <a id="deleteSelfBtn" class="btn btn-info btn-sm hidden" onclick="batchAddTab.deleteDeviceAndChildren()" type="button"><i class="fa fa-trash"></i>删除本设备和所有子设备</a>
+                    </div>
+                    <div class="panel-body">
+                        <div>
+                            <div class="blue-title">
+                                <span>批量增加子设备</span>
+                            </div>
+                        </div>
+                        <div>
+                            <table class="table" style="width:100%;">
+                                <thead>
+                                <tr>
+                                    <td></td>
+                                    <td>数量</td>
+                                    <td>类型</td>
+                                </tr>
+                                </thead>
+                                <tbody id="subsysBatchGenDivTableBody">
+
+                                </tbody>
+                            </table>
+                            <div class="row">
+                                <a class="btn btn-info pull-right" style="margin:10px 30px;" onclick="batchAddTab.batchAddDeviceData()" type="button">批量生成设备</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+        <script>
+            let currentNode = null;
+            let deviceTypeList = [];
+            var batchAddTab = null;
+            var deviceTab = null;
+            var devParamTab = null;
+            init();
+            function init(){
+                batchAddTab = new BatchAddChildrenTab();
+                deviceTab = new DeviceTab();
+                devParamTab = new DevParamTab();
+                initDeviceType();
+            }
+            function BatchAddChildrenTab(){
+                function loadTb(subsysType,deviceType){
+                    let subDeviceTypeList = [];
+                    if(subsysType == undefined && deviceType == undefined){//电站
+                        for(let i=0;i<deviceTypeList.length;i++){
+                            if(deviceTypeList[i].sub_sys_type_ == undefined || deviceTypeList[i].sub_sys_type_ == ""){
+                                subDeviceTypeList.push(deviceTypeList[i]);
+                            }
+                        }
+                    }else if(subsysType != undefined){
+                        for(let i=0;i<deviceTypeList.length;i++){
+                            if(deviceTypeList[i].sub_sys_type_ == subsysType){
+                                subDeviceTypeList.push(deviceTypeList[i]);
+                            }
+                        }
+                    }else{
+                        loadDeviceTypeChildren(deviceType,deviceTypeList,subDeviceTypeList);
+                    }
+
+                    let str = "";
+                    let temp = "<tr><td><span>pTypeName生成</span></td>" +
+                        "<td><input type='number'  min='0' value='0' style='width: 60px;text-align: center;' onchange='batchAddTab.changeTrClass(this)' name='countInput'><span name='deviceType' class='hidden'>deviceTypeCode</span><span name='pType' class='hidden'>pTypeCode</span>个</td>" +
+                        "<td><span>deviceTypeName</span></td></tr>";
+                    subDeviceTypeList.forEach(function(value, index, array){
+                        let deviceType = value.code_;
+                        let deviceTypeName = value.name_;
+                        let pTypeCode = value.parent_type_;
+                        let pTypeName = value.parentName?("每个【"+value.parentName+"】下，"):("【"+currentNode.name+"】下，");
+                        str += temp.replace("deviceTypeName",deviceTypeName).replace("pTypeName",pTypeName)
+                            .replace("deviceTypeCode",deviceType).replace("pTypeCode",pTypeCode)
+                    });
+                    $("#subsysBatchGenDivTableBody").html(str);
+
+                    // getDeviceTypeTemplate 拿到设备类型模板
+                    get_promapper_result("getDeviceTypeTemplate","",function(data){
+                        let tempObj = {};
+                        for(let i in data){
+                            if(!tempObj[data[i].device_type]){
+                                tempObj[data[i].device_type] = [];
+                            }
+                            tempObj[data[i].device_type].push(data[i]);
+                        }
+                        templateObjData = tempObj;
+                        for(let type in templateObjData){
+                            let ds = templateObjData[type];
+                            let str = "";
+                            for(let i in ds){
+                                str += "<option value='"+ds[i].template_code+"'>"+ds[i].template_name+"</option>";
+                            }
+                            $("[name=templateSelect_"+type+"]").html(str);
+                        }
+                    });
+                }
+                function loadDeviceTypeChildren(type,arr,subDeviceTypeList){
+                    for(let i=0;i<arr.length;i++){
+                        if(arr[i].parent_type_ == type){
+                            subDeviceTypeList.push(arr[i]);
+                            loadDeviceTypeChildren(arr[i].code_,arr,subDeviceTypeList);
+                        }
+                    }
+                }
+                function deleteChildren(){
+                    if(!currentNode){
+                        sweetAlert("未选中需要删除的设备！");
+                    }
+                    let nodes = currentNode.children;
+                    if(!nodes || nodes.length == 0){
+                        sweetAlert("该节点下无设备需要删除！");
+                        return;
+                    }
+                    let deviceCodes = [];
+                    nodes.forEach(function(value,idx,arr){
+                        deviceCodes.push(value.code_);
+                    });
+                    batchDeleteDevice(deviceCodes,true,"");
+                }
+                function deleteDeviceAndChildren(){
+                    if(!currentNode){
+                        sweetAlert("未选中需要删除的设备！");
+                    }
+                    batchDeleteDevice([currentNode.code_],true,"");
+                }
+                function batchAddDeviceData(){
+                    if(!currentNode){
+                        sweetAlert("生成失败！请选择左侧需要操作的节点！");
+                        return;
+                    }
+                    swal({
+                            title: "确定批量生成所选内容吗？",
+                            type: "warning",
+                            showCancelButton: true,
+                            confirmButtonText: "确定！",
+                            closeOnConfirm: false
+                        },
+                        function(){
+
+                        }).then(function(isConfirm) {
+                        if (isConfirm === true) {
+                            var param = [];
+                            let countInputs = $("#subsysBatchGenDivTableBody [name=countInput]");
+                            for(let i=0;i<countInputs.length;i++){
+                                let cnt = countInputs[i].value;
+                                if(cnt > 0){
+                                    let ele = $(countInputs[i]);
+                                    let deviceTypeCode = ele.nextAll("[name=deviceType]").html();
+                                    let pTypeCode = ele.nextAll("[name=pType]").html();
+                                    param.push({
+                                        type:deviceTypeCode,
+                                        count:cnt,
+                                        pType:pTypeCode
+                                    });
+                                }
+                            }
+                            if(param.length == 0){
+                                sweetAlert("请先输入生成数量！");
+                                return;
+                            }
+                            sweetAlert("正在批量生成设备……");
+                            $.ajax({
+                                type:"post",
+                                url: "batchAddDevice",
+                                data:{
+                                    "param":JSON.stringify(param),
+                                    "parentCode":currentNode.nodeType == "subsys"?"":currentNode.code_,
+                                    "subsysCd":currentNode.sub_sys_,
+                                    "stationCd":localStorage["currentStationCd"]
+                                },
+                                dataType:"text",
+                                success:function(msg){
+                                    msg = JSON.parse(msg);
+                                    if(msg.success == "true"){
+                                        sweetAlert("批量生成成功！");
+                                        let tree = $.fn.zTree.getZTreeObj("devTree");
+                                        tree.reAsyncChildNodes(currentNode, "refresh");
+                                    }else{
+                                        if(msg.errString && msg.errString.indexOf("key 'PRIMARY'") > -1){
+                                            sweetAlert("code已存在！批量生成失败！");
+                                        }else{
+                                            sweetAlert(msg.errString);
+                                        }
+                                    }
+                                    //  initDevTree();
+                                }
+                            });
+                        }
+                    });
+                }
+                function batchDeleteDevice(deviceCodes,isDeleteSelf,msg){
+                    swal({
+                            title: msg?msg:"确定批量删除设备即已关联对应点位吗？",
+                            type: "warning",
+                            showCancelButton: true,
+                            confirmButtonText: "确定删除！",
+                            closeOnConfirm: false
+                        },
+                        function(){
+
+                        }).then(function(isConfirm) {
+                        if (isConfirm === true) {
+                            $.ajax({
+                                type:"post",
+                                url: "batchDeleteDevice",
+                                data:{
+                                    "deviceCodes":deviceCodes.join(","),
+                                    "deleteFlag":isDeleteSelf?1:0
+                                },
+                                dataType:"text",
+                                success:function(msg){
+                                    msg = JSON.parse(msg);
+                                    if(msg.success == "true"){
+                                        sweetAlert("批量删除成功！");
+                                        let tree = $.fn.zTree.getZTreeObj("devTree");
+                                        if(isDeleteSelf && currentNode.nodeType != "subsys"){
+                                            tree.removeNode(currentNode);
+                                            currentNode = null;
+                                        }else{
+                                            tree.removeChildNodes(currentNode);
+                                        }
+                                    }else{
+                                        sweetAlert(msg.errString);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+                function changeTrClass(ele){
+                    let jEle = $(ele);
+                    let tr = jEle.parents("tr");
+                    if(jEle.val() > 0){
+                        tr.addClass("addTextTr");
+                    }else{
+                        tr.removeClass("addTextTr");
+                    }
+                }
+                return {
+                    loadTb:loadTb,
+                    deleteChildren:deleteChildren,
+                    deleteDeviceAndChildren:deleteDeviceAndChildren,
+                    batchAddDeviceData:batchAddDeviceData,
+                    changeTrClass:changeTrClass
+                };
+            }
+            function DeviceTab(){
+                let graphList = [];
+                let deviceData = null;
+                init();
+                function init(){
+                    $.ajax({
+                        url:"getGraphListByStation",
+                        type:"POST",
+                        async:false,
+                        data:{stationCd:localStorage["currentStationCd"]},
+                        success:function(result){
+                            if(result == null || result.list == null){
+                                //异常信息
+                                graphList = [];
+                                return ;
+                            }
+                            graphList = [[getLangData("stationmanage.pleaseChoose"),""]];
+                            let str = "<option></option>";
+                            for(var i=0;i<result.list.length;i++){
+                                graphList.push([result.list[i],result.list[i]]);
+                                str += "<option>"+result.list[i]+"</option>";
+                            }
+                            $("#deviceGraphSelect").html(str);
+                        }
+                    });
+                }
+                function saveDevice(){
+                    let name = $("#devName").val().trim();
+                    let manufacturer = $("#manufacturer").val().trim();
+                    let deviceGraph = $("#deviceGraphSelect").val()+"?"+$("#deviceGraphParam").val().trim();
+                    let pic = $("#devImgText").val();
+                    let code = currentNode.code_;
+                    get_promapper_result("updateDeviceSimpleData",code+","+name+","+manufacturer+","+deviceGraph+","+pic,function(data){
+                        if(data){
+                            sweetAlert("保存成功！");
+                            currentNode.name = name;
+                            $.fn.zTree.getZTreeObj("devTree").updateNode(currentNode);
+                        }else{
+                            sweetAlert("保存失败！");
+                        }
+                    });
+                }
+                function loadDevice(deviceCode){
+                    get_promapper_result("getDeviceByCode",deviceCode,function(data){
+                        deviceData = data[0];
+                        $("#devName").val(deviceData["name"+getLanIndex()+"_"]);
+                        $("#manufacturer").val(deviceData["manufacturer"]);
+                        if(deviceData["pic_"] && deviceData["pic_"] != ""){
+                            $("#devModelPreview").attr("src",deviceData["pic_"]);
+                            $("#devImgText").val(deviceData["pic_"]);
+                        }else{
+                            $("#devModelPreview").attr("src","./images/camera8.png");
+                            $("#devImgText").val("");
+                        }
+
+                        let graphArr = deviceData.graphname_.split("?");
+                        let graphName = graphArr[0];
+                        let graphParam = graphArr.length > 1?graphArr[1]:"";
+                        $("#deviceGraphSelect").val(graphName).change();
+                        $("#deviceGraphParam").val(graphParam);
+                    });
+                }
+                function setDevImagePreview() {
+                    let one = currentNode.id;
+                    let docObj=document.getElementById("devImg");
+                    let imgObjPreview=document.getElementById("devModelPreview");
+                    //获取当前图片的后缀
+                    let photoLastName = docObj.value.toLowerCase().split(".")[1];
+                    //判断图片的后缀是否正确
+                    if(photoLastName!='gif'&&photoLastName!='jpg'&&photoLastName!='png'&&photoLastName!='jpeg'){
+                        //sweetAlert("请上传正确的图片");
+                        //将图片设置为默认图片
+                        $("#devModelPreview").attr("src","images/staff.png");
+                        return false;
+                    }
+                    if(docObj.files &&docObj.files[0]){
+                        //火狐下，直接设img属性
+                        //imgObjPreview.style.width = '200px';
+                        //imgObjPreview.style.height = '170px';
+                        //imgObjPreview.src = docObj.files[0].getAsDataURL();
+                        //火狐7以上版本不能用上面的getAsDataURL()方式获取，需要一下方式
+                        imgObjPreview.src = window.URL.createObjectURL(docObj.files[0]);
+                    }else{
+                        //IE下，使用滤镜
+                        docObj.select();
+                        var imgSrc = document.selection.createRange().text;
+                        var localImagId = document.getElementById("localImag");
+                        //必须设置初始大小
+                        //localImagId.style.width = "200px";
+                        //localImagId.style.height = "170px";
+                        //图片异常的捕捉，防止用户修改后缀来伪造图片
+                        try{
+                            localImagId.style.filter="progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale)";
+                            localImagId.filters.item("DXImageTransform.Microsoft.AlphaImageLoader").src = imgSrc;
+                        }catch(e){
+                            sweetAlert("您上传的图片格式不正确，请重新选择!");
+                            return false;
+                        }
+                        imgObjPreview.style.display = 'none';
+                        document.selection.empty();
+                    }
+                    $("#editDevImgForm").ajaxSubmit({
+                        url:"uploadDevImg",
+                        data:{devCode: one+"Type"},
+                        success:function(result){
+                            $("#devImgText").val(result.resultString);
+                        }
+                    });
+                    return true;
+                }
+                return {
+                    saveDevice:saveDevice,
+                    loadDevice:loadDevice,
+                    setDevImagePreview:setDevImagePreview
+                };
+            }
+            function DevParamTab(){
+                let tableDataTemp = {"yc":[],"yx":[],"kwh":[]};
+                let codeMap = {};
+                let scadaList = [];
+                let rtuParamCnt = {"yx":{},"yc":{},"kwh":{}};
+                let onChange = false;
+                let lastTabName = null;
+
+                init();
+                function init(){
+                    initRtuSelect();
+                    initCodeMap();
+                    initScadaType();
+
+                    $('#rightLiDiv a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                        if($(e.target).attr("href") == "#devParamTabContent"){
+                            $("#treeDiv").addClass("hidden");
+                            $("#rightDiv").addClass("col-md-12");
+                            $("#rightDiv").removeClass("col-md-10");
+                        }else{
+                            $("#treeDiv").removeClass("hidden");
+                            $("#rightDiv").removeClass("col-md-12");
+                            $("#rightDiv").addClass("col-md-10");
+                        }
+                    });
+
+                    $("[name=trNum]").change(function (e){
+                        if (!currentNode|| currentNode.nodeType == "subsys"){
+                            sweetAlert("请先选择设备！");
+                            return;
+                        }
+                        let ele = $(e.currentTarget);
+                        let trNum = parseInt(ele.val());
+                        let type = ele.attr("id").replace("TrNum","");
+                        if(trNum>tableDataTemp[type].length){
+                            let dataType = type == "yc"?0:(type == "yx"?1:2);
+                            let scadaType = 999-dataType;
+                            for(let i = tableDataTemp[type].length;i<trNum;i++){
+                                let newCode={
+                                    data_type:dataType,
+                                    gather_flag: "",
+                                    code:scadaType,
+                                    name:"",
+                                    deal_level: "",
+                                    no:"0",
+                                    pre_upper:"",
+                                    pre_lower:"",
+                                    alarm_upper1:"",
+                                    alarm_lower1:"",
+                                    alarm_upper2:"",
+                                    alarm_lower2:"",
+                                    alarm_upper3:"",
+                                    alarm_lower3:""
+                                };
+                                tableDataTemp[type].push(newCode);
+                            }
+                        }else {
+                            tableDataTemp[type].splice(trNum,(tableDataTemp[type].length - trNum));
+                        }
+                        loadTable(type);
+                    });
+                }
+                function initScadaType(){
+                    get_promapper_result("getScadaTypeList",null,function(result) {
+                        scadaList = result;
+                    });
+                }
+                function initRtuSelect(){
+                    get_promapper_result("getRtuListWithYxYcKwhCntByStation",localStorage["currentStationCd"],function(data){
+                        let rtuList = data?data:[];
+                        let str = "";
+                        let ycCnt = 0;
+                        let yxCnt = 0;
+                        let kwhCnt = 0;
+                        for(let i=0;i<rtuList.length;i++){
+                            str += "<option value='"+rtuList[i].id_+"'>"+rtuList[i].name_+"</option>";
+                            rtuParamCnt.yc[rtuList[i].id_] = ycCnt;
+                            rtuParamCnt.yx[rtuList[i].id_] = yxCnt;
+                            rtuParamCnt.kwh[rtuList[i].id_] = kwhCnt;
+                            ycCnt += rtuList[i].ycCnt;
+                            yxCnt += rtuList[i].yxCnt;
+                            kwhCnt += rtuList[i].kwhCnt;
+                        }
+                        let eles = $("[name=rtuSelect]");
+                        for(let i=0;i<eles.length;i++){
+                            let e = $(eles[i]);
+                            e.html(str);
+                            if(e.attr("multiple") == "multiple"){
+                                e.multipleSelect({
+                                    isopen: true,
+                                    selectAll: true,
+                                    formatAllSelected: function () {
+                                        return "全部RTU";
+                                    },
+                                    formatSelectAll: function () {
+                                        return "全部RTU";
+                                    },
+                                    minimumCountSelected:10,
+                                    onUncheckAll:function(){
+                                        mflag=1;
+                                    },
+                                    onClick: function () {
+                                        mflag=0;
+                                    },
+                                    onCheckAll: function () {
+                                        mflag=0;
+                                    }
+                                });
+                            }
+                        }
+                        $("[name=tabRtuSelect]").html("<option value=-1>全部RTU</option>"+str);
+                        let treeIds = ["ycTree","yxTree","kwhTree"];
+                        treeIds.forEach(function(value,idx,arr){
+                            initTree(value);
+                        });
+                    });
+                }
+                function initCodeMap(){
+                    get_promapper_result("getScadaObjectList",null,function(result){
+                        if(result && result.length > 0){
+                            codeMap = {};
+                            for(var i=0;i<result.length;i++){
+                                var r = result[i];
+                                if(!codeMap[r.type_class_]){
+                                    codeMap[r.type_class_] = [];
+                                }
+                                codeMap[r.type_class_].push(r);
+                            }
+                        }
+                        initCodeSelect();
+                    });
+                }
+                function initCodeSelect(){
+                    var eles = $(".mtable tbody tr.trClass");
+                    for(var i=0;i<eles.length;i++){
+                        initOneTypeSelect($(eles[i]));
+                    }
+                }
+                function initOneTypeSelect(tr){
+                    var $select = tr.find("select[name='code_']");
+                    $select.empty();
+                    var idx = parseInt(tr.attr("id").replace("tr","")) - 1;
+                    var rs = codeMap[tableDataTemp[idx].data_type];
+                    if(rs){
+                        for(var i=0;i<rs.length;i++){
+                            $select.append("<option value='"+rs[i].type_+"'>"+rs[i].name_+"</option>");
+                        }
+                    }
+                    tr.find("select[name='code_']").val(tableDataTemp[idx].code_);
+                }
+                function loadTb(devCode){
+
+                }
+                function initTree(treeId){
+                    searchTree($("#"+treeId+"Search")[0],treeId);
+                }
+                function searchTree(ele,treeId){
+                    let searchTxt = $(ele).val();
+                    let sql = "";
+                    let rtuid = $("#"+treeId.replace("Tree","")+"TabRtuSelect").val();
+                    if(rtuid == -1){
+                        switch(treeId){
+                            case "ycTree": sql = "getTelemeteringCount";break;
+                            case "yxTree": sql = "getTeleindicationCount";break;
+                            case "kwhTree": sql = "getKwhmeterCount";break;
+                        }
+                    }else{
+                        switch(treeId){
+                            case "ycTree": sql = "getTelemeteringCountByRtu";break;
+                            case "yxTree": sql = "getTeleindicationCountByRtu";break;
+                            case "kwhTree": sql = "getKwhmeterCountByRtu";break;
+                        }
+                    }
+                    initOneTree(treeId,sql,searchTxt);
+                }
+                function initOneTree(treeId,sql,searchText){
+                    let rtuid = $("#"+ treeId.replace("Tree","")+"TabRtuSelect").val();
+                    searchText = searchText?searchText:"";
+                    let param = rtuid == "-1"?(localStorage["currentStationCd"]+",%"+searchText+"%,%"+searchText+"%"):(rtuid+","+localStorage["currentStationCd"]+",%"+searchText+"%,%"+searchText+"%");
+                    get_promapper_result(sql,param,function(result){
+                        let cnt = result[0].cnt;
+                        let spl = 500;
+                        let zNodes = [];
+                        for(let i=0;i<=cnt;i+=spl){
+                            zNodes.push({
+                                name:i+"-"+Math.min(i+spl-1,cnt),id:i,count:Math.min(spl,cnt-i),start:i, times:1, isParent:true
+                            });
+                        }
+                        let tree = $.fn.zTree.init($("#"+treeId), getYxYcKwhSetting(), zNodes);
+                        tree.expandNode(tree.getNodes()[0]);
+                    });
+                }
+                function getYxYcKwhSetting(){
+                    return {
+                        check: {
+                            enable: false,
+                            chkDisabledInherit: true,
+                            nocheck: true,
+                            chkDisabled: false
+                        },
+                        edit:{
+                            enable: true,
+                            showRemoveBtn: false,
+                            showRenameBtn: false,
+                            drag: {
+                                prev: false,
+                                next: false,
+                                inner: false,
+                                maxShowNodeNum: 10
+                            }
+                        },
+                        data: {
+                            simpleData: {
+                                enable: true
+                            }
+                        },
+                        async: {
+                            enable: true,
+                            url: "../air/getMapperResult",
+                            otherParam : function(treeId, treeNode){
+                                let searchText = $("#"+treeId+"Search").val();
+                                searchText = searchText?searchText:"";
+                                let rtuSelect = $("#"+ treeId.replace("Tree","")+"TabRtuSelect").val();
+                                let param = "";
+                                let sql = "";
+                                if(rtuSelect == "-1"){
+                                    switch(treeId){
+                                        case "ycTree": sql = "getTelemeteringLike";break;
+                                        case "yxTree": sql = "getTeleindicationLike";break;
+                                        case "kwhTree": sql = "getKwhmeterLike";break;
+                                    }
+                                    param = localStorage["currentStationCd"]+","+treeNode.start+","+treeNode.count+",%"+searchText+"%,%"+searchText+"%";
+                                }else{
+                                    switch(treeId){
+                                        case "ycTree": sql = "getTelemeteringByRtuLike";break;
+                                        case "yxTree": sql = "getTeleindicationByRtuLike";break;
+                                        case "kwhTree": sql = "getKwhmeterByRtuLike";break;
+                                    }
+                                    param = rtuSelect +","+localStorage["currentStationCd"]+","+treeNode.start+","+treeNode.count+",%"+searchText+"%,%"+searchText+"%";
+                                }
+
+                                param = get_url_param(sql,param);
+                                return param;
+                                function get_url_param(mapper_str,paramStr) {
+                                    let a_json = {
+                                        'type':'propertiessql',
+                                        'filterName':mapper_str,
+                                        'param': paramStr
+                                    };
+                                    return ['infos', JSON.stringify(a_json)];
+                                }
+                            },
+                            contentType:"application/x-www-form-urlencoded; charset=UTF-8"
+                        },
+                        view: {
+                            expandSpeed: ""
+                        },
+                        callback: {
+                            beforeExpand: function(treeId, treeNode) {
+                                if (!treeNode.isAjaxing) {
+                                    startTime = new Date();
+                                    treeNode.times = 1;
+                                    ajaxGetNodes(treeId,treeNode, "refresh");
+                                    return true;
+                                } else {
+                                    alert("zTree 正在下载数据中，请稍后展开节点。。。");
+                                    return false;
+                                }
+                            },
+                            onAsyncSuccess: function(event, treeId, treeNode, msg) {
+                                if (!msg || msg.length == 0) {
+                                    return;
+                                }
+                                let zTree = $.fn.zTree.getZTreeObj(treeId);
+                                let totalCount = treeNode.count;
+
+                                if (treeNode.children.length < totalCount) {
+                                    setTimeout(function() {ajaxGetNodes(treeId,treeNode);}, 500);
+                                } else {
+                                    let data = treeNode.children;
+                                    for(let i in data){
+                                        data[i].name = data[i].name_ +" "+ data[i].code_;
+                                    }
+                                    treeNode.icon = "";
+                                    zTree.updateNode(treeNode);
+                                    zTree.selectNode(treeNode.children[0]);
+                                    zTree.refresh();
+                                }
+                            },
+                            onAsyncError: function(event, treeId, treeNode, XMLHttpRequest, textStatus, errorThrown) {
+                                let zTree = $.fn.zTree.getZTreeObj(treeId);
+                                sweetAlert("异步获取数据出现异常。");
+                                treeNode.icon = "";
+                                zTree.updateNode(treeNode);
+                            },
+                            onClick:function(event, treeId, treeNode){
+                                if(treeNode && !treeNode.isParent){
+                                    let p = $(".setPointTd.selected");
+                                    setRtuPoint(treeId.replace("Tree",""),treeNode,p.find("[name=ycyxkwh_code_text]"),p.find("[name=ycyxkwh_code]"),p.parent().find("[name=lb]").children(),p.parent().find("[name=mc]").children());
+                                    p.removeClass("selected");
+                                    p.parent().next().find(".setPointTd").addClass("selected");
+                                }
+                            },
+                            onDrop: function(e, treeId, treeNodes, targetNode) {
+                                let target = $(e.target);
+                                if(target.attr("name") == "ycyxkwh_code"){
+                                    target = target.parent();
+                                }
+                                if(target.attr("name") == "ycyxkwh_code_text"){
+                                    target = target.parent();
+                                }
+                                $(".setPointTd.selected").removeClass("selected");
+                                if (target.length > 0 && target.hasClass("setPointTd")) {
+                                    let type = treeId.replace("Tree","");
+                                    for(let i=0;i<treeNodes.length;i++){
+                                        let node = treeNodes[i];
+                                        setRtuPoint(type,node,target.find("[name=ycyxkwh_code_text]"),target.find("[name=ycyxkwh_code]"),target.parent().find("[name=lb]").children(),target.parent().find("[name=mc]").children())
+                                        let next = target.parent().next().find(".setPointTd");
+                                        if(next.length == 0){
+                                            break;
+                                        }
+                                        target = next;
+                                    }
+                                    $(".setPointTd.selected").removeClass("selected");
+                                    if(target.length > 0){
+                                        target.addClass("selected");
+                                    }
+                                }
+                            },
+                            onDragMove: function(e, treeId, treeNodes) {
+                                let p = $(e.target);
+                                if(p.hasClass("setPointTd")){
+                                    $('.setPointTd.selected').removeClass('selected');
+                                    for(let i=0;i<treeNodes.length;i++){
+                                        p.addClass('selected');
+                                        let next = p.parent().next().find(".setPointTd");
+                                        if(next.length == 0){
+                                            break;
+                                        }
+                                        p = next;
+                                    }
+                                }
+                            },
+                            beforeDrag: function(treeId, treeNodes) {
+                                return !treeNodes[0].isParent;
+                            }
+                        }
+                    };
+                }
+                function setRtuPoint(type,snameData,selectedTdText,selectedTdCode,selectedTypeEle,selectedNameEle){
+                    if(!selectedTdText || !selectedTdCode){
+                        sweetAlert("请选择需要设置点位的单元格！");
+                        return;
+                    }
+
+                    selectedTdText.html(snameData.code_ +"<br>"+ snameData.name_);
+                    selectedTdCode.val(snameData.code_);
+                    let idx = snameData.rtu_id_+"_"+snameData.id_;
+                    selectedTdCode.attr("idx",idx);
+                    selectedTdCode.addClass(type).removeClass("red");
+
+                    if(selectedTypeEle){
+                        selectedTypeEle.val(checkScadaCode(type,snameData.name_)).change();
+                    }
+                    if(selectedNameEle){
+                        let nameSpl = snameData.name_.split(" ");
+                        selectedNameEle.val(nameSpl[nameSpl.length-1]);
+                    }
+                }
+                function ajaxGetNodes(treeId,treeNode, reloadType) {
+                    let zTree = $.fn.zTree.getZTreeObj(treeId);
+                    if (reloadType == "refresh") {
+                        treeNode.icon = "./css/img/loading.gif";
+                        zTree.updateNode(treeNode);
+                    }
+                    zTree.reAsyncChildNodes(treeNode, reloadType, true);
+                }
+                function query(deviceCode){
+                    $("#ycRealTBody").empty();
+                    $("#yxRealTBody").empty();
+                    $("#kwhRealTBody").empty();
+                    getTableData(deviceCode);
+                }
+                function deleteTr(ele,type){
+                    let btn = $(ele);
+                    let trId = btn.attr("trId");
+                    let tr = $("#tr"+trId);
+                    let tb = tr.parent();
+                    if(tr.hasClass("selectedRow")){
+                        let eles = tb.find(".selectedRow");
+                        for(let i=eles.length-1;i>=0;i--){//必须倒着删除，不然顺序会乱
+                            tableDataTemp[type].splice((parseInt(eles[i].id.replace("tr",""))-1),1);
+                        }
+                    }else{
+                        tableDataTemp[type].splice((trId-1),1);
+                    }
+                    loadTable(type);
+                }
+                function getTableData(deviceCode){
+                    get_promapper_result("getDevParamList",deviceCode, function(data){
+                        if (data!=null){
+                            tableDataTemp.yc = [];
+                            tableDataTemp.yx = [];
+                            tableDataTemp.kwh = [];
+                            for(let i=0;i<data.length;i++){
+                                switch(data[i].data_type){
+                                    case "0":tableDataTemp.yc.push(data[i]);break;
+                                    case "1":tableDataTemp.yx.push(data[i]);break;
+                                    case "2":tableDataTemp.kwh.push(data[i]);break;
+                                    default:break;
+                                }
+                            }
+                            loadTable("yc");
+                            loadTable("yx");
+                            loadTable("kwh");
+                        }
+                    });
+                }
+                function loadTable(type){
+                    $("#"+type+"RealTBody").empty();
+                    let realTbodyStr = "";
+                    let dataType = type == "yc"?0:(type == "yx"?1:2);
+                    $("#"+type+"TrNum").val(tableDataTemp[type].length);
+                    for(let i=0;i<tableDataTemp[type].length;i++){
+                        let rowData = tableDataTemp[type][i];
+                        let cjbz = "";//采集标志，0采集，1计算
+                        switch (rowData.gather_flag){
+                            case '0':cjbz = "<option value='0' selected>采集</option><option value='1'>计算</option>";break;
+                            case '1':cjbz = "<option value='0'>采集</option><option value='1' selected>计算</option>";break;
+                            default:
+                                cjbz = "<option value='0' selected>采集</option><option value='1'>计算</option>";break;
+                        }
+
+                        // var dealLevel = "";//处理级别，0不处理，1预警，2一级告警，3二级告警，4三级告警
+                        let optsObj = {0:"预警",1:"一级告警",2:"二级告警",3:"三级告警",99:"不处理"};
+                        let dealLevel = "";
+                        for(let optValue in optsObj){
+                            let selected = rowData.deal_level == optValue?"selected":"";
+                            dealLevel += "<option value='"+optValue+"' "+selected+">"+optsObj[optValue]+"</option>";
+                        }
+                        //类别 关联scada_type表
+                        let typeCode = "";
+                        for (let k=0;k<scadaList.length;k++){
+                            if(scadaList[k].type_class_ != dataType){
+                                continue;
+                            }
+                            let selected = rowData.code==scadaList[k].type_?"selected":"";
+                            typeCode += "<option value='"+scadaList[k].type_+"' "+selected+">"+scadaList[k].name_+"</option>"
+                        }
+                        let ycyxkwhCode = "";
+                        let ycyxkwhCodeName = "";
+                        let rtuno = "";
+                        let ycno = "";
+                        if(rowData.ycyxkwh_code_){
+                            ycyxkwhCode = rowData.ycyxkwh_code_;
+                            ycyxkwhCodeName = ycyxkwhCode+"<br>"+(rowData["codeName"+getLanIndex()]?rowData["codeName"+getLanIndex()]:"");
+                            rtuno = rowData.rtuno;
+                            ycno = rowData.ycno;
+                        }
+
+                        let trStr="<tr class='trClass' id='tr"+(i+1)+"'>";
+                        trStr =trStr+"<td align='center' width='3%'><input name='"+type+"Checkbox' onchange='devParamTab.selectRow(this)' type='checkbox' class='orignal-checkbox'></td>";
+                        trStr =trStr+"<td width='5%'><select name='cjbz' onchange='devParamTab.changeValue(this)' class='typeGP'>" +cjbz +"</select></td>";
+                        trStr =trStr+"<td width='10%'><select name='lb' onchange='devParamTab.changeValue(this)' class='typeGP'>" +typeCode +"</select></td>";
+                        trStr =trStr+"<td width='11%'><input name='mc' onchange='devParamTab.changeValue(this)' type='text' class='typeGP' style='width: 100%;text-align: center;' value='"+rowData.name+"'></td>";
+                        trStr =trStr+"<td class='setPointTd' onClick='devParamTab.onClickSetPointTd(this)' ondblclick='devParamTab.clearRtuPoint(this)'><span name='ycyxkwh_code_text'>"+ycyxkwhCodeName+"</span><input name='ycyxkwh_code' value='"+ycyxkwhCode+"' class='hidden "+type+"' rtuno='"+rtuno+"' ycno='"+ycno+"'></td>";
+                        trStr =trStr+"<td width='7%'><select name='cljb' onchange='devParamTab.changeValue(this)' class='typeGP'>" +dealLevel +"</select></td>";
+                        trStr =trStr+'<td width="6%"><input onchange="devParamTab.changeValue(this)" type="number" style="width: 100%;text-align: center;" class="input-sm typeGP" name="yjsx" value="'+rowData.pre_upper+'" /></td>';
+                        trStr =trStr+'<td width="6%"><input onchange="devParamTab.changeValue(this)" type="number" style="width: 100%;text-align: center;" class="input-sm typeGP" name="yjxx" value="'+rowData.pre_lower+'" /></td>';
+                        trStr =trStr+'<td width="6%"><input onchange="devParamTab.changeValue(this)" type="number" style="width: 100%;text-align: center;" class="input-sm typeGP" name="gjsx1" value="'+rowData.alarm_upper1+'" /></td>';
+                        trStr =trStr+'<td width="6%"><input onchange="devParamTab.changeValue(this)" type="number" style="width: 100%;text-align: center;" class="input-sm typeGP" name="gjxx1" value="'+rowData.alarm_lower1+'" /></td>';
+                        trStr =trStr+'<td width="6%"><input onchange="devParamTab.changeValue(this)" type="number" style="width: 100%;text-align: center;" class="input-sm typeGP" name="gjsx2" value="'+rowData.alarm_upper2+'" /></td>';
+                        trStr =trStr+'<td width="6%"><input onchange="devParamTab.changeValue(this)" type="number" style="width: 100%;text-align: center;" class="input-sm typeGP" name="gjxx2" value="'+rowData.alarm_lower2+'" /></td>';
+                        trStr =trStr+'<td width="6%"><input onchange="devParamTab.changeValue(this)" type="number" style="width: 100%;text-align: center;" class="input-sm typeGP" name="gjsx3" value="'+rowData.alarm_upper3+'" /></td>';
+                        trStr =trStr+'<td width="6%"><input onchange="devParamTab.changeValue(this)" type="number" style="width: 100%;text-align: center;" class="input-sm typeGP" name="gjxx3" value="'+rowData.alarm_lower3+'" /></td>';
+                        trStr =trStr+"<td width='5%'><a name='deleteInfo' title='删除' style='cursor:pointer;' trId='"+(i+1)+"' onclick='devParamTab.deleteTr(this,\""+type+"\")'><img src='images/trash.png' style='cursor:pointer;width: 25px;height: 25px;'/></a></td>";
+                        trStr = trStr+"</tr>";
+                        realTbodyStr = realTbodyStr+trStr;
+                    }
+                    $("#"+type+"RealTBody").html(realTbodyStr);
+                }
+                function selectRow(ele){
+                    ele = $(ele);
+                    if(ele[0].checked){
+                        ele.parent().parent().addClass("selectedRow");
+                    }else{
+                        ele.parent().parent().removeClass("selectedRow");
+                    }
+                }
+                function saveDeviceParam(type){
+                    let dataAll = [];//[]
+                    let dataType = type == "yc" ? 0 : (type == "yx" ? 1 : 2);
+                    let scadaNoObj = {};
+                    $("#"+type+"RealTBody .trClass").each(function(index2, value2,arr){
+                        let tr = $(value2);
+                        let scadaType = tr.find("select[name=lb]").val();
+                        if(!scadaNoObj[scadaType]){
+                            scadaNoObj[scadaType] = 1;
+                        }else{
+                            scadaNoObj[scadaType] = scadaNoObj[scadaType] +1;
+                        }
+                        dataAll.push({
+                            data_type:dataType,
+                            gather_flag: tr.find("select[name=cjbz]").val(),
+                            code:scadaType,
+                            name:tr.find("input[name=mc]").val(),
+                            deal_level: tr.find("select[name=cljb]").val(),
+                            ycyxkwh_code:tr.find("[name=ycyxkwh_code]").val(),
+                            rtuno:tr.find("[name=ycyxkwh_code]").attr("rtuno"),
+                            ycno:tr.find("[name=ycyxkwh_code]").attr("ycno"),
+                            no:scadaNoObj[scadaType],
+                            pre_upper:tr.find("[name=yjsx]").val(),
+                            pre_lower:tr.find("[name=yjxx]").val(),
+                            alarm_upper1:tr.find("[name=gjsx1]").val(),
+                            alarm_lower1:tr.find("[name=gjxx1]").val(),
+                            alarm_upper2:tr.find("[name=gjsx2]").val(),
+                            alarm_lower2:tr.find("[name=gjxx2]").val(),
+                            alarm_upper3:tr.find("[name=gjsx3]").val(),
+                            alarm_lower3:tr.find("[name=gjxx3]").val(),
+                            idx:index2
+                        });
+                    });
+                    $.ajax({
+                        url: "saveDevParam",
+                        type: "post",
+                        data: {
+                            deviceCode:currentNode.code_,
+                            clearDataType:dataType,
+                            deviceParamList:JSON.stringify(dataAll)
+                        },
+                        success: function (result) {
+                            if(result.success != "true"){
+                                sweetAlert("保存失败！");
+                            }else {
+                                sweetAlert("保存成功！");
+                            }
+                        }
+                    });
+                }
+                function saveDeviceTypeParam(){
+                    let templateName = currentNode.code_;
+                    if(templateName.length == 0){
+                        sweetAlert("请填写模板名称！");
+                        return;
+                    }
+
+                    let dataAll = [];
+                    let types = ["yc","yx","kwh"];
+                    for(let i=0;i<types.length;i++){
+                        let type = types[i];
+                        let idx=0;
+                        let scadaNoObj = {};
+                        $("#"+type+"RealTBody .trClass").each(function(index2, value2,arr){
+                            let tr = $(value2);
+                            let scadaType = tr.find("select[name=lb]").val();
+                            if(!scadaNoObj[scadaType]){
+                                scadaNoObj[scadaType] = 1;
+                            }else{
+                                scadaNoObj[scadaType] = scadaNoObj[scadaType] +1;
+                            }
+                            dataAll.push({
+                                data_type:i,
+                                gather_flag: tr.find("select[name=cjbz]").val(),
+                                code:scadaType,
+                                name:tr.find("input[name=mc]").val(),
+                                deal_level: tr.find("select[name=cljb]").val(),
+                       //         ycyxkwh_code:tr.find("[name=ycyxkwh_code]").val(),
+                       //         rtuno:tr.find("[name=ycyxkwh_code]").attr("rtuno"),
+                       //         ycno:tr.find("[name=ycyxkwh_code]").attr("ycno"),
+                                no:scadaNoObj[scadaType],
+                                pre_upper:tr.find("[name=yjsx]").val(),
+                                pre_lower:tr.find("[name=yjxx]").val(),
+                                alarm_upper1:tr.find("[name=gjsx1]").val(),
+                                alarm_lower1:tr.find("[name=gjxx1]").val(),
+                                alarm_upper2:tr.find("[name=gjsx2]").val(),
+                                alarm_lower2:tr.find("[name=gjxx2]").val(),
+                                alarm_upper3:tr.find("[name=gjsx3]").val(),
+                                alarm_lower3:tr.find("[name=gjxx3]").val(),
+                                idx:index2
+                            });
+                        });
+                    }
+                    $.ajax({
+                        url: "saveDevTypeParam",
+                        type: "post",
+                        data: {
+                            dataAll:JSON.stringify(dataAll),
+                            deviceTypeCode:currentNode.type,
+                            tempLateName:templateName
+                        },
+                        success: function (result) {
+                            if(result.success != "true"){
+                                sweetAlert("保存失败！");
+                            }else {
+                                $("#templateModal").collapse('hide');
+                                sweetAlert("保存成功！");
+                            }
+                        }
+                    });
+                }
+                function clearTable(type){
+                    $("#"+type+"RealTBody").empty();
+                    $("#"+type+"TrNum").val(0);
+                    tableDataTemp[type] = [];
+                }
+                function batchAddTable(type){
+                    let startIdxDesc = $("#"+type+"BatchAddStart").attr("idx");
+                    let endIdxDesc = $("#"+type+"BatchAddEnd").attr("idx");
+                    if(!startIdxDesc || !endIdxDesc){
+                        sweetAlert("请先填写开始点位和结束点位！");
+                        return;
+                    }
+                    let startIdxNum = calcIdx(type,startIdxDesc);
+                    let endIdxNum = calcIdx(type,endIdxDesc)+1;
+                    let sql = "";
+                    switch(type){
+                        case "yc":sql = "getTelemetering";break;
+                        case "yx":sql = "getTeleindication";break;
+                        case "kwh":sql = "getKwhmeter";break;
+                    }
+                    get_promapper_result(sql,localStorage["currentStationCd"]+","+startIdxNum+","+(endIdxNum - startIdxNum),function(data){
+                        data = data?data:[];
+                        let dataType = type == "yc" ? 0 : (type == "yx" ? 1 : 2);
+                        //ycTemplateTbody_4
+                        for(let i=0;i<data.length;i++) {
+                            let d = data[i];
+                            let scadaCode = checkScadaCode(type,d.name_);
+                            let nameTemp = d.name_.split(" ");
+                            let rowData = {
+                                data_type: dataType+"",
+                                gather_flag: "0",
+                                code: scadaCode+"",
+                                name: nameTemp[nameTemp.length-1],
+                                deal_level: "0",
+                                no: "0",
+                                pre_upper: "",
+                                pre_lower: "",
+                                alarm_upper1: "",
+                                alarm_lower1: "",
+                                alarm_upper2: "",
+                                alarm_lower2: "",
+                                alarm_upper3: "",
+                                alarm_lower3: "",
+                                ycyxkwh_code_:d.code_,
+                                rtuno:d.rtu_id_,
+                                ycno:d.id_,
+                                codeName:d.name_,
+                                codeName1:d.name1_,
+                                codeName2:d.name2_
+                            };
+                            tableDataTemp[type].push(rowData);
+                        }
+                        loadTable(type);
+                        $("#"+type+"BatchAddCollapse").collapse('hide');
+                        sweetAlert("批量追加结束！请检查！");
+                    });
+                }
+                function checkScadaCode(type,name){
+                    let dataType = type == "yc" ? 0 : (type == "yx" ? 1 : 2);
+                    let otherCode = 999-dataType;
+                    for (let k=0;k<scadaList.length;k++){
+                        if(scadaList[k].name_ == name || name.endsWith(scadaList[k].name_)){
+                            scadaCode = scadaList[k].type_;
+                            return scadaCode;
+                        }
+                    }
+                    return otherCode;
+                }
+                function calcIdx(type,idxDesc){
+                    if(idxDesc){
+                        let temps = idxDesc.split("_");
+                        return rtuParamCnt[type][parseInt(temps[0])] + parseInt(temps[1]);
+                    }else{
+                        return -1;
+                    }
+                }
+                function onClickSetPointTd(ele){
+                    $(".setPointTd.selected").removeClass("selected");
+                    $(ele).addClass("selected");
+                }
+                function clearRtuPoint(ele){
+                    let td = $(ele);
+                    td.find("[name='ycyxkwh_code_text']").html("");
+                    let codeEle = td.find("[name='ycyxkwh_code']");
+                    let type = "";
+                    if(codeEle.hasClass("yc")){
+                        type = "yc";
+                    }else if(codeEle.hasClass("yx")){
+                        type = "yx";
+                    }else if(codeEle.hasClass("kwh")){
+                        type = "kwh";
+                    }
+                    codeEle.val("").removeClass(type).removeClass("red");
+                    codeEle.removeAttr("idx").removeAttr("rtuno").removeAttr("ycno");
+                }
+                function changeValue(ele){
+                    if(onChange){
+                        return;
+                    }
+                    onChange = true;
+                    ele = $(ele);
+                    let val = ele.val();
+                    let td = ele.parent();
+                    let tagName = ele[0].tagName;
+                    let name = ele.attr("name");
+                    let tr = td.parent();
+                    let tb = tr.parent();
+
+                    if(tr.hasClass("selectedRow")){
+                        let eles = tb.find(".selectedRow [name="+name+"]");
+                        if(tagName == "SELECT"){
+                            eles.val(val).change();
+                        }else{
+                            eles.val(val);
+                        }
+                    }
+                    onChange = false;
+                }
+                return {
+                    loadTb:loadTb,
+                    initTree:initTree,
+                    searchTree:searchTree,
+                    clearTable:clearTable,
+                    batchAddTable:batchAddTable,
+                    saveDeviceParam:saveDeviceParam,
+                    saveDeviceTypeParam:saveDeviceTypeParam,
+                    query:query,
+                    onClickSetPointTd:onClickSetPointTd,
+                    clearRtuPoint:clearRtuPoint,
+                    deleteTr:deleteTr,
+                    selectRow:selectRow,
+                    changeValue:changeValue
+                };
+            }
+            function initDeviceType(){
+                get_promapper_result("getDeviceTypeList2","",function(data){
+                    deviceTypeList = data;
+                    let str = "";
+                    for(let i=0;i<data.length;i++){
+                        let d = data[i];
+                        str += "<option value='"+d.code+"'>"+d.name+"</option>";
+                    }
+                    $("#deviceTypeSelect").html(str);
+                    initDevTree();
+                });
+            }
+            function initDevTree(){
+                let zNodes = [{id:"root",name:localStorage["currentStationName"+getLanIndex()],nodeType:"station",isParent:true,iconSkin:"icon01red"}];
+                let tree = $.fn.zTree.init($("#devTree"), getDeviceTreeSetting(),zNodes);
+                let root = tree.getNodes()[0];
+                tree.expandNode(root);
+                tree.selectNode(root);
+                tree.setting.callback.onClick(null, "devTree", root);//调用事件
+            }
+
+            function getDeviceTreeSetting(){
+                return {
+                    check: {
+                        enable: false,
+                        chkboxType : { "Y" : "sp", "N" : "s" }
+                    },
+                    async: {
+                        enable: true,
+                        url:"../air/getMapperResult",
+                        otherParam : function(treeId, treeNode){
+                            let sql = "";
+                            let param = "";
+                            if(treeNode.id == "root"){
+                                //第一次的时候查询子系统
+                                sql = "getSubsysAndDev0ByStationCd";
+                                param = localStorage["currentStationCd"];
+                            }else{
+                                sql = "getDeviceTreeNodeByParent";
+                                if(treeNode.nodeType == "subsys"){
+                                    param = localStorage["currentStationCd"]+","+treeNode.sub_sys_+",";
+                                }else if(treeNode.nodeType == "device"){
+                                    param = localStorage["currentStationCd"]+","+treeNode.sub_sys_+","+treeNode.code_;
+                                }
+                            }
+                            param = get_url_param(sql,param);
+                            return param;
+                            function get_url_param(mapper_str,paramStr) {
+                                var a_json = {
+                                    'type':'propertiessql',
+                                    'filterName':mapper_str,
+                                    'param': paramStr
+                                };
+                                return ['infos', JSON.stringify(a_json)];
+                            }
+                        },
+                        dataFilter:function(treeId, parentNode, responseData) {
+                            if (parentNode.nodeType == "station") {//子系统级别
+                                for(var i =0; i < responseData.length; i++) {
+                                    let d = responseData[i];
+                                    if(d.nodeType == "subsys"){
+                                        d.iconSkin = "icon01blue";
+                                    }else{
+                                        d.iconSkin = "icon09";
+                                    }
+                                }
+                            }else{//设备级别
+                                let subsys_type = 0;
+                                let node = parentNode;
+                                while (node.getParentNode() != null){
+                                    subsys_type = node.getParentNode().type_;
+                                    node = node.getParentNode();
+                                }
+                                for(var i =0; i < responseData.length; i++) {
+                                    let d = responseData[i];
+                                    d.nodeType = "device";
+                                    d.subsys_type = subsys_type;
+                                    d.iconSkin = "icon09";
+                                }
+                            }
+                            return responseData;
+                        },
+                        contentType:"application/x-www-form-urlencoded; charset=UTF-8"
+                    },
+                    data: {
+                        simpleData: {
+                            enable: true
+                        },
+                        keep:{
+                            parent:true
+                        }
+                    },
+                    view:{
+                        showIcon:true
+                    },
+                    callback:{
+                        onClick:function(event, treeId, treeNode){
+                            let levelArr = [];
+                            let tree = $.fn.zTree.getZTreeObj(treeId);
+                            tree.expandNode(treeNode,true);
+                            currentNode = treeNode;
+                            let pNode = treeNode;
+                            while(pNode != null){
+                                levelArr.unshift(pNode.name);
+                                pNode = pNode.getParentNode();
+                            }
+                            $("#rightTitle").html(levelArr.join(" / "));
+                            let subsys_type = null;
+                            let device_type = null;
+                            if(treeNode.nodeType == "device"){
+                                subsys_type = currentNode.subsys_type;
+                                device_type = currentNode.type;
+                                $("#deleteSelfBtn").removeClass("hidden");
+                                $("#devParamTab").removeClass("hidden");
+                                $("#devParamTabContent").removeClass("hidden");
+                                $("#devTab").removeClass("hidden");
+                                $("#devTabContent").removeClass("hidden");
+                                $('#devTab a').tab('show');
+                                devParamTab.query(currentNode.code_);
+                                deviceTab.loadDevice(currentNode.code_);
+                            }else{
+                                if(treeNode.nodeType == "subsys") {
+                                    subsys_type = currentNode.type;
+                                }
+                                $("#deleteSelfBtn").addClass("hidden");
+                                $("#devParamTab").addClass("hidden");
+                                $("#devParamTabContent").addClass("hidden");
+                                $("#devTab").addClass("hidden");
+                                $("#devTabContent").addClass("hidden");
+                                $('#childrenTab a').tab('show');
+                            }
+                            batchAddTab.loadTb(subsys_type,device_type);
+                        },
+                        onAsyncSuccess:function(event, treeId, treeNode, msg) {
+                            let tree = $.fn.zTree.getZTreeObj(treeId);
+                            if(!treeNode){
+                                let node = tree.getNodes()[0];
+                                tree.selectNode(node,true,false);
+                                tree.setting.callback.onClick(null, treeId, node);//调用事件
+                            }
+                        }
+                    }
+                };
+            }
+        </script>
+
+</html>

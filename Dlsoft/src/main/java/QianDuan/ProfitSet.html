@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>收益设置</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta name="description" content="">
+	<style>
+		#rightDiv .sign{
+			color:#60ffe4;
+			margin:0 5px;
+		}
+		#rightDiv .blank{
+			margin:0 2px;
+		}
+		#rightDiv input[type=checkbox]{
+			opacity: 1;
+			position: relative;
+			margin-right: 5px;
+		}
+		#rightDiv .checkboxdiv{
+			display: inline-block;
+			margin-right: 5px;
+		}
+		#rightDiv code{
+			margin:0 5px;
+			font-family: 'FontAwesome';
+			color: #ffffff;
+			font-weight: normal;
+			border: #0373b2 1px solid;
+			background: transparent;
+		}
+		#rightDiv .panel.panel-default{
+			margin:0px;
+		}
+		#rightDiv .currentRow{
+			background:#27556f;
+			color:white;
+		}
+		#rightDiv table td{
+			word-break: break-all;
+		}
+		#rightDiv td.pcolor{
+			color: #00ccff;
+		}
+		#rightDiv td.fcolor{
+			color: orange;
+		}
+		#rightDiv td.gcolor{
+			color: #02ff02;
+		}
+		#rightDiv td.jcolor{
+			color: red;
+		}
+		#rightDiv td.sgcolor{
+			color: yellow;
+		}
+	</style>
+</head>
+<body>
+<div class="col-md-12" style="height:100%;">
+	<div id="treeDiv" class="col-md-2 panel panel-default " style ="height:calc(100% - 10px);">
+		<ul id="myTab" class="nav nav-tabs">
+			<li class="active"> <a href="#tab1" data-toggle="tab" i18n="energyanalyze.jsllb">收益计算量列表</a> </li>
+		</ul>
+		<div class="tab-content" style="overflow-y: auto;height: calc(100% - 40px);">
+			<div id="tab1" class="tab-pane fade active in" style="overflow:auto;height:100%;">
+				<ul id="calculatorTree" class="ztree">
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-10" style ="height:100%;">
+		<ul class="nav nav-tabs">
+			<li class="active"> <a href="#contentDiv" data-toggle="tab" i18n="ReportManage.edit">编辑面板</a> </li>
+			<li> <a href="#tab12" data-toggle="tab" i18n="profitset.sj">数据</a> </li>
+		</ul>
+		<div id="rightDiv" class="tab-content" style="overflow-y: auto;height: calc(100% - 40px);">
+			<div id="contentDiv" class="tab-pane fade active in" style="overflow:auto;height:100%;">
+				<div class="col-md-12" style="padding: 10px;">
+					<div class="StatisPageTopDiv">
+						<button name="saveBtn"  onclick="saveProfit()" type="button" class="btn btn-primary " style="margin-top:-2px;" i18n="UserSet.save">保存</button>
+						<button name="deleteBtn" oprAuth='1' onclick="deleteProfit()" type="button" class="btn btn-primary " style="margin-top:-2px;" i18n="common.sc">删除</button>
+					</div>
+				</div>
+				<div class="col-md-12" style="padding-left:30px;">
+					<table id="headTable" class="table" style="width: 100%;">
+						<tr class="hidden">
+							<td>CODE</td>
+							<td><input disabled name="code"></td>
+							<td></td>
+							<td>
+							</td>
+						</tr>
+						<tr>
+							<td i18n="Strategy.ctlparamname">名称</td><td><input name="name"></td>
+							<td i18n="profitset.lx">类型</td>
+							<td style="text-align: left;">
+								<select name="typeSelect" style="width: 100%;"></select>
+							</td>
+						</tr>
+						<tr>
+							<td i18n="common.dd">电度量</td><td><input name="sname"></td>
+						</tr>
+					</table>
+				</div>
+				<div class="col-md-12" style="height: calc(100% - 180px)">
+					<div class="col-md-8" style="height: 100%;overflow-y: auto;">
+						<table class="table" id="table1" style="text-align: left;">
+							<thead>
+							<tr><td style="width: 80px;" i18n="SystemLog.operation">操作</td><td style="width: 140px;" i18n="profitset.jsmb">计算目标</td><td i18n="profitset.jsgs">计算公式</td></tr>
+							</thead>
+							<tbody id="table1Body">
+							</tbody>
+						</table>
+					</div>
+					<div class="col-md-4" style="height: 100%;">
+						<div class="col-md-12" style="height: 35px;border-bottom:1px solid #fff;margin-bottom:5px;">
+							<span i18n="profitset.djxfwb">双击下方树节点生成公式文本：</span>
+							<input id="modelText">
+						</div>
+						<div class="col-md-6" style="height: calc(100% - 40px);">
+							<ul id="signTree" style="height: 50%;" class="ztree">
+							</ul>
+							<ul id="otherDataTree" style="height: 50%;" class="ztree">
+							</ul>
+						</div>
+						<div class="col-md-6" style="height: calc(100% - 40px);">
+							<div>
+								<div><span i18n="profitset.jslzjbk">计算量之间不可互相使用，请注意！</span></div>
+							</div>
+							<div class="">
+								<select style="width: 100%;" id="rtuSelect"></select>
+							</div>
+							<div class="" style="margin-top: 5px;">
+								<input id="nameFilter" placeholder="" i18n="UserSet.search" style="width: 100%;">
+							</div>
+							<div style="height: calc(100% - 120px);overflow-y: auto;">
+								<ul id="snameTree" style="height: 100%;" class="ztree">
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="tab12" class="tab-pane fade" style="overflow:auto;height:100%;">
+				<div class="panel panel-default" style="height: 50px;">
+					<div class="panel-body">
+						<div class="col-md-12">
+							<div class="StatisPageTopDiv">
+								<input class="datepicker" id="dayPicker">
+								<button name="refreshBtn" type="button" class="btn btn-primary " style="margin-top:-2px;" i18n="common.cx">查询</button>
+							</div>
+							<div class="StatisPageTopDiv pull-right">
+								<button name="calcMonthBtn" onclick="calcCalculator(1,false)" type="button" class="btn btn-primary" style="margin-top:-2px;"i18n="profit.jsquanbu">计算全月全部计算量</button>
+							</div>
+							<div class="StatisPageTopDiv pull-right">
+								<button name="calcMonthBtn" onclick="calcCalculator(0,false)" type="button" class="btn btn-primary" style="margin-top:-2px;"i18n="profit.jsbrq">计算本日期全部计算量</button>
+							</div>
+							<div class="StatisPageTopDiv pull-right">
+								<button name="calcBtn" onclick="calcCalculator(0,true)" type="button" class="btn btn-primary" style="margin-top:-2px;" i18n="profit.jsdqjsl">计算当前计算量</button>
+							</div>
+							<div class="StatisPageTopDiv pull-right">
+								<button name="calcHourBtn" onclick="calcCalculator(2,true)" type="button" class="btn btn-primary" style="margin-top:-2px;display: none;" >计算上一小时计算量</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="priceDiv" class="panel panel-default" style="height: 150px;">
+					<div class="panel-heading" style="color:white;" i18n="Strategy.dj">
+						电价
+					</div>
+					<div class="panel-body">
+						<table class="table" style="height: 100%;width: 100%;">
+							<tr>
+								<td class="pcolor" i18n="Strategy.selfusepprice">平</td>
+								<td class="fcolor" i18n="Strategy.selfusefprice">峰</td>
+								<td class="gcolor" i18n="Strategy.selfusegprice">谷</td>
+								<td class="jcolor" i18n="Strategy.selfusejprice">尖</td>
+								<td id="sgPriceTd" class="sgcolor" i18n="Strategy.selfusesgprice">深谷</td>
+								<td i18n="Strategy.selfusesellprice">卖电价</td>
+							</tr>
+							<tr>
+								<td><span name="p"></span></td>
+								<td><span name="f"></span></td>
+								<td><span name="g"></span></td>
+								<td><span name="j"></span></td>
+								<td id="sgPriceValueTd"><span name="sg"></span></td>
+								<td><span name="m"></span></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div id="dayDataDiv" class="panel panel-default" style="height: calc(100% - 200px);">
+					<ul class="nav nav-tabs">
+						<li class="active"> <a href="#dayDiv" data-toggle="tab" i18n="profitset.rsj">日数据</a> </li>
+						<li> <a href="#monDiv" data-toggle="tab" i18n="profitset.ysj">月数据</a> </li>
+						<li id="hourTab"> <a href="#hourDiv" data-toggle="tab" i18n="profitset.xssj">累计电量小时数据</a> </li>
+						<span style="float:right;margin-top:15px;margin-left:5px"i18n="profitset.kaishijisuan">时开始计算 </span>
+							<span style="float:right;margin-top:15px;margin-left: 5px"id="dayStart"></span>
+						<span style="float:right;margin-top:15px;"i18n="profitset.rsjc">日数据从每天</span>
+					</ul>
+					<div class="tab-content" style="overflow-y: auto;height: calc(100% - 40px);">
+						<div id="dayDiv" class="tab-pane fade active in" style="overflow:auto;height:100%;">
+							<table id="dayTable" class="table" style="height: 100%;width: 100%;">
+								<thead>
+								<tr>
+
+								</tr>
+								</thead>
+								<tbody>
+
+								</tbody>
+							</table>
+						</div>
+						<div id="monDiv" class="tab-pane fade" style="overflow:auto;height:100%;">
+							<table id="monTable" class="table" style="height: 100%;width: 100%;">
+								<thead>
+								<tr>
+
+								</tr>
+								</thead>
+								<tbody>
+
+								</tbody>
+							</table>
+						</div>
+						<div id="hourDiv" class="tab-pane fade" style="overflow:auto;height:100%;">
+							<table id="hourTable" class="table" style="height: 100%;width: 100%;">
+								<thead>
+								</thead>
+								<tbody>
+
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	let currentPanel = null;
+	let currentDataPanel = null;
+	let logOldData = null;
+	let calculatorTree = null;
+	let codeIdx = 0;
+
+	let pEleFlag = "pdl";//101 70
+	let fEleFlag = "fdl";//102 71
+	let gEleFlag = "gdl";//103 72
+	let jEleFlag = "jdl";//104 73
+	let sgEleFlag = "sgdl";//105 76
+
+	let sumEleFlag = "rdl";//106 79
+	let startEleFlag = "qsbds";
+	let endEleFlag = "zzbds";
+
+	let pBillFlag = "psy";//111 44
+	let fBillFlag = "fsy";//112 45
+	let gBillFlag = "gsy";//113 46
+	let jBillFlag = "jsy";//114 47
+	let sgBillFlag = "sgsy";//115 50
+	let sumBillFlag = "rsy";//116 48
+
+	let pdjFlag = "pdj";
+	let fdjFlag = "fdj";
+	let gdjFlag = "gdj";
+	let jdjFlag = "jdj";
+	let sgdjFlag = "sgdj";
+
+	let flagList = [];
+	let flagList2 = [];
+	let elecFlags = [];
+	let profitFlags = [];
+	let priceFlags = [];
+
+	let flagValueMap = {};
+
+	let signTree = null;
+	let snameTree = null;
+	let otherDataTree = null;
+	let priceTimeMap = {};
+
+	$(function() {
+
+		if(kwhFlags.hasOwnProperty("isDeepValleyPartShow") && kwhFlags.isDeepValleyPartShow == "true"){
+			flagList = [pEleFlag,fEleFlag,gEleFlag,jEleFlag,sgEleFlag,sumEleFlag,pBillFlag,fBillFlag,gBillFlag,jBillFlag,sgBillFlag,sumBillFlag,pdjFlag,fdjFlag,gdjFlag,jdjFlag,sgdjFlag,startEleFlag,endEleFlag];
+			flagList2 = [pBillFlag,fBillFlag,gBillFlag,jBillFlag,sgBillFlag,sumBillFlag,pEleFlag,fEleFlag,gEleFlag,jEleFlag,sgEleFlag,sumEleFlag,pdjFlag,fdjFlag,gdjFlag,jdjFlag,sgdjFlag,startEleFlag,endEleFlag];
+			elecFlags = [pEleFlag,fEleFlag,gEleFlag,jEleFlag,sgEleFlag,sumEleFlag,startEleFlag,endEleFlag];
+			profitFlags = [pBillFlag,fBillFlag,gBillFlag,jBillFlag,sgBillFlag,-1];
+			priceFlags = [pdjFlag,fdjFlag,gdjFlag,jdjFlag,sgdjFlag,-1];
+
+		}else{
+			flagList = [pEleFlag,fEleFlag,gEleFlag,jEleFlag,sumEleFlag,pBillFlag,fBillFlag,gBillFlag,jBillFlag,sumBillFlag,pdjFlag,fdjFlag,gdjFlag,jdjFlag,startEleFlag,endEleFlag];
+			flagList2 = [pBillFlag,fBillFlag,gBillFlag,jBillFlag,sumBillFlag,pEleFlag,fEleFlag,gEleFlag,jEleFlag,sumEleFlag,pdjFlag,fdjFlag,gdjFlag,jdjFlag,startEleFlag,endEleFlag];
+			elecFlags = [pEleFlag,fEleFlag,gEleFlag,jEleFlag,sumEleFlag,startEleFlag,endEleFlag];
+			profitFlags = [pBillFlag,fBillFlag,gBillFlag,jBillFlag,-1];
+			priceFlags = [pdjFlag,fdjFlag,gdjFlag,jdjFlag,-1];
+
+			$("#sgPriceTd").css("display","none");
+			$("#sgPriceValueTd").css("display","none");
+		}
+
+		initFlagMap();
+		get_promapper_result("getCalculatorType", null, function(data) {
+			if(!data){
+				data = [];
+			}
+			let str = "";
+			for(var i in data){
+				str += "<option value='"+data[i].id_+"'>"+data[i]["name"+getLanIndex()+"_"]+"</option>";
+			}
+			$("[name=typeSelect]").html(str);
+			query();
+		});
+	});
+	function initFlagMap(){
+
+		flagValueMap[pEleFlag] = kwhFlags.FLAG_HISDATA_DAYKWH_ELEC_1;
+		flagValueMap[fEleFlag] = kwhFlags.FLAG_HISDATA_DAYKWH_ELEC_2;
+		flagValueMap[gEleFlag] = kwhFlags.FLAG_HISDATA_DAYKWH_ELEC_3;
+		flagValueMap[jEleFlag] = kwhFlags.FLAG_HISDATA_DAYKWH_ELEC_4;
+		flagValueMap[sgEleFlag] = kwhFlags.FLAG_HISDATA_DAYKWH_ELEC_5;
+
+		flagValueMap[sumEleFlag] = kwhFlags.FLAG_HISDATA_DAYKWH_ELEC;
+		flagValueMap[startEleFlag] = kwhFlags.FLAG_HISDATA_DAYKWH_START_CODE;
+		flagValueMap[endEleFlag] = kwhFlags.FLAG_HISDATA_DAYKWH_END_CODE;
+
+		flagValueMap[pBillFlag] = kwhFlags.FLAG_HISDATA_DAYKWH_BILL_1;
+		flagValueMap[fBillFlag] = kwhFlags.FLAG_HISDATA_DAYKWH_BILL_2;
+		flagValueMap[gBillFlag] = kwhFlags.FLAG_HISDATA_DAYKWH_BILL_3;
+		flagValueMap[jBillFlag] = kwhFlags.FLAG_HISDATA_DAYKWH_BILL_4;
+		flagValueMap[sgBillFlag] = kwhFlags.FLAG_HISDATA_DAYKWH_BILL_5;
+
+		flagValueMap[sumBillFlag] = kwhFlags.FLAG_HISDATA_DAYKWH_BILL_SUM;
+
+		flagValueMap[pdjFlag] = kwhFlags.FLAG_HISDATA_DAYKWH_PRICE_1;
+		flagValueMap[fdjFlag] = kwhFlags.FLAG_HISDATA_DAYKWH_PRICE_2;
+		flagValueMap[gdjFlag] = kwhFlags.FLAG_HISDATA_DAYKWH_PRICE_3;
+		flagValueMap[jdjFlag] = kwhFlags.FLAG_HISDATA_DAYKWH_PRICE_4;
+		flagValueMap[sgdjFlag] = kwhFlags.FLAG_HISDATA_DAYKWH_PRICE_5;
+	}
+	function DataPanel(id,data) {
+		let container = $("#" + id);
+		let dayTable = $("#dayTable tbody");
+		let dayTableHead = $("#dayTable thead tr");
+		let monTable = $("#monTable tbody");
+		let monTableHead = $("#monTable thead tr");
+		let hourTable = $("#hourTable tbody");
+		let hourTableHead = $("#hourTable thead");
+		let dayDataDs = [];
+
+		init();
+
+		function init() {
+			$('#dayPicker').datepicker({
+				format: 'yyyy-mm-dd',
+				language: localStorage["cLan"] == "cn" ?"zh-CN":"",
+				startView:0,
+				forceParse: false,
+				autoclose: true,
+				minViewMode: 0,
+				maxViewMode: 2,
+				maxDate:new Date()
+			});
+			$('#dayPicker').val(new Date().DateAdd("d",-1).Format("yyyy-MM-dd"));
+			$("[name=refreshBtn]").on("click",function(){
+				refresh();
+			});
+			$('#dayStart').html(getDayStart());
+			refresh();
+			return this;
+		}
+		function setData(ds){
+			data = ds;
+			refresh();
+			return this;
+		}
+		function refresh() {
+			//查找@{}
+			let flagMap = {};
+			let station = [];
+			let kwh_time_part = false;
+			let flags = [];
+
+			for(let flag in data.formulaMap){
+				flags.push(flag);
+				let text = data.formulaMap[flag];
+				const regex = new RegExp("@\\{([^}]+)}", "ig");
+				const res = text.matchAll(regex);
+				let i = 0;
+				for (const iterator of res) {
+					let arr = iterator[1].split(",");
+					switch (arr[0]) {
+						case "kwh_tbl":{
+							let sname = arr[1];
+							let flag =  arr[2];
+							if(!flagMap[flag]){
+								flagMap[flag] = [];
+							}
+							if(flagMap[flag].indexOf(sname) == -1){
+								flagMap[flag].push(sname);
+							}
+							break;
+						}
+						case "station":
+							station.push(arr[1]);
+							break;
+						case "price":
+							kwh_time_part = true;
+							break;
+					}
+				}
+			}
+
+			if(data.sname && data.sname.length > 0){
+				for(let i=0;i<flags.length;i++){
+					let flag = flags[i];
+					if(!flagMap[flag]){
+						flagMap[flag] = [data.sname];
+					}else if(flagMap[flag].indexOf(data.sname) == -1){
+						flagMap[flag].push(data.sname);
+					}
+				}
+			}
+			loadDayTable(data, flagMap);
+			loadMonTable();
+			if(flagMap[sumEleFlag]){
+				loadHourTable(data,flagMap[sumEleFlag]);
+				$("#hourTab").show();
+			}else{
+				$("#hourTab").hide();
+			}
+
+			setPriceDiv();
+		}
+		function loadHourTable(ds,kwhSnames) {
+			let jzz = getLangData("common.jzz");
+			let dayStart = getDayStart();
+
+			let str = "<tr><td>"+getLangData("Strategy.ctlparamname")+"</td>";
+			for(let i=dayStart+1;i<=24+dayStart;i++){
+				let hour = i%24;
+				if(hour == 0){
+					hour = 24;
+				}
+				str += "<td name='"+hour+"'>"+hour+"</td>";
+			}
+			str += "</tr>";
+			hourTableHead.html(str);
+
+			str = "";
+			let sname = ds.sname;
+			for(let i=0;i<kwhSnames.length;i++){
+				let kwhSname = kwhSnames[i];
+				let cls = "";
+				if(kwhSname.indexOf(sname) > -1 && sname != ''){
+					cls = "currentRow";
+				}
+				let temp = "<tr class='"+cls+"'><td id='hourTb_"+kwhSname+"_name'>"+kwhSname+"</td>";
+				for(let i=dayStart+1;i<=24+dayStart;i++){
+					let hour = i%24;
+					if(hour == 0){
+						hour = 24;
+					}
+					temp += "<td id='hourTb_"+kwhSname+"_"+hour+"'>"+jzz+"</td>";
+				}
+				str += temp+"</tr>";
+			}
+			hourTable.html(str);
+
+			loadHourTableData(ds,kwhSnames,dayStart);
+		}
+		function loadHourTableData(ds,kwhSnames,dayStart) {
+			dayDataDs = [];
+			let i=0;
+			let beginTime = $('#dayPicker').val();
+			let endTime = new Date(beginTime).DateAdd("d",1).Format("yyyy-MM-dd");
+			//拿到这些sname的所有的0数据
+			$.ajax({
+				url: "getYcYxKwhCurves",
+				type: "post",
+				data: {
+					"snames": kwhSnames.join(","),
+					"dateStart": beginTime.substr(0,10)+" "+(dayStart+1).padLeft(2,"0")+":00:00",
+					"dateEnd": endTime.substr(0,10)+" "+dayStart.padLeft(2,"0")+":00:00",
+					"tblFlag": 2,
+					"kwhFlag": kwhFlags.FLAG_HISDATA_HOURKWH_ELEC,
+					"interval": '1h'
+				},
+				success: function (result) {
+					if (result.success != "true") {
+						console.log(result.errStr);
+					}
+					let obj = result.resultObject ? result.resultObject : {};
+					let map = {};
+					for (var key in obj) {
+						let oneData = obj[key];
+						let datalist = oneData.data;
+						let name = oneData.name_+"\r\n"+oneData.code_;
+						if(!map[name]){
+							map[name] = {};
+						}
+						for (var j = 0; j < datalist.length; j++) {
+							map[name][parseInt(datalist[j].point)] = parseFloat(datalist[j].dataVal).toFixed(2);
+						}
+					}
+
+					let sname = ds.sname;
+					for(let name in map){
+						let flagDataObj = map[name];
+						let cls = "";
+						if(name.indexOf(sname) > -1 && sname != ''){
+							cls = "currentRow";
+						}
+						let code = name.split("\r\n");
+						code = code[code.length-1];
+						document.getElementById("hourTb_"+code+"_name").innerText = name;
+						for(let i=1;i<=24;i++){
+							let hour = i;
+							document.getElementById("hourTb_"+code+"_"+hour).innerText = (flagDataObj && flagDataObj[hour])?flagDataObj[hour]:"-";
+						}
+					}
+				}});
+		}
+		function loadDayTable(ds, flagMap) {
+			let str0 = '<td>'+getLangData("Strategy.ctlparamname")+'</td>';
+			for(let i=0;i<flagList.length;i++){
+				let flag = flagList[i];
+				str0 += '<td name="'+flag+'" class="'+getFlagCls(flag)+'">'+getFlagName(flag)+'</td>';
+			}
+			dayTableHead.html(str0);
+
+			let jzz = getLangData("common.jzz");
+			let i=0;
+			for(let flag in flagMap){
+				i = 1;break;
+			}
+			if (ds.tables.indexOf("daypdata") == -1 && i==0) {
+				dayTable.html(getLangData("paginator.noDate"));
+				return;
+			}
+			let str = "";
+			let sname = ds.sname;
+			let kwhSnames = {};
+			for(let flag in flagMap){
+				for(let i=0;i<flagMap[flag].length;i++){
+					if(!kwhSnames[flagMap[flag][i]]){
+						kwhSnames[flagMap[flag][i]] = 1;
+					}
+				}
+			}
+			for(let kwhSname in kwhSnames){
+				let cls = "";
+				if(kwhSname.indexOf(sname) > -1 && sname != ''){
+					cls = "currentRow";
+				}
+				let temp = "<tr class='"+cls+"'><td id='dayTb_"+kwhSname+"_name'>"+kwhSname+"</td>";
+				for(let j in flagList){
+					let flag = flagValueMap[flagList[j]];
+					temp += "<td id='dayTb_"+kwhSname+"_"+flag+"'>"+jzz+"</td>";
+				}
+				str += temp+"</tr>";
+			}
+			dayTable.html(str);
+			loadDayTableData(ds,flagMap);
+		}
+		function loadDayTableData(ds, flagMap) {
+			dayDataDs = [];
+
+			let beginTime = $('#dayPicker').val();
+			let day = parseInt(beginTime.split("-")[2]);
+			let kwhSnames = [];
+			for(let flag in flagMap){
+				kwhSnames.push(flagMap[flag]);
+			}
+			let flagValueList = [];
+			for(let i=0;i<flagList.length;i++){
+				flagValueList.push(flagValueMap[flagList[i]]);
+			}
+			$.ajax({
+				url: "getYcYxKwhCurves",
+				type: "post",
+				data: {
+					"snames": kwhSnames.join(","),
+					"dateStart": beginTime.substr(0,7),
+					"dateEnd": beginTime.substr(0,7),
+					"tblFlag": 2,
+					"kwhFlag":flagValueList.join(","),
+					"interval": '1d'
+				},
+				success: function (result) {
+					if (result.success != "true") {
+						console.log(result.errStr);
+					}
+					let obj = result.resultObject ? result.resultObject : {};
+
+					let map = {};
+					for (var key in obj) {
+						let oneData = obj[key];
+						let datalist = oneData.data;
+						let name = oneData.name_+"\r\n"+oneData.code_;
+						if(!map[name]){
+							map[name] = {};
+						}
+						for (var j = 0; j < datalist.length; j++) {
+							/*if(datalist[j].name != ds.sname && datalist[j].flag <=48){//只有目标值显示收益
+								continue;
+							}*/
+							if(parseInt(datalist[j].point) == day){
+								map[name][datalist[j].flag] = parseFloat(datalist[j].dataVal).toFixed(2);
+							}
+						}
+					}
+					let sname = ds.sname;
+					for(let name in map){
+						let flagDataObj = map[name];
+						let cls = "";
+						if(name.indexOf(sname) > -1 && sname != ''){
+							cls = "currentRow";
+						}
+						let code = name.split("\r\n")[1];
+						let ele = document.getElementById("dayTb_"+code+"_name");
+						if(ele == null){
+							continue;
+						}
+						ele.innerText = name;
+						for(let j in flagList){
+							let flag = flagValueMap[flagList[j]];
+							document.getElementById("dayTb_"+code+"_"+flag).innerText = (flagDataObj[flag])?flagDataObj[flag]:"-";
+						}
+					}
+				}});
+		}
+		function loadMonTable(){
+			let str0 = '<td>'+getLangData("elecData.rq")+'</td>';
+			for(let i=0;i<flagList.length;i++){
+				let flag = flagList[i];
+				str0 += '<td name="'+flag+'" class="'+getFlagCls(flag)+'">'+getFlagName(flag)+'</td>';
+			}
+			monTableHead.html(str0);
+
+
+			let jzz = getLangData("common.jzz");
+			let str = "";
+			if(data.sname){
+				//i=0是全月的数据
+				for(let i=0;i<=new Date($("#dayPicker").val()).MaxDayOfDate();i++){
+					let sdate = i;
+					let sdateName = sdate+getLangData("profitset.r");
+					if(i == 0){
+						sdateName = getLangData("profitset.zy");
+					}
+					let temp = "<tr name='"+sdate+"'><td>"+sdateName+"</td>";
+					for(let j=0;j<flagList.length;j++){
+						let flag = flagValueMap[flagList[j]];
+						temp += "<td id='monTb_"+sdate+"_"+flag+"'>"+jzz+"</td>";
+					}
+					temp += "</tr>";
+					str += temp;
+				}
+				monTable.html(str);
+				loadMonTableData();
+			}else{
+				monTable.html(str);
+			}
+		}
+		function loadMonTableData(){
+			if(data.sname){
+				let beginTime = $('#dayPicker').val();
+				let mon = parseInt(beginTime.split("-")[1]);
+				let sname = data.sname;
+				let flags = [];
+				for(let flag in data.formulaMap){
+					flags.push(flagValueMap[flag]);
+				}
+				//查找每日数据
+				$.ajax({
+					url: "getYcYxKwhCurves",
+					type: "post",
+					data: {
+						"snames": sname,
+						"dateStart": beginTime.substr(0,7),
+						"dateEnd": beginTime.substr(0,7),
+						"tblFlag": 2,
+						"kwhFlag":flags.join(",")
+					},
+					success: function (result) {
+						if (result.success != "true") {
+							console.log(result.errStr);
+						}
+						let obj = result.resultObject ? result.resultObject : {};
+						if(obj[sname] && obj[sname].data && obj[sname].data.length > 0){
+							//遍历每一个date的每一个flag
+							let map = {};
+							for(let i=0;i<obj[sname].data.length;i++) {//找到每天月份的值
+								let sdate = parseInt(obj[sname].data[i].point);
+								let flag = obj[sname].data[i].flag;
+								if(!map[sdate]){
+									map[sdate] = {};
+								}
+								map[sdate][flag] = obj[sname].data[i].dataVal;
+							}
+							for(let i=1;i<=new Date(beginTime).MaxDayOfDate();i++) {
+								let sdate = i;
+								let mapd = map[sdate]?map[sdate]:{};
+								for (let j = 0; j < flagList.length; j++) {
+									let flag = flagValueMap[flagList[j]];
+									let data = mapd.hasOwnProperty(flag)?mapd[flag]:"-";
+									document.getElementById("monTb_"+sdate+"_"+flag).innerText = data;
+								}
+							}
+						}
+					}
+				});
+				let queryTime = beginTime+" 00:00:00";
+				//查找整月数据
+				$.ajax({
+					url: "getYcYxKwhRealData",
+					type: "post",
+					data: {
+						"kwhSnames": sname,
+						"kwhType":3,//月累计值
+						"datetimes":queryTime,
+						"kwhFlag": flags.join(",")
+					},
+					success: function (result) {
+						if (result.success != "true") {
+							console.log(result.errStr);
+						}
+						let obj = result.resultObject2 ? result.resultObject2 : {};
+						if(obj[sname] && obj[sname].hisData){
+							//找到对应月份的值
+							let datetime = beginTime+" 00:00:00";
+
+							for (let j = 0; j < flagList.length; j++) {
+								let flag = flagValueMap[flagList[j]];
+								let ds = obj[sname].hisData.hasOwnProperty(flag)?obj[sname].hisData[flag]: {};
+								let d = ds[queryTime]?ds[queryTime]:"-";
+								document.getElementById("monTb_0_"+flag).innerText = d;
+							}
+						}
+					}
+				});
+			}
+		}
+		function setPriceDiv() {
+			let dates = $("#dayPicker").val().split("-");
+			var proc_str = "procStrategyGetSelfUseSet('" + getCStationCd() + "',"+dates[0]+","+dates[1]+")";
+			get_string_result(proc_str, function(data) {
+				if (data == null || data == 'null' || data == undefined || data.length == 0) {
+					data = [];
+				}
+				let dsList = [0,0,0,0,0];
+				priceTimeMap = {};
+				for(let i=0;i<data.length;i++){
+					dsList[data[i].partition_type_] = data[i].rate_;
+					if(i==0){
+						dsList[5] = data[0].sellPrice_;
+					}
+					for(let j=data[i].start_hour_+1;j<=data[i].terminat_hour_;j++){
+						priceTimeMap[j] = data[i].partition_type_;
+					}
+				}
+				$("#priceDiv").find("[name=p]").html(dsList[0]);
+				$("#priceDiv").find("[name=f]").html(dsList[1]);
+				$("#priceDiv").find("[name=g]").html(dsList[2]);
+				$("#priceDiv").find("[name=j]").html(dsList[3]);
+				$("#priceDiv").find("[name=sg]").html(dsList[4]);
+				$("#priceDiv").find("[name=m]").html(dsList[5]);
+
+				let tds = $("#hourTable thead tr td");
+				for(let i=0;i<tds.length;i++){
+					let td = $(tds[i]);
+					let hour = td[0].innerText;
+					let cls = "";
+					if(priceTimeMap.hasOwnProperty(hour)){
+						let type = priceTimeMap[hour];
+						switch (type){
+							case 0:cls="pcolor";break;
+							case 1:cls="fcolor";break;
+							case 2:cls="gcolor";break;
+							case 3:cls="jcolor";break;
+							case 4:cls="sgcolor";break;
+							default:cls = "";
+						}
+					}
+					td.addClass(cls);
+				}
+			}, "json");
+		}
+
+		return {
+			setData:setData,
+			refresh:refresh
+		}
+	}
+	function CaculatorPanel(id,data){
+		let container = $("#"+id);
+		var codeEle = container.find("[name=code]");
+		var nameEle = container.find("[name=name]");
+		var snameEle = container.find("[name=sname]");
+		var typeSelectEle = container.find("[name=typeSelect]");
+
+		let copyRowData = null;
+
+		init();
+		function init(){
+			initSignTree();
+			initRtuSelect();
+			initOtherDataTree();
+			$("#nameFilter").on("change",function(){
+				nameFilter();
+			})
+			setData(data);
+			return this;
+		}
+
+		function setData(ds) {
+			codeEle.val(ds.code);
+			nameEle.val(ds.name);
+			snameEle.val(ds.sname?ds.sname:"");
+			typeSelectEle.val(ds.type);
+
+			let temp = '<tr name="flagTemp">' +
+					'<td><a class="btn" name="copyOne" title="copy" style="color:#d5d5d5"><i class="fa fa-copy"></i></a>' +
+					'<a class="btn" name="pasteOne" title="paste" style="color:#d5d5d5"><i class="fa fa-paste"></i></a>' +
+					'</td>' +
+					'<td><input name="flag" type="checkbox" value="flagTemp"><span>nameTemp</span></td>' +
+					'<td>' +
+					'<textarea name="editor" class="editable" row="2" style="width:100%;"></textarea>' +
+					'<div name="editor2" style="width:100%;font-weight:bolder;"></div>' +
+					'</td>' +
+					'</tr>';
+			let tbody = $("#table1Body");
+			str = "";
+			for(let i=0;i<flagList2.length;i++){
+				let flag = flagList2[i];
+				str += temp.replaceAll("flagTemp",flag).replaceAll("nameTemp",getFlagName(flag));
+			}
+			tbody.html(str);
+
+			for(let i=0;i<flagList2.length;i++){
+				let flag = flagList2[i];
+				let editor2List = tbody.find("tr[name="+flag+"] [name=editor2]");
+				new TEXT(tbody.find("tr[name="+flag+"] [name=editor]"),editor2List).setValue(ds.formulaMap[flag]?ds.formulaMap[flag]:"");
+			}
+
+			for(let flag in ds.formulaMap) {
+				container.find("[name=flag][value="+flag+"]").prop("checked",true);
+			}
+			addListener();
+		}
+		function addListener(){
+			container.find("[name=copyOne]").on("click",function(e){
+				copyRowData = $(e.currentTarget).parent().parent().find("[name=editor]").val();
+			});
+			container.find("[name=pasteOne]").on("click",function(e){
+				if(!copyRowData){
+					sweetAlert(getLangData("Strategy.qxfzsj"));
+					return;
+				}
+				let tr = $(e.currentTarget).parent().parent();
+				let flag = tr.attr("name");
+				//标志替换
+				tr.find("[name=editor]").val(replaceFlag(copyRowData,flag));
+				tr.find("[name=editor]").change();
+			});
+		}
+		function replaceFlag(text,flag){
+			let idx = -1;
+			if(profitFlags.indexOf(flag) > -1){
+				idx = profitFlags.indexOf(flag);
+			}else if(elecFlags.indexOf(flag) > -1){
+				idx = elecFlags.indexOf(flag);
+			}else if(priceFlags.indexOf(flag) > -1){
+				idx = priceFlags.indexOf(flag);
+			}
+			let targetElecFlag = elecFlags[idx];
+			let targetPriceFlag = priceFlags[idx];
+
+			if(idx > -1){
+				//找到所有的电度kwh_tbl，后面的替换成目标电度
+				const regex = new RegExp("@\\{kwh_tbl,([^}]+)}","ig");
+				const res = text.matchAll(regex);
+				for(const iterator of res) {
+					let ss = iterator[1].split(",");
+					text = text.replace(iterator[0],"@{kwh_tbl,"+ss[0]+","+targetElecFlag+"}");
+				}
+				//找到所有的时段电价kwh_tbl，后面的替换成目标电价
+				const regex2 = new RegExp("@\\{price,([^}]+)}","ig");
+				const res2 = text.matchAll(regex2);
+				for(const iterator of res2) {
+					let ss = iterator[1].split(",");
+					text = text.replace(iterator[0],"@{price,"+ss[0]+","+targetPriceFlag+"}");
+				}
+			}
+
+			return text;
+		}
+		function getData(){
+			let formulaMap = {};
+
+			let flagsEle = container.find("input[name=flag][type=checkbox]:checked");
+			for(let i=0;i<flagsEle.length;i++){
+				let flag = flagsEle[i].value;
+				formulaMap[flag] =  container.find("tr[name="+flag+"] [name=editor]").val();
+			}
+
+			return {
+				code:codeEle.val(),
+				name:nameEle.val(),
+				sname:snameEle.val(),
+				type:typeSelectEle.val(),
+				station:localStorage["currentStationCd"],
+				tables:["daypdata","monpdata"],
+				formulaMap:formulaMap
+			};
+		}
+
+		function getId(){
+			return container.attr("id");
+		}
+		function initSignTree(){
+			let nodes = [
+				{id:0,name:getLangData("profitset.cyfh"),level:0,open:true},
+				{id:1,name:getLangData("profitset.add"),level:1,pId:0,value:"+"},
+				{id:2,name:getLangData("profitset.subtract"),level:1,pId:0,value:"-"},
+				{id:3,name:getLangData("profitset.multiplication"),level:1,pId:0,value:"*"},
+				{id:4,name:getLangData("profitset.division"),level:1,pId:0,value:"÷"},
+				{id:5,name:getLangData("profitset.remainder"),level:1,pId:0,value:"%"},
+				{id:6,name:getLangData("profitset.other"),level:0,open:true},
+				{id:7,name:getLangData("profitset.parentheses"),level:1,pId:6,value:"( )"}
+			];
+			signTree = $.fn.zTree.init($("#signTree"), getSignTreeSetting(), nodes);
+		}
+		function initOtherDataTree(){
+			let nodes = [
+				{id:0,name:getLangData("profitset.otherData"),level:0,open:true},
+				{id:1,name:getLangData("Strategy.selfusepprice"),level:1,pId:0,value:"@{price,"+localStorage["currentStationCd"]+","+pdjFlag+"}"},
+				{id:2,name:getLangData("Strategy.selfusefprice"),level:1,pId:0,value:"@{price,"+localStorage["currentStationCd"]+","+fdjFlag+"}"},
+				{id:3,name:getLangData("Strategy.selfusegprice"),level:1,pId:0,value:"@{price,"+localStorage["currentStationCd"]+","+gdjFlag+"}"},
+				{id:4,name:getLangData("Strategy.selfusejprice"),level:1,pId:0,value:"@{price,"+localStorage["currentStationCd"]+","+jdjFlag+"}"}
+			];
+			if(kwhFlags.hasOwnProperty("isDeepValleyPartShow") && kwhFlags.isDeepValleyPartShow == "true"){
+				nodes.push({id:5,name:getLangData("Strategy.selfusesgprice"),level:1,pId:0,value:"@{price,"+localStorage["currentStationCd"]+","+sgdjFlag+"}"});
+			}
+			nodes.push({id:6,name:getLangData("Strategy.selfusesellprice"),level:1,pId:0,open:true,value:"@{station,"+localStorage["currentStationCd"]+",elec_price_}"});
+			otherDataTree = $.fn.zTree.init($("#otherDataTree"), getSignTreeSetting(), nodes);
+		}
+		function getSignTreeSetting(){
+			return {
+				check: {
+					enable: false,
+					chkDisabledInherit: true,
+					nocheck: true,
+					chkDisabled: false
+				},
+				data: {
+					simpleData: {
+						enable: true
+					}
+				},
+				callback: {
+					beforeClick: function (treeId, treeNode) {
+						if (treeNode.level == 0) {
+							return false;
+						}
+						return true;
+					},
+					onClick: function (e, treeId, treeNode) {
+						$("#modelText").val(treeNode.value);
+					},
+				},
+				view: {
+					showIcon: function (treeId, treeNode) {
+						return false;
+					}
+				}
+			};
+		}
+		function getSnameTreeSetting(){
+			return {
+				check:{
+					enable:false
+				},
+				data: {
+					simpleData: {
+						enable: true
+					}
+				},
+				callback: {
+					beforeClick:function(treeId, treeNode){
+						if(treeNode.level != 2){
+							return false;
+						}
+					},
+					onClick: function(e, treeId, treeNode){
+						if(treeNode.level == 2){
+							$("#modelText").val(treeNode.value);
+						}
+					},
+				},
+				view:{
+					showIcon:false
+				}
+			};
+		}
+		function initRtuSelect(){
+			get_promapper_result("getRtuTreeByStation", localStorage["currentStationCd"]+","+localStorage["currentStationCd"], function(data) {
+				if(!data){
+					data = [];
+				}
+				let str = "";
+				for(var i in data){
+					if(data[i].level == 0){
+						continue;
+					}
+					str += "<option value='"+data[i].code+"'>"+data[i]["name"+getLanIndex()]+"</option>";
+				}
+				$("#rtuSelect").html(str);
+				initSnameTree();
+				$("#rtuSelect").on("change",function(){
+					initSnameTree();
+				});
+			});
+		}
+		function initSnameTree(){
+			let rtuId = $("#rtuSelect").val();
+			get_promapper_result("getYxYcKwhCodeListByRtu", rtuId, function(data) {
+				if(!data) {
+					data = [];
+				}
+				let zNodes = [
+					{
+						name:getLangData('energyanalyze.ddl'),
+						id:2,
+						isParent:true,
+						nocheck:true,
+						open:true
+					}/*,{
+					name:getLangData('energyanalyze.ycl'),
+					id:1,
+					isParent:true,
+					nocheck:true,
+					open:true
+				},{
+					name:getLangData('energyanalyze.yxl'),
+					id:0,
+					isParent:true,
+					nocheck:true,
+					open:true
+				}*/];
+				for(var i in data){
+					var d = data[i];
+					d.pId = d.type;
+					d.open = true;
+					d.name = d["name"+getLanIndex()];
+					//yc_tbl.yc_0_1.rawdata
+					if(d.type == 0){
+						d.value = "@{yx_tbl,"+d.code+"}";
+						//		zNodes.push(data[i]);
+					}else if(d.type == 1){
+						d.value = "@{yc_tbl,"+d.code+"}";
+						//		zNodes.push(data[i]);
+					}else if(d.type == 2){
+						//对于每一个电度，下面加上六个量
+						for(let j=0;j<elecFlags.length;j++){
+							zNodes.push({
+								pId:d.id,
+								id:d.id+"_"+elecFlags[j],
+								level:2,
+								name:getFlagName(elecFlags[j]),
+								flag:elecFlags[j],
+								value:"@{kwh_tbl,"+d.code+","+elecFlags[j]+"}"
+							});
+						}
+						zNodes.push(data[i]);
+					}
+					d.name = d.name+" "+d.code;
+				}
+				snameTree = $.fn.zTree.init($("#snameTree"), getSnameTreeSetting(), zNodes);
+				nameFilter();
+			});
+		}
+		function nameFilter(){
+			let text = $("#nameFilter").val();
+			snameTree = $.fn.zTree.getZTreeObj("snameTree");
+			let pnodes = snameTree.getNodesByParam("level",0);
+			for(let i=0;i<pnodes.length;i++){
+				let nodes = pnodes[i].children;
+				for(let j=0;j<nodes.length;j++){
+					if(nodes[j].name.indexOf(text) == -1){
+						snameTree.hideNode(nodes[j]);
+					}else{
+						snameTree.showNode(nodes[j]);
+					}
+				}
+			}
+		}
+		return {
+			init:init,
+			getData:getData,
+			setData:setData,
+			getId:getId
+		};
+	}
+	function getDayStart(){
+		let dayStart = 0;
+		let stationRoles = JSON.parse(localStorage["stationRoles"]);
+		let currentStationCd = localStorage["currentStationCd"];
+		for(let i=0;i<stationRoles.length;i++){
+			let s = stationRoles[i];
+			if(currentStationCd == s.stationCd){
+				dayStart = parseInt(s.dayStart);
+				break;
+			}
+		}
+		return dayStart;
+	}
+	function getFlagName(flag){
+		switch(flag){
+			case pEleFlag:return getLangData("profitset.sdrdlp");
+			case fEleFlag:return getLangData("profitset.sdrdlf");
+			case gEleFlag:return getLangData("profitset.sdrdlg");
+			case jEleFlag:return getLangData("profitset.sdrdlj");
+			case sgEleFlag:return getLangData("profitset.sdrdlsg");
+			case sumEleFlag:return getLangData("profitset.rljdl");
+			case startEleFlag:return getLangData("profitset.qsbds");
+			case endEleFlag:return getLangData("profitset.zzbds");
+			case pBillFlag:return getLangData("profitset.sdrsyp");
+			case fBillFlag:return getLangData("profitset.sdrsyf");
+			case gBillFlag:return getLangData("profitset.sdrsyg");
+			case jBillFlag:return getLangData("profitset.sdrsyj");
+			case sgBillFlag:return getLangData("profitset.sdrsysg");
+			case sumBillFlag:return getLangData("profitset.rljsy");
+			case pdjFlag:return getLangData("Strategy.selfusepprice");
+			case fdjFlag:return getLangData("Strategy.selfusefprice");
+			case gdjFlag:return getLangData("Strategy.selfusegprice");
+			case jdjFlag:return getLangData("Strategy.selfusejprice");
+			case sgdjFlag:return getLangData("Strategy.selfusesgprice");
+			default:
+				return "";
+		}
+	}
+	function getFlagCls(flag){
+		return "";
+		switch(flag){
+			case pEleFlag:return "pcolor";
+			case fEleFlag:return "fcolor";
+			case gEleFlag:return "gcolor";
+			case jEleFlag:return "jcolor";
+			case sgEleFlag:return "sgcolor";
+			case sumEleFlag:return "";
+			case pBillFlag:return "pcolor";
+			case fBillFlag:return "fcolor";
+			case gBillFlag:return "gcolor";
+			case jBillFlag:return "jcolor";
+			case sgBillFlag:return "sgcolor";
+			case sumBillFlag:return "";
+			case pdjFlag:return "pcolor";
+			case fdjFlag:return "fcolor";
+			case gdjFlag:return "gcolor";
+			case jdjFlag:return "jcolor";
+			case sgdjFlag:return "sgcolor";
+			default:
+				return "";
+		}
+	}
+	function query(chooseId){
+		logOldData = {year:$("#year").val(),sellPrice:0,monthData:[]};
+		//表格
+		get_promapper_result("getCalculatorByStation",getCStationCd(), function(data) {
+			if (data == null || data == 'null' || data == undefined || data.length == 0) {
+				data = [];
+			}
+			let dsList = [];
+			//按照code归类
+			for(let i=0;i<data.length;i++){
+				let d = data[i];
+				if(!dsList[d.code_]){
+					dsList[d.code_] = {
+						code:d.code_,
+						name:d.name_
+					};
+					codeIdx = Math.max(parseInt(d.code_.replace(d.station_code_+"_","")),codeIdx)+1;
+				}
+			}
+
+			let zNodes = [{
+				id:'root',
+				name:getLangData("profitset.syjsl"),
+				open:true
+			}];
+			for(let i in dsList){
+				let d = dsList[i];
+				zNodes.push({
+					id:d.code,
+					name:d.name,
+					pId:zNodes[0].id
+				});
+			}
+			calculatorTree = $.fn.zTree.init($("#calculatorTree"), getCalculatorTreeSetting(), zNodes);
+			if(zNodes.length > 1){
+				if(chooseId){
+					let nodes = calculatorTree.getNodesByParam("id",chooseId);
+					if(nodes.length > 0){
+						calculatorTree.selectNode(nodes[0]);//选择点
+						calculatorTree.setting.callback.onClick(null, calculatorTree.setting.treeId, nodes[0]);//调用事件
+						$("#rightDiv").show();
+					}
+				}else{
+					let nodes = calculatorTree.getNodesByParam("level",1);
+					calculatorTree.selectNode(nodes[0]);//选择点
+					calculatorTree.setting.callback.onClick(null, calculatorTree.setting.treeId, nodes[0]);//调用事件
+					$("#rightDiv").show();
+				}
+			}else{
+				$("#rightDiv").hide();
+			}
+		});
+	}
+	function loadRight(id){
+		get_promapper_result("getCalculatorById", getCStationCd() + "," + id, function (data) {
+			if (data == null || data == 'null' || data == undefined || data.length == 0) {
+				data = [];
+			}
+			let ds = {
+				code:"",
+				name:"",
+				sname:"",
+				type:0,
+				station:"",
+				tables:[],
+				formulaMap:{}
+			};
+			//按照code归类
+			if(data.length > 0){
+				let d = data[0];
+				ds.code = d.code_;
+				ds.name = d.name_;
+				ds.sname = d.sname_?d.sname_:"";
+				ds.station = d.station_code_;
+				ds.tables = (d.table_ && d.table_.trim().length > 0)?d.table_.split(","):[];
+				ds.formulaMap = {};
+				ds.type = d.type_;
+
+				for(let i=0;i<data.length;i++){
+					let d = data[i];
+					ds.formulaMap[d.flag_] = d.formula_;
+				}
+			}
+			logOldData = ds;
+			$("#contentDiv").removeClass("hidden");
+			if (!currentPanel) {
+				currentPanel = new CaculatorPanel("contentDiv", ds);
+				currentDataPanel = new DataPanel("tab12", ds);
+			} else {
+				currentPanel.setData(ds);
+				currentDataPanel.setData(ds);
+			}
+		});
+	}
+	function getCalculatorTreeSetting(){
+		return {
+			check: {
+				enable: false,
+				chkDisabledInherit: true,
+				nocheck: true,
+				chkDisabled: false
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+			callback: {
+				beforeClick: function (treeId, treeNode) {
+					if (treeNode.id == "root") {
+						return false;
+					}
+					return true;
+				},
+				onClick: function (e, treeId, treeNode) {
+					loadRight(treeNode.id);
+				},
+			},
+			view: {
+				showIcon: function (treeId, treeNode) {
+					return true;
+				},
+				addDiyDom: function(treeId, treeNode){
+					if (treeNode.level > 0) return;
+					var aObj = $("#" + treeNode.tId + "_a");
+					if (treeNode.level == 0) {
+						var editStr = "<span class='demoIcon' id='diyBtn_" +treeNode.id+ "' title='"+treeNode.name+"' onfocus='this.blur();'><span class='button add_ico_docu'></span></span>";
+						aObj.append(editStr);
+						var btn = $("#diyBtn_"+treeNode.id);
+						if (btn) btn.bind("click", function(){
+							var name = "new " + codeIdx;
+							var level = 1;
+							var pId = "";
+							let code = localStorage["currentStationCd"]+"_"+codeIdx++;
+							let paramObj = {
+								name:name,code:code,sname:"",station:localStorage["currentStationCd"],flag:48,table:"daypdata|monpdata",formula:" ",type:0
+							};
+							let param = "name,code,sname,station,flag,table,formula,type"
+								.replace("sname",paramObj.sname)
+								.replace("name",paramObj.name)
+								.replace("code",paramObj.code)
+								.replace("flag",paramObj.flag)
+								.replace("table",paramObj.table)
+								.replace("station",paramObj.station)
+								.replace("formula",paramObj.formula)
+								.replace("type",paramObj.type)
+							;
+							get_promapper_result("insertCalculator", param, function(data) {
+								if(data!=null){
+									query(code);
+									saveLog(null,paramObj);
+								}else{
+									sweetAlert(getLangData("knowledgemanage.xjsb"));
+									return false;
+								}
+							});
+							return false;
+						});
+					}
+				},
+			}
+		};
+	}
+	function compareWith(d1,d2){
+		let isEqual = true;
+		if(Object.prototype.toString.call(d1) != Object.prototype.toString.call(d2)){
+			return false;
+		}
+		if(Object.prototype.toString.call(d1) == "[object Object]" || Object.prototype.toString.call(d1) == "[object Array]"){
+			for(let i in d1){
+				if(d2.hasOwnProperty(i)){
+					isEqual = isEqual && compareWith(d1[i],d2[i]);
+				}else{
+					return false;
+				}
+			}
+			for(let i in d2){
+				if(!d1.hasOwnProperty(i)){
+					return false;
+				}
+			}
+		}else{
+			isEqual = d1 == d2;
+		}
+
+		return isEqual;
+	}
+	function checkError(){
+		return false;
+	}
+	function deleteProfit(){
+		swal({
+			title: getLangData("stationmanage.AreYouSureToDelete")+"?",
+			showCancelButton: true,
+			confirmButtonText: getLangData("sweetalert.ok"),
+			cancelButtonText: getLangData("sweetalert.cancel"),
+			closeOnConfirm: false
+		},
+		function() {}).then(function(isConfirm) {
+			if (isConfirm === true) {
+				let logNewData = currentPanel.getData();
+				saveLog(logNewData,null);
+				let param = "code,station"
+						.replace("station",logNewData.station)
+						.replace("code",logNewData.code);
+				get_promapper_result("deleteCalculator", param, function(data) {
+					if(data){
+						sweetAlert(getLangData("knowledgemanage.sccg"));
+						query();
+					}else{
+						sweetAlert(getLangData("knowledgemanage.scsb"));
+					}
+				});
+			}
+		});
+	}
+	function saveProfit(){
+		//判断
+		if(checkError()){
+			return;
+		}
+
+		let logNewData = currentPanel.getData();
+		let str = [];
+		for(let flag in logNewData.formulaMap){
+			str.push('("name", "code", "sname", "station_code", "flag", "table", "formula","type")'
+					.replace("sname",logNewData.sname).replace("code",logNewData.code).replace("name",logNewData.name)
+					.replace("station_code",logNewData.station).replace("table",logNewData.tables.join(","))
+					.replace("flag",flag).replace("formula",logNewData.formulaMap[flag]).replace("type",logNewData.type)
+			)
+		}
+
+		if(str.length == 0){
+			sweetAlert(getLangData("profitset.qzsxzygjsmb"));
+			return;
+		}
+
+		saveLog(logNewData);
+
+		let proc_str = "procSaveCalculatorSet('"+localStorage["currentStationCd"]+"','"+logNewData.code+"','"+str.join(",")+"')";
+		get_string_result(proc_str, function(data) {
+			if(data){
+				sweetAlert(getLangData("stationmanage.editSuccess"));
+			}else{
+				sweetAlert(getLangData("stationmanage.editFailed"));
+			};
+		}, "json");
+	}
+	function saveLog(logOldData,logNewData){
+		let ds = [logOldData,logNewData];
+		let strs = [[],[]];
+		for(let z=0;z<ds.length;z++){
+			if(!ds[z]){
+				continue;
+			}
+			for(let k in ds[z]){
+				let d = ds[z][k];
+				if(Object.prototype.toString.call(d) == "[object Array]"){
+					strs[z].push(k+":"+d.join("|"));
+				}else if(Object.prototype.toString.call(d) == "[object Object]"){
+					for(let i in d){
+						if(flagList.indexOf(i) > -1){
+							strs[z].push(getFlagName(i)+":"+d[i]);
+						}else{
+							strs[z].push(i+":"+d[i]);
+						}
+					}
+				}else{
+					strs[z].push(k+":"+d);
+				}
+			}
+		}
+		let type = "";
+		if(strs[0].length == 0){
+			type = "addProfit";
+		}else if(strs[1].length == 0){
+			type = "deleteProfit";
+		}else{
+			type = "changeProfit";
+		}
+		saveAUserLogWithData("System", "System--"+type,strs[0].join("\n"),strs[1].join("\n"));
+	}
+	function TEXT(container,container2List){
+		let _this = this;
+		this.insertValue = insertValue;
+		this.setValue = setValue;
+		init();
+		function init() {
+			container.on("change", function () {
+				let str = container.val();
+				updateHeight(str);
+				updateEditor2();
+			});
+		}
+		function setValue(str){
+			if(!str){
+				str = "";
+			}
+			updateHeight(str);
+			container.html(str);
+			updateEditor2();
+		}
+		function updateHeight(str){
+			let rows = str.split("\n").length+1;
+			let crow = parseInt(container.attr("row"));
+			if(rows > crow){
+				container.attr("row",rows);
+				container.css("height",rows*20);
+			}
+		}
+		function insertValue(str){
+			ChangeSelectedText(container[0],str);
+			updateEditor2();
+		}
+		function GetSelectedText(obj, type) {
+			var userSelection;
+			if (typeof obj.selectionStart === 'number' && typeof obj.selectionEnd === 'number') {
+				// 非IE浏览器
+				// 获取选区的开始位置
+				var startPos = obj.selectionStart,
+						// 获取选区的结束位置
+						endPos = obj.selectionEnd;
+				//console.log("非IE：")
+				//console.log("选区开始点：" + startPos + '，选区结束点：' + endPos)
+				if (type == "index") {
+					if (obj.selectionStart == obj.textLength) {
+						userSelection = "*#文本末尾#*";
+					}
+				} else {
+					userSelection = obj.value.substring(startPos, endPos)
+				}
+			} else if (document.selection) {
+				// IE浏览器
+				console.log("IE：")
+				userSelection = document.selection.createRange().text
+			}
+
+			return userSelection
+		}
+		function ChangeSelectedText(obj, str) {
+			if (window.getSelection) {
+				// 非IE浏览器
+				//console.log("非IE：")
+				obj.setRangeText(str);
+				//  在未选中文本的情况下，重新设置光标位置
+				obj.selectionStart += str.length;
+				obj.focus()
+			} else if (document.selection) {
+				// IE浏览器
+				//console.log("IE：")
+				obj.focus();
+				var sel = document.selection.createRange();
+				sel.text = str;
+			}
+		}
+		function updateEditor2(){
+			let text = container.val().trim();
+			text = updateLineFeed(text);
+			text = updateSign(text);
+			text = updateOtherData(text);
+			text = updateSname(text);
+			for(let i=0;i<container2List.length;i++){
+				$(container2List[i]).html(text);
+			}
+		}
+		function updateLineFeed(text){
+			//替换换行符
+			text = text.replaceAll("\n","<br>");
+			text = text.replaceAll(" ","<span class='blank'/>");
+			return text;
+		}
+		function updateSign(text){
+			//先把特殊字段用特殊字符代替
+			const regex = new RegExp("@\\{([^}]+)}","ig");
+			const res = text.matchAll(regex);
+			let replaceObj = {};
+			let i=0;
+			for(const iterator of res) {
+				text = text.replace(iterator[0],"$"+i+"$");
+				replaceObj["$"+i+"$"] = iterator[0];
+				i++;
+			}
+
+			let nodes = signTree.getNodesByParam("level",1);
+			for(let i=0;i<nodes.length;i++){
+				let ss = nodes[i].value.split(" ");
+				for(let j=0;j<ss.length;j++){
+					if(text.indexOf(ss[j]) > -1){
+						text = text.replaceAll(ss[j],"<span class='sign'>"+ss[j]+"</span>");
+					}
+				}
+			}
+
+			//恢复特殊字符
+			for(let i in replaceObj){
+				text = text.replace(i,replaceObj[i]);
+			}
+			return text;
+		}
+		function updateOtherData(text){
+			let nodes = otherDataTree.getNodesByParam("level",1);
+			for(let i=0;i<nodes.length;i++){
+				if(text.indexOf(nodes[i].value) > -1){
+					text = text.replaceAll(nodes[i].value,"<code>"+nodes[i].name+"</code>");
+				}
+			}
+			return text;
+		}
+		function updateSname(text){
+			const regex = new RegExp("@\\{([^}]+)}","ig");
+			const res = text.matchAll(regex);
+			let arr = {};
+			let ycSnames = [];
+			let yxSnames = [];
+			let kwhSnames = [];
+			for(const iterator of res){
+				let sps = iterator[1].split(",");
+				if(sps.length > 1){
+					switch (sps[0]){
+						case "yc_tbl":ycSnames.push(sps[1]);arr[iterator[0]] = 1;break;
+						case "yx_tbl":yxSnames.push(sps[1]);arr[iterator[0]] = 1;break;
+						case "kwh_tbl":kwhSnames.push(sps[1]);arr[iterator[0]] = 1;break;
+					}
+				}
+			}
+			for(let code in arr){
+				let ss = code.substr(2,code.length-3).split(",");
+				text = text.replaceAll(code,"<code><span name='"+ss[1]+"'>-</span><span>→"+getFlagName(ss[2])+"</span></code>");
+			}
+			//查到所有的code
+			$.ajax({
+				url: "getYcYxKwhInfo",
+				type: "post",
+				data: {
+					"ycSnames": ycSnames.join(","),
+					"yxSnames": yxSnames.join(","),
+					"kwhSnames": kwhSnames.join(",")
+				},
+				success: function (result) {
+					if(result.success != "true"){
+						sweetAlert(result.errStr?result.errStr:"");
+					}
+					let objs = [result.resultObject,result.resultObject1,result.resultObject2];
+					for(let j in objs){
+						let obj = objs[j]?objs[j]:[];
+						for(let i in obj){
+							for(let j=0;j<container2List.length;j++){
+								$(container2List[j]).find("[name='"+i+"']").html(obj[i]["name"+getLanIndex()+"_"]);
+							}
+						}
+					}
+				}
+			});
+			return text;
+		}
+		return {
+			setValue:setValue,
+			insertValue:insertValue
+		};
+	}
+
+	function calcCalculator(dayOrMonth,pointCalc){
+		sweetAlert(getLangData("profitset.jsknxyjfz"));
+		$.ajax({
+			url: "calcCalculator",
+			type: "post",
+			data:{
+				date:$("#dayPicker").val(),
+				dayOrMonth:dayOrMonth,
+				calculatorCode:pointCalc?$.fn.zTree.getZTreeObj("calculatorTree").getSelectedNodes()[0].id:null
+			},
+			success: function (result) {
+				if(result.success != "true"){
+					sweetAlert(result.errStr?result.errStr:getLangData("profitset.jssb"));
+				}else{
+					sweetAlert(getLangData("profitset.jswc"));
+					currentDataPanel.refresh();
+				}
+			}
+		});
+	}
+</script>
+
+</body>
+</html>

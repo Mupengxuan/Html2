@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>一致性分析页面</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta name="description" content="">
+    <div id="breadcrumb">
+        <ul class="breadcrumb" style="border:0px">
+            <li style="color:white;" i18n="cst.chuneng">
+                <i class="fa fa-home" style="color:white;"></i> 储能
+            </li>
+            <li class="active" style="color:white;" i18n="cst.fenxi">
+                一致性分析
+            </li>
+        </ul>
+    </div>
+    <div class="col-md-12 ">
+        <div id="treeDiv" class="col-md-2 panel panel-default "
+             style="height:100%;overflow:auto;margin-top:10px; margin-bottom:0;">
+            <label1 i18n="cst.cndy" style="float:left ;margin-right: 8px;line-height: 33px;font-size: 15px;">cndy：
+            </label1>
+                <div style="font-size: 15px;">
+                    <select id="SEUnit" name="SEUnit" onchange="setDevTree();">
+                        <option value='CNDY_0'>储能单元1号</option>
+                        <option value='CNDY_1'>储能单元2号</option>
+                    </select>
+                </div>
+
+            <div id="menuTreeBox" class="cy-tree " style="background-color: transparent">
+                <ul id="devTree" class="ztree">
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-10 " style="overflow:hidden;margin-top:10px;height: 100% " id="right-content">
+            <div class="panel panel-default">
+                <div class="panel-heading" style="color:white;" i18n="elecData.cxtj">
+                    查询条件
+                </div>
+                <div class="panel-body " style="padding-bottom:5px;">
+                    <div class="row">
+                        <form class="form-horizontal col-md-8" id="queryCondition" method="post">
+                            <div class="row" id="form">
+
+                                <div class="form-group col-md-4 hidden">
+                                    <label class="col-lg-3 control-label ">
+                                        设备代码
+                                    </label>
+                                    <div class="col-lg-9">
+                                        <SELECT type="text" class="form-control select" id="selDev"
+                                                name="selDev"></SELECT>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4" id="operateBeginTime">
+                                    <label class="col-lg-3 control-label cy-nopaddingright "
+                                           i18n="elecData.rq">日期 </label>
+                                    <div class="col-lg-9">
+                                        <div class="input-group">
+                                            <div class="datepicker_div" style="height: 34px; float:left; ">
+                                                <span onclick="$(this).next().focus()"><i
+                                                        class="fa fa-calendar"></i></span>
+                                                <input type="text" class="datepicker form-control" name="beginTime"
+                                                       id="beginTime" style="width: calc(95% - 34px);"
+                                                       autocomplete="off">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
+                        <div class="form-group col-md-3">
+                            <!-- 查询 -->
+                            <a type="submit" class="btn btn-info btn-sm" i18n="alarm.cx" id="queryBtn"><i class="fa fa-search"></i>
+                                查询</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <ul id="myTab" class="nav nav-tabs">
+                <li class="current">电压V</li>
+                <li>温度T</li>
+            </ul>
+            <div id="myTabContent1" class="tab-content" style="height:calc( 100% - 10px);overflow-y: auto;">
+                <div id="chart0" style="padding-top:10px;padding-left:10px;height: 220px;width: 100%; float: left";>
+                    1
+                </div>
+                <div id="chaert1" style="padding-top:10px;padding-left:10px;height:220px;width: 100%; float: left";>
+                    2
+                </div>
+            </div>
+        </div>
+    </div>
+</head>
+<body>
+<script>
+    var unitse =null;
+    var  Unit =null;
+    var echartCmp1 = null;
+    var echartCmp0 = null;
+    var echartCmp2 = null;
+    var chartContainerId = "";
+    var chartContainerId1 = "";
+    var chartContainerId2 = "";
+    var currentTable = null;
+    var treenodeId = null;
+    var currentLineCodes = null;
+    var currentLineCodes1 = null;
+    var currentLineCodes2 = null;
+    //var clcArr =[];
+    var sname = [];
+    var devcode =null;
+    var data1=null;
+    var data2 =null;
+    var idx =0;
+    // var ecmp =null;
+    $(function () {
+        console.log("一致性");
+        $('.datepicker').datepicker({
+            format: 'yyyy-mm-dd',
+            setEndDate: new Date(),
+            language: "zh-CN",
+            autoclose: true,
+            startView: 0
+        });
+        $("#beginTime").val(new Date().Format("yyyy-MM-dd"));
+
+        initSEUnit();
+        initDevTree();
+        loadTab();
+
+        // 查询按钮点击跳转
+        $("#queryBtn").click(function () {
+            loadTab();
+        });
+    });
+     //根据电站初始化储能单元下拉框
+    function initSEUnit() {
+        get_promapper_result("initUnit", localStorage["currentStationCd"], function(data) {
+            var unitse = $('#SEUnit');
+            unitse.empty();
+            if (data != null) {
+                for (var i = 0; i < data.length; i++) {
+                    option = "<option value='" + data[i].code_ + "' >" + data[i].name + "</option>";
+                    unitse.append(option);
+                }
+            }
+        });
+    }
+//根据厂站和储能单元初始化zTree
+    function initDevTree() {
+        var Unit = $("#SEUnit").val();
+        get_promapper_result("getDevTreeByStationCodeAndUnit", localStorage["currentStationCd"] + "," + Unit, function (data) {
+            if (data != null) {
+                var zNodes = data;
+            }
+            devTree = $.fn.zTree.init($("#devTree"), getDevTreeSetting(), zNodes);
+            var nodes = devTree.transformToArray(devTree.getNodes());
+            devTree.expandNode(nodes[0], true);
+            for (let i=0;i<nodes.length; i++) {
+                if (nodes[i]!=null && nodes[i].device_type_ ==3 ){
+                    devTree.selectNode(nodes[i]);
+                    devTree.setting.callback.onClick(null, "devTree", nodes[i]);
+                    loadTab();
+                    return
+                }
+            }
+            devTree.expandNode(nodes[0], true);
+            // get_tree_click(zNodes,devTree);
+         //   var currNode=devTree.selectNode(nodes[2]);
+          /*  devTree.selectNode(nodes[2]);
+            devTree.setting.callback.onClick(null, "devTree", nodes[2]);
+            loadTab();*/
+        });
+    }
+//设置树的setting
+    function getDevTreeSetting() {
+        return {
+            check: {
+                enable: false,
+                chkDisabledInherit: true,
+                nocheck: true,
+                chkDisabled: false
+            },
+            data: {
+                simpleData: {
+                    enable: true,
+                    idKey: "id",
+                    pIdKey: "pId",
+                    rootPId: 0
+                }
+            },
+            callback: {
+                onClick: function (e, treeId, treeNode, clickFlag) {
+                    treenodeId = treeNode.id;
+                    let level = treeNode.level;
+                    if (level == "2" || level =="1") {
+                        loadTab();
+                    }else if(level == "0"){
+                        sweetAlert("请在左侧选择电池簇或电池模组")
+                    }
+                },
+                view: {
+                    expandSpeed: "slow",
+                    dblClickExpand: true,
+                    showLine: true,
+                    selectedMulti: false
+                }
+            }
+        };
+    }
+//根据下拉框的选择改变树的结构
+    function setDevTree() {
+        var Unit = $("#SEUnit").val();
+        get_promapper_result("getDevTreeByStationCodeAndUnit",
+            localStorage["currentStationCd"] + "," + Unit, function (data) {
+            if (data != null) {
+                var zNodes = data;
+            }
+            devTree = $.fn.zTree.init($("#devTree"), getDevTreeSetting(), zNodes);
+            var nodes = devTree.transformToArray(devTree.getNodes());
+            //默认展开第一级菜单
+            devTree.expandNode(nodes[0], true);
+        });
+    }
+
+    //查询一致性分析tab页面数据
+    function loadTab() {
+        devcode = treenodeId;
+
+        get_promapper_result("initPageTab", '一致性分析' + "," + devcode, function (data) {
+            if (!data) {
+                data = [];
+            }
+            $("#myTab").html("");
+            $("#myTabContent1").html("");
+            addTab(data);
+            //  loadTableData();
+        });
+    }
+
+    //根据数据添加tab分页
+
+    function addTab(data) {
+        // let clcArr =[];
+        //归类
+        let ds = [];
+        let l = 0;
+        let lastPageName = null;
+        for (var i = 0; i < data.length; i++) {
+            let d = data[i];
+            let tabno = d["tab_no_"];//分页信息，电压0:温度1 :  a2
+            let sortno = d["sort_no_"];//分页下的图像排列顺序信息，0:1:或n
+            let tabName0 = d["tab_name_"];//电压一致性或温度一致性
+            let tabName = d["tab_name" + getLanIndex() + "_"];
+            let yxyckwhCode = d["ycyxkwh_code_"];//遥测code,如yc-1-5
+            let lineName = d["name" + getLanIndex() + "_"];//温度方差，温度极差
+            if (tabName0 == lastPageName) {
+                ds[ds.length - 1].lineNames.push(lineName);
+                ds[ds.length - 1].lineCodes.push(yxyckwhCode);
+                ds[ds.length - 1].tabsort.push(sortno);
+            } else {
+                ds.push({
+                    tabno: [tabno],
+                    tabsort: [sortno],
+                    tabName: tabName0,
+                    lineCodes: [yxyckwhCode],
+                    lineNames: [lineName]
+                });
+            }
+            lastPageName = tabName0;
+        }
+        var tabHtml = "";
+        var tabnumber = 0;
+        var tabContainerHtml = "";
+        for (let i = 0; i < ds.length; i++) {
+            let res = getTabHtml(i == 0, i, ds[i].tabno, ds[i].tabsort, ds[i].tabName, ds[i].lineCodes, ds[i].lineNames);
+            tabHtml += res.tabHtml;
+            tabContainerHtml += res.tabContainerHtml;
+        }
+        //增加HTML的tab分页按钮
+        $("#myTab").append(tabHtml);
+        //增加HTML的图像
+        $("#myTabContent1").append(tabContainerHtml);
+
+        let activeTab = $("#myTab .active");
+        let activeTabContent = $("#myTabContent1 .active");
+        if (activeTab && activeTab.length > 0) {
+            currentLineCodes = activeTab.find("a").attr("linecodes");
+            tabnumber = activeTab.find("a").attr("tabno");
+
+            get_promapper_result("selectActivePageTab", '一致性分析' + "," + devcode + "," + tabnumber, function (data) {
+                for (let i = 0; i < data.length; i++) {
+                    let s = currentLineCodes.split(",")[i];
+                    // clcArr.push(s)
+                    var c = ".chart" + i;
+                    chartContainerId = activeTabContent.find(c).attr("id");
+                    currentLineCodes1 = s;
+                    // ecmp ="echartCmp" +i;
+                    var ecmp = echarts.init(document.getElementById(chartContainerId)); //初始化echarts实例
+                    if (treenodeId == null || treenodeId == "" || treenodeId == "undefined") {
+                        sweetAlert("请在左侧选择一个树节点");
+                        return;
+                    }
+                    idx = i;
+                    loadTableData(idx, s, ecmp);
+                    let height1 = document.body.clientHeight-180;
+                    let height2 = document.body.clientHeight-180;
+                    $("#treeDiv").height(height1);
+                    $("#right-content").height(height2);
+                    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                        ecmp.resize();
+                    });
+                }
+            });
+        }
+
+        // $("#myTab a").click(function(e){
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            e.target // newly activated tab
+            e.relatedTarget // previous active tab
+            // a[data-toggle=tab: 选择a标签里，data-toggle属性为tab
+            //shown.bs.tab: 该事件在标签页显示时触发，但是必须在某个标签页已经显示之后。
+            var activeTab = $("#myTab .active");
+            var activeTabContent1 = $("#myTabContent1 .active");
+                currentLineCodes = activeTab.find("a").attr("linecodes");
+                tabnumber = activeTab.find("a").attr("tabno");
+            $('#myTab a[tabno=tabnumber]').tab('show') // Select tab by name
+                get_promapper_result("selectActivePageTab", '一致性分析' + "," + devcode + "," + tabnumber, function (data) {
+                    for (let i = 0; i < data.length; i++) {
+                        let s = currentLineCodes.split(",")[i];
+                        var c = ".chart" + i;
+                        chartContainerId = activeTabContent1.find(c).attr("id");
+                        currentLineCodes1 = s;
+                        var  ecmp = echarts.init(document.getElementById(chartContainerId)); //初始化echarts实例
+                        if (treenodeId == null || treenodeId == "" || treenodeId == "undefined") {
+                                   sweetAlert("请在左侧选择一个树节点");
+                            return;
+                        }
+                        idx = i;
+                        loadTableData(idx,s,ecmp);
+                        let height1 = document.body.clientHeight-180;
+                        let height2 = document.body.clientHeight-180;
+                        $("#treeDiv").height(height1);
+                        $("#right-content").height(height2);
+                    }
+                });
+    });
+        let height1 = document.body.clientHeight-180;
+        let height2 = document.body.clientHeight-180;
+        $("#treeDiv").height(height1);
+        $("#right-content").height(height2);
+
+    }
+//添加HTML模块
+    function getTabHtml(isActive,i,tabno,tabsort,tabName,lineCodes,lineNames){
+        let j =0;
+        let activeCls = isActive?" active ":"";
+       let  tabContainerHtml =null;
+       if(tabsort.length>1) {
+           let tabHtml = "<li class='" + activeCls + "'> <a href='#tab" + tabno + "'  data-toggle='tab' tabno='" + tabno + "' lineCodes='" + lineCodes + "' lineNames='" + lineNames + "' >" + tabName + "</a> </li>";
+           tabContainerHtml = "<div class='tab-pane fade in " + activeCls + "' id='tab" + tabno + "' style='height: 87%;'>"
+               + "	<div class='panel panel-default table-responsive ' style='height:90%; margin-bottom:0px;'>"
+               + "		<div class='panel-body cy-nopaddingbottom' style='height: 90%;'>"
+               + "			<div class='row' style='height: 45%; margin-bottom: 10px'>"
+           for (j = 0; j < tabsort.length; j++) {
+               tabContainerHtml += " <div class='chart" + tabsort[j] + "' id='" + tabno + "chartContainer" + tabsort[j] + "' style='width: 100%; height: 100%; margin: 5px auto; padding: 10px; position: relative;'></div>"
+           }
+           tabContainerHtml += "	</div>"
+               + "		</div>"
+               + "	</div>"
+               + "</div>";
+           return {
+               tabHtml:tabHtml,
+               tabContainerHtml:tabContainerHtml
+           };
+       }else{
+           let tabHtml = "<li class='" + activeCls + "'> <a href='#tab" + tabno + "'  data-toggle='tab' tabno='" + tabno + "' lineCodes='" + lineCodes + "' lineNames='" + lineNames + "' >" + tabName + "</a> </li>";
+           tabContainerHtml = "<div class='tab-pane fade in " + activeCls + "' id='tab" + tabno + "' style='height: 87%;'>"
+               + "	<div class='panel panel-default table-responsive ' style='height:90%; margin-bottom:0px;'>"
+               + "		<div class='panel-body cy-nopaddingbottom' style='height: 90%;'>"
+               + "			<div class='row' style='height: 90%; margin-bottom: 10px'>"
+           for (j = 0; j < tabsort.length; j++) {
+               tabContainerHtml += " <div class='chart" + tabsort[j] + "' id='" + tabno + "chartContainer" + tabsort[j] + "' style='width: 100%; height: 100%; margin: 5px auto; padding: 10px; position: relative;'></div>"
+           }
+           tabContainerHtml += "	</div>"
+               + "		</div>"
+               + "	</div>"
+               + "</div>";
+           return {
+               tabHtml:tabHtml,
+               tabContainerHtml:tabContainerHtml
+           };
+       }
+    }
+//获取涛思数据给图像赋值
+    function loadTableData(idx,s,ecmp) {
+        var beginTime = $("#beginTime").val();
+        if(beginTime==null||beginTime==""){
+            sweetAlert("请输入开始时间");
+            return;
+        }
+        if (treenodeId == null || treenodeId == "" || treenodeId == "undefined"){
+         //   sweetAlert("请在左侧选择一个树节点");
+            return;
+        }
+        $(document).progressDialog.showDialog("Loading...");
+
+        if(ecmp){
+            ecmp.clear();//clear 方法是清空缓存的图形
+        }
+        $.ajax({
+            url: "getYcYxKwhCurves.action",
+            data: {
+                "snames":s,
+                "dateStart":beginTime,
+                "interval":'1s'
+            },
+            type: "post",
+            success: function(result) {
+                $(document).progressDialog.hideDialog();
+                var data1 = result.resultObject;
+                if (data1 == null || data1.length == 0) {
+                    sweetAlert(getLangData("powerstationinfo.noData"));
+                }
+                setCurverChart1(data1,ecmp);
+            }
+        });
+    }
+//作图
+    function setCurverChart1(data,ecmp) {
+        $(document).progressDialog.hideDialog();
+        var xAxisArray = [];
+        xAxisArray.length = 0;
+        var lengendArr = [];
+        var seriesArr = [];
+        var maxVal = -100000;
+        var minVal = 99999999;
+        var totalVal = 0;
+        var maxDate = "";
+        var minDate = "";
+        var pp = [];
+        for (var k in data) {
+            maxVal = -100000;
+            minVal = 99999999;
+            totalVal = 0;
+            var ycCurveK = data[k];
+            var pointLst = ycCurveK.data;
+            var name = ycCurveK["name" + getLanIndex() + "_"];
+            lengendArr.push(name);
+            var datas = [];
+            for (var m = 0; m < pointLst.length; m++) {
+                let pdata = parseFloat(pointLst[m].pdata);
+                let ts = pointLst[m].ts;
+                // xAxisArray.push(ts);
+                datas.push([ts,pdata]);
+            }
+            // datas.push(pp);
+        }
+                var seriesAuto = {
+                    name: name,
+                    type: "line", //折线
+                    lineStyle: {
+                        normal: {
+                            width: 4
+                        },
+                    },
+                    markLine: {
+                        data: [{
+                            type: 'average',
+                            name: '平均值'
+                        }]
+                    },
+                    data: datas
+                };
+                seriesArr.push(seriesAuto);
+            option = {
+                color: ['RGBA(255,255,0,1)', 'RGBA(103,255,0,1)', 'RGBA(255,0,0,1)', 'RGBA(0,255,255,1)', 'RGBA(255,255,255,1)', 'RGBA(255,0,255,1)', 'RGBA(0,0,255,1)', '#6e7074', '#546570', '#c4ccd3'],
+                title: {
+                    show: true,
+                    textStyle: {
+                        color: '#eee',
+                        fontWeight: 'bolder',
+                        fontSize: '24'
+                    },
+                    subtext: '',
+                    subtextStyle: {
+                        color: '#eee',
+                        fontWeight: 'normal',
+                        fontSize: '14'
+                    },
+                    left: 'center',
+                    align: 'right'
+                },
+                grid: {
+                    left: '4%',
+                    right: '3%',
+                    top: '1%',
+                },
+                dataZoom: [{
+                    type: 'inside',
+                    zoomLock: false,
+                    throttle: 100,
+                    zoomOnMouseWheel: true,
+                    moveOnMouseMove: true,
+                    moveOnMouseWheel: true
+                }],
+                toolbox: {
+                    show: false,
+                    feature: {
+                        restore: {},
+                        magicType: {
+                            type: ['line', 'bar']
+                        },
+                        saveAsImage: {}
+                    },
+                    iconStyle: {
+                        borderColor: "#fff"
+                    },
+                    right: '3%'
+                },
+                //提示信息
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow',
+                    }
+                },
+                //图例
+                legend: {
+                    show: true,
+                    data: lengendArr,
+                    type: 'plain',
+                    textStyle: {
+                        color: '#fff',
+                        fontWeight: 'normal',
+                        fontSize: '13'
+                    },
+                    top: '0%'
+                },
+                xAxis: {
+                    type: 'time',
+                    axisLabel: {
+                        textStyle: {
+                            color: '#fff',
+                            fontStyle: 'normal',
+                            fontFamily: '微软雅黑',
+                            fontSize: 14,
+                        }
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#fff',
+                            opacity: 0.6
+                        }
+                    }
+                    // ,data: xAxisArray
+                },
+                //y轴坐标
+                yAxis:{
+                    name: '',
+                    type: 'value',
+                    axisLabel: {
+                        textStyle: {
+                            color: '#fff',
+                            fontStyle: 'normal',
+                            fontFamily: '微软雅黑',
+                            fontSize: 10,
+                        }
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#fff',
+                            opacity: 0.6
+                        }
+                    },
+                    axisTick: {
+                        show: true
+                    },
+                    splitLine: {
+                        show: false,
+                        lineStyle: {
+                            color: ['#fff'],
+                            opacity: 0.6
+                        }
+                    }
+                },
+                //系列
+                series: seriesArr
+            };
+        ecmp.setOption(option, true);
+        $(function () {
+            window.onresize = function () {
+                ecmp.resize();
+            }
+        })
+
+
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新增专家数据信息</title>
+
+    <style type="text/css">
+
+        .mtable tr th,.mtable tr td{
+            padding:0px;
+            text-align:center;
+        }
+        .mtable .btn {
+            padding:2px 5px;
+        }
+        .panel-heading{
+            color:#00fefd !important;
+            background: #284c73;
+            background: -moz-linear-gradient(top, #284c73 30%,#1f3b5b 60%,#14283f 80%);
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#284c73), color-stop(60%,#1f3b5b),color-stop(80%,#1f3b5b));
+            background: -webkit-linear-gradient(top, #284c73 30%,#1f3b5b 60%,#14283f 80%);
+            background: -o-linear-gradient(top,#284c73 30%,#1f3b5b 60%,#14283f 80%);
+            background: -ms-linear-gradient(top, #284c73 30%,#1f3b5b 60%,#14283f 80%);
+            background: linear-gradient(to bottom, #284c73 30%,#1f3b5b 60%,#14283f 80%);
+            border-color:#284c73;
+        }
+
+        .form-group{
+            font-size:16px;
+            font-weight:normal;
+        }
+        .form-group .control-label{
+            font-size:16px;
+            font-weight:normal;
+            text-align:right;
+            padding-right:0px;
+            padding-top:5px;
+            width:200px;
+        }
+        .form-group .control-input{
+            width:200px;
+        }
+    </style>
+</head>
+<body>
+<div class="panel-heading" role="tab">
+    <h4 class="panel-title">
+        <span  class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse2" aria-expanded="false"
+               i18n="expert.xx" aria-controls="collapse2">专家信息</span>
+    </h4>
+</div>
+<!-- Tab panes -->
+<div class="tab-content" style="height:100%;">
+    <div role="tabpanel" class="tab-pane col-md-12 active" style="padding:15px;height:100%;" id="tab1">
+        <div class="form-group row">
+            <label for="expertID" class="col-md-2 control-label">
+                <span i18n="expert.id" >ID</span><span>：</span>
+            </label>
+            <div class="col-md-10">
+                <input type="number" class="control-input control-input-long" id="expertID"  data-minlength="6" placeholder="必填">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="expertType" class="col-md-2 control-label"i18n="expert.zjlx">
+                <span >专家类型</span><span>：</span>
+            </label>
+            <div class="col-md-10">
+                <select id="expertType"  class="control-input control-input-short blue-select" >
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="expertName" class="col-md-2 control-label">
+                <span i18n="expert.zjmc">专家姓名</span><span>：</span>
+            </label>
+            <div class="col-md-10">
+                <input class="control-input control-input-long" id="expertName"  placeholder="必填">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="telePhone" class="col-md-2 control-label">
+                <span i18n= "expert.mpnumber">手机号</span><span>：</span>
+            </label>
+            <div class="col-md-10">
+                <input class="control-input control-input-long" id="telePhone"  placeholder="请输入手机号">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="weChatNumber" class="col-md-2 control-label">
+                <span i18n= "expert.wcn">微信号</span><span>：</span>
+            </label>
+            <div class="col-md-10">
+                <input class="control-input control-input-long" id="weChatNumber"  placeholder="请输入微信号">
+            </div>
+        </div>
+      <!--  <div hidden class="form-group row" style="display: none">
+            <label for="stationCD" class="col-md-2 control-label" style="display: none">
+                <span i18n= "expert.sta">场站代码</span><span>：</span>
+            </label>
+            <div class="col-md-10" style="display: none">
+                <input class="control-input control-input-long" id="stationCD"  placeholder="请输入场站代码" style="display: none">
+            </div>
+        </div>-->
+
+        <div>
+            <a type="button" class="btn btn-success" id="saveDeviceTypeBtn" i18n="UserSet.save" style="margin-left:80%;cursor: pointer;font-size:14px;"><i class="fa fa-check"></i>保存</a>
+            <a type="button" class="btn btn-info" href="DeviceTypeManage.html" i18n="sys.back" id="cancelBtn" style="margin-left:2%;cursor:pointer;font-size:14px;"><i class="fa fa-reply"></i>返回</a>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var ExpertDATAID=[];
+
+    $(function(){
+        getI18cnDatas();
+        languageSelect();
+        init();
+        //初始化专家类型
+        initExpertType() ;
+    });
+
+    //初始化专家类型
+    function initExpertType() {
+        get_promapper_result("getExpertType", null, function (data) {
+            var e = $('#expertType');
+            e.empty();
+            if (data != null) {
+                for (var i = 0; i < data.length; i++) {
+                    option = "<option value='" + data[i].code_ + "' >" + data[i]['name_'] + "</option>";
+                    e.append(option);
+                }
+            }
+        });
+    }
+    function init(){
+      console.log(localStorage["expert_ChangeFlag"]);
+        if(localStorage["expert_ChangeFlag"]=="修改"){
+            // initExpertType() ;
+             $("#expertID").attr("readOnly","readOnly");
+            $("#expertID").val(localStorage["expertId"]);
+            $("#expertType").val(localStorage["expert_typeName"] == "undefined"?"":localStorage["expert_typeName"]);
+            $("#expertName").val(localStorage["expert_name"] == "undefined"?"":localStorage["expert_name"]);
+
+            $("#telePhone").val(localStorage["expert_phone"] == "undefined"?"":localStorage["expert_phone"]);
+            $("#weChatNumber").val(localStorage["expert_wc"] == "undefined"?"":localStorage["expert_wc"]);
+         //   $("#stationCD").val(localStorage["currentStationCd"]);
+        }else {
+            $("#expertID").attr("readOnly","readOnly");
+            $("#expertID").val(localStorage["expertId"] == "undefined"?"":localStorage["expertId"]);
+         //   $("#stationCD").val(localStorage["currentStationCd"]);
+        }
+
+        $("#cancelBtn").click(goBack);
+        $("#saveDeviceTypeBtn").click(function(){
+            get_promapper_result("getExpertDataByStation",  localStorage["currentStationCd"], function (data) {
+                if (data != null && data.length > 0 && data[0] != null) {
+                    for (var i=0;i<data.length;i++){
+                        ExpertDATAID.push(data[i].id);
+                    }
+                }
+            });
+            // console.log(22)
+            var id=$("#expertID").val();
+            var name=$("#expertName").val();
+            var type=$("#expertType").val();
+            var phone = $("#telePhone").val();
+            var wechatNo=$("#weChatNumber").val();
+
+            var stationCd =  localStorage["currentStationCd"];
+
+            var dataStrAdd="'"+id+"','"+name+"','"+type+"','"+phone+"','"+wechatNo+"','"+stationCd+"'";
+            var dataStrUpdata="'"+id+"','"+name+"','"+type+"','"+phone+"','"+wechatNo+"','"+stationCd+"'";
+            console.log('save')
+            if(localStorage["expert_ChangeFlag"]=="修改"){
+                get_promapper_result("updateExpert",dataStrUpdata,function(result){
+                    if(result){
+                        sweetAlert(getLangData("akbm.saveok"));
+                        $.get("ExpertManage.html", function (result) {      //修改成功直接返回
+                            $("#main-container").html(result);
+                        });
+                    }else{
+                        sweetAlert(getLangData("akbm.savefalse"));
+                    }
+                });
+            }else{
+                console.log(id);
+                if (id==null||id==''){
+                    sweetAlert(getLangData("akbm.cannotbenull"));
+                    return;
+                }else if (ExpertDATAID.indexOf(id)!=-1){
+                    sweetAlert(getLangData("akbm.alreadyexist"));
+                    return;
+                }
+                get_promapper_result("addExpertData",dataStrAdd,function(result){
+                    if(result){
+                        sweetAlert(getLangData("akbm.saveok"));
+                        $.get("ExpertManage.html", function (result) {      //新增成功直接返回
+                            $("#main-container").html(result);
+                            getI18cnDatas();
+                            languageSelect();
+                        });
+                    }else{
+                        sweetAlert(getLangData("akbm.savefalse"));
+                    }
+                });
+            }
+            return;
+        });
+
+
+
+    function goBack(event){
+        event.preventDefault();
+        if(localStorage["cLan"] == "cn") {
+            swal({
+                    title: "返回前请确认是否已保存数据！",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "继续返回",
+                    closeOnConfirm: false
+                },
+                function () {
+                }).then(function (isConfirm) {
+                if (isConfirm === true) {
+                    //刷新界面
+                    $.get("ExpertManage.html", function (result) {
+                        $("#main-container").html(result);
+                        getI18cnDatas();
+                        languageSelect();
+                    });
+                }
+            });
+        }else {
+            swal({
+                    title: "Please confirm if the data has been saved before returning",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Continue to return",
+                    closeOnConfirm: false,
+                    cancelButtonText: "Cancel",
+                },
+                function () {
+                }).then(function (isConfirm) {
+                if (isConfirm === true) {
+                    //刷新界面
+                    $.get("ExpertManage.html", function (result) {
+                        $("#main-container").html(result);
+                        getI18cnDatas();
+                        languageSelect();
+                    });
+                }
+            });
+        }
+
+    }}
+</script>
+</body>
+</html>

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>责任区管理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+	<style type="text/css">
+		body {
+			background-color: #00274F;
+		}
+
+		.ReportManaTopDiv div {
+			float: left;
+			padding: 6px 26px;
+			background-color: #00aba5;
+			border-radius: 8px;
+			font-weight: 500;
+			cursor: pointer;
+		}
+
+		.ReportManaTopDiv div:hover {
+			background-color: #079c97;
+		}
+
+
+		.panel-footer {
+			padding: 10px 15px;
+			background-color: rgba(0, 0, 0, 0);
+			border-top: 1px solid #020e2d;
+		}
+
+		.panel-footer div>button {
+			background-color: rgba(223, 228, 232, 0);
+			/*height: 30px;*/
+			font-size: 14px;
+			border: solid 1px rgba(0, 186, 189, 0);
+			color: #fff;
+			padding-bottom: 2px;
+		}
+
+		.pagination2 div,
+		.pagination2 div>a {
+			background-color: rgba(223, 228, 232, 0);
+			float: left;
+			font-size: 14px;
+			margin-left: 10px;
+			border: solid 1px rgba(0, 186, 189, 0);
+			color: #fff;
+		}
+
+		.panel-footer input {
+			background-color: rgba(223, 228, 232, 0.12);
+			height: 23px;
+			border: solid 1px rgba(0, 186, 189, 0.4);
+			color: #ccc;
+		}
+
+		.table tbody>tr>td {
+			border-color: rgba(0, 0, 0, 0);
+			vertical-align: middle;
+		}
+
+		.table>thead>tr>th {
+			vertical-align: bottom;
+			border: 1px solid rgba(0, 0, 0, 0);
+		}
+
+		.table>tbody>tr>th {
+			vertical-align: bottom;
+			border: 1px solid rgba(0, 0, 0, 0);
+		}
+
+		.panel-footer {
+			padding: 10px 15px;
+			background-color: rgba(0, 0, 0, 0);
+			border-top: 1px solid rgba(0, 0, 0, 0);
+		}
+
+
+		.panel{
+			border:0px;
+		}
+		.panel-heading{
+			color:#00fefd !important;
+			background: #284c73;
+			background: -moz-linear-gradient(top, #284c73 30%,#1f3b5b 60%,#14283f 80%);
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#284c73), color-stop(60%,#1f3b5b),color-stop(80%,#1f3b5b));
+			background: -webkit-linear-gradient(top, #284c73 30%,#1f3b5b 60%,#14283f 80%);
+			background: -o-linear-gradient(top,#284c73 30%,#1f3b5b 60%,#14283f 80%);
+			background: -ms-linear-gradient(top, #284c73 30%,#1f3b5b 60%,#14283f 80%);
+			background: linear-gradient(to bottom, #284c73 30%,#1f3b5b 60%,#14283f 80%);
+			border-color:#284c73;
+		}
+		.panel-body{
+			border-top: 0px !important;
+		}
+
+		.select2-container .select2-selection--single{
+			height:35px;
+			line-height: 35px;
+			padding:3px;
+			border:0.1px solid #284c73;
+		}
+	</style>
+	<div class="col-md-12">
+		<div class="panel panel-default table-responsive" style="margin-top: 10px;">
+			<div class="panel-heading" style="color:white;font-size: 16px" i18n="deviceType.sblbgl" >
+				设备类别管理
+			</div>
+			<div class="panel-body">
+				<div class="form-group form-inline" style="margin-bottom:0px;display: inline-block">
+					<label for="sysType" style="font-size: 15px"><span i18n="deviceType.zxtlx">子系统类型</span></label>
+					<select id="sysType"  class="control-input blue-select" name="sysType" style="width:150px;">
+						<option value="0" selected="selected">储能</option>
+					</select>
+
+					<button id="addZoneBtn" type="button" class="btn btn-sm btn-primary"  style="margin-left:0%;cursor:pointer;">
+						<i class="fa fa-plus"></i>&nbsp;
+						<span style="font-size:12px;" id="add11" i18n="UserSet.add">新增</span>
+					</button>
+					<button id="refreshEquBtn" type="button" class="btn btn-sm btn-primary" onclick="refresh2()" style="cursor:pointer;">
+						<i class="fa fa-refresh"></i>&nbsp;
+						<span style="font-size:12px;" id="refresh22" i18n="PermissionsManage.refresh">刷新</span>
+					</button>
+
+				</div>
+			</div>
+			<table class="table" id="responsiveTable" style="font-size:14px;">
+				<thead>
+					<tr>
+						<th width="10%" i18n="deviceType.lbdm">类别代码</th>
+						<th width="10%" i18n="deviceType.lbmc">类别名称</th>
+						<th width="15%" i18n="deviceType.gltx">关联图形</th>
+						<th width="15%" i18n="deviceType.gltp">关联图片</th>
+						<th width="10%" i18n="deviceType.zxtlx2">子系统类型</th>
+						<th width="10%" i18n="deviceType.fjd">父节点</th>
+						<th width="15%" i18n="deviceType.gltb">关联图标</th>
+						<th width="15%" i18n="SystemLog.operation">操作</th>
+					</tr>
+				</thead>
+				<tbody id="tableBody">
+					<tr id="templateTr" style="border-right:0px;">
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>
+							<a class="el-button el-button-mini el-button-text" name="editZoneBtn" onclick="toEditPage(this)" style="cursor:pointer;">
+								<img src="images/edit.png" style="width: 25px;height: 25px;" />
+							</a>
+							<a class="el-button el-button-mini el-button-text danger"  onclick="toDeletePage(this)"  name="deleteRoleBtn" style="cursor:pointer;">
+								<img src="images/trash.png" style="width: 25px;height: 25px;" />
+							</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="panel-footer clearfix " style=" background:rgba(0, 0, 0, 0);color:white;">
+				<div class="form-group cy-panelfotter pull-right">
+					<label class="col-xs-4 col-md-4 control-label"></label>
+					<button style="float: left;margin-right: 10px;" id="jumpUserBtn">
+						<span i18n="alarm.table.go">前往</span>
+					</button>
+					<div style="float: left;">
+						<input id="jumpUserPage">
+					</div>
+					<label style="float: left;margin-left: 10px;" i18n="alarm.table.page">页</label>
+				</div>
+				<input type="hidden" id="currentUserPage2" value="1">
+				<div class="pagination2  m-top-none pull-right">
+					<div>
+						<a href="javascript:void(0);">
+												<span i18n="alarm.table.total">
+													共
+												</span>
+							<span id="lblShowCnt" >
+												   0
+												</span>
+							<span  i18n="alarm.table.item">
+													条
+												</span>
+						</a>
+					</div>
+					<div>
+						<a  href="javascript:void(0);" >
+
+												<span id="sumPage">
+													30
+												</span>
+							<span i18n="alarm.table.pageitem">
+												   0
+												</span>
+						</a>
+					</div>
+					<div>
+						<a id="toPre" href="javascript:void(0);"><</a>
+					</div>
+					<div>
+										<span id="currentUserPage" href="javascript:void(0);" style="background-color: transparent;padding-left: 3px;padding-right: 3px;">
+												1
+										</span>
+					</div>
+					<div>
+						<a id="toNext" href="javascript:void(0);">></a>
+					</div>
+					</ul>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<script>
+		var totalPageCnt = 0 ;
+		var currentPageCnt = 0;
+		var totalDataCnt = -1;
+		var rowPerPage = 10;
+		var currentData =null;
+
+		$(function(){
+			$("#refreshEquBtn").click(function(event) {
+				var sysType = $("#sysType").val();
+				loadTableData(true,sysType);
+			});
+			//新增按钮，跳转到新增角色界面
+			$("#addZoneBtn").click(function(){
+				localStorage["devType_ChangeFlag"]  = "新增";
+				$.get("DeviceTypeManageAdd.html", function(result){
+					$("#main-container").html(result);
+				});
+			});
+
+			//右边的菜单 异步加载 my_sub_content  的子页面
+			$(".pagination2 div a").click(function(event){
+				var thisID = $(this).attr("id");
+				if(totalDataCnt ==0) {
+					return;
+				}
+				event.preventDefault();
+				if(thisID=="toPre") {
+					if(currentPageCnt==1) {
+						return;
+					}
+					currentPageCnt =currentPageCnt-1 ;
+				}else if(thisID=="toNext") {
+					if(currentPageCnt==totalPageCnt ) {
+						return;
+					}
+					currentPageCnt =currentPageCnt+1 ;
+				}
+
+				deleteOldData();
+				addDataToTable();
+				arragePagingInfo();
+			});
+
+			//跳转页面
+			// $("#jumpRollBtn").click(function(){
+			$("#jumpUserBtn").click(function(){
+				// 获取跳转页数的值
+				var curPage=$("#jumpUserPage").val();
+				//判断输入页数是否是数字，并且判断是否大于总页数
+				if(curPage<=0||curPage!=parseInt(curPage)){
+					// alert('请输入正整数');
+					sweetAlert(getLangData("akbm.jump"));
+					return;
+				}else if(curPage > totalPageCnt){
+					// alert('跳转页数不能大于总页数');
+					sweetAlert(getLangData("akbm.jumperror"));
+					return;
+				}
+				currentPageCnt  = parseInt(curPage);
+				//删除既存行数据
+				deleteOldData();
+				addDataToTable();
+				arragePagingInfo();
+			});
+
+			// 禁止回车触发表单提交
+			$('.input').keypress(function(e){
+				if(e.keyCode==13){
+					e.preventDefault();
+				}
+			});
+
+			// 点击页面的每一行
+			$("#tableBody tr").click(function(){
+				$("#tableBody tr td").each(function(){
+					// 清除所有tr的selectTr样式
+					$(this).removeClass("selectTr");
+				});
+				// 给当前行加上样式
+				$(this).children().siblings().eq(1).toggleClass("selectTr");
+				$(this).children().siblings().eq(2).toggleClass("selectTr");
+			});
+			$("#sysType").change(function (){
+				var sysType = $("#sysType").val();
+				loadTableData(true,sysType);
+			});
+			// loadTableData(true);
+			initSelect();
+		});
+
+		function arragePagingInfo() {
+			// var showCnt = "共  "+ totalDataCnt +"条，当前页："+currentPageCnt +"/"+totalPageCnt ;
+			$("#lblShowCnt").html(totalDataCnt);
+			$("#sumPage").html(totalPageCnt);
+			$('#currentUserPage').html(currentPageCnt)
+			$("#jumpUserPage").val(currentPageCnt);
+			// $("#jumpRollPage").val(currentPageCnt);
+		}
+
+		function deleteOldData() {
+			var tableLen =  $("#responsiveTable").find("tr").length ;
+			for(var i = 0 ;i<tableLen-1 ;i++) {
+				var  tr_id = "tr" +i;
+				$('#'+tr_id).remove();
+			}
+		}
+
+		function addDataToTable() {
+			$("#templateTr").show();
+			var tr = $("#templateTr");
+			var startIdx = (currentPageCnt-1)*rowPerPage;
+			var endIdx = currentPageCnt*rowPerPage;
+			if(endIdx>totalDataCnt ) {
+				endIdx = totalDataCnt;
+			}
+			var trIdx = 0;
+			for(var i = startIdx ;i<endIdx; i++){
+				var clonedTr = tr.clone();
+				clonedTr.attr("id","tr" +trIdx);
+				clonedTr.children("td").each(function(inner_index){
+					switch(inner_index){
+							/* case 0 :
+                             $(this).html(currentData[i].point);
+                             $(this).attr("value",currentData[i].point);
+                            break; */
+						case 0 :
+							$(this).html(currentData[i].code);
+							break;
+						case 1 :
+							$(this).html(currentData[i].name);
+							break;
+						case 2 :
+							$(this).html(currentData[i].graphname);
+							break;
+						case 3 :
+							$(this).html(currentData[i].pic);
+							break;
+						case 4 :
+							$(this).html(currentData[i].type_name);
+							break;
+						case 5 :
+							$(this).html(currentData[i].parent_name);
+							break;
+						case 6 :
+							$(this).html(currentData[i].icon);
+							break;
+						case 7 :
+							var obj =$(this).find("a");
+							for(var idx=0;idx<obj.length;idx++) {
+								obj.attr("code",currentData[i].code);
+								obj.attr("name",currentData[i].name);
+								obj.attr("graphname", currentData[i].graphname);
+								obj.attr("pic", currentData[i].pic);
+								obj.attr("name1", currentData[i].name1);
+								obj.attr("icon", currentData[i].icon);
+								obj.attr("manufacturer", currentData[i].manufacturer);
+								obj.attr("parentType", currentData[i].parent_type);
+								obj.attr("parentName", currentData[i].parent_name);
+								obj.attr("typeName", currentData[i].type_name);
+								obj.attr("subSysType", currentData[i].sub_sys_type);
+								// obj.attr("zonePowerCode", currentData[i].zonePowerCode);
+							}
+							break;
+					}
+				});
+				clonedTr.insertBefore(tr);
+				trIdx++;
+			}
+			$("#templateTr").hide();
+		}
+
+		function toDeletePage(obj) {
+			var devTypeCode = $(obj).attr("code");
+			console.log('devTypeCode');
+			console.log(devTypeCode);
+			swal({
+				title: localStorage["cLan"] == "cn"?"删除设备类别会删除类别下所有量测点，确定删除吗？":
+						"Deleting the device category will delete all measurement points under the category,are you sure to delete it?",
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonText: localStorage["cLan"] == "cn"?"确定删除":"Delete",
+				cancelButtonText:localStorage["cLan"] == "cn"?"取消":"Cancel",
+				closeOnConfirm: false
+			},
+			function(){
+
+			}).then(function(isConfirm) {
+				if (isConfirm === true) {
+					$.ajax({
+						url:"deleteDeviceType",
+						type:"post",
+						data:{
+							devTypeCode:devTypeCode
+						},
+						success:function(result){
+							if(result.success == false){
+								// sweetAlert("删除失败！");
+								sweetAlert(getLangData("akbm.deletefalse"));
+								return;
+							}else {
+								// sweetAlert("删除成功！");
+								sweetAlert(getLangData("akbm.deleteok"));
+								var sysType = $("#sysType").val();
+								loadTableData(true,sysType);
+							}
+						}
+					});
+				}
+			});
+		}
+
+
+		function toEditPage(obj) {
+			console.log('pic');
+			console.log($(obj).attr("pic"));
+			var zoneId = $(obj).attr("code");
+			localStorage["devType_code"] = zoneId;
+			localStorage["devType_name"] = $(obj).attr("name");
+			localStorage["devType_graphname"] = $(obj).attr("graphname");
+			localStorage["devType_pic"] = $(obj).attr("pic");
+			localStorage["devType_name1"] = $(obj).attr("name1");
+			localStorage["devType_parenttype"] = $(obj).attr("parentType");
+			localStorage["devType_parentname"] = $(obj).attr("parentName");
+			localStorage["devType_typename"] = $(obj).attr("typeName");
+			localStorage["devType_icon"] = $(obj).attr("icon");
+			localStorage["devType_manufacturer"] = $(obj).attr("manufacturer");
+			localStorage["devType_subSysType"] = $(obj).attr("subSysType");
+			localStorage["devType_ChangeFlag"]  = "修改";
+			$.get("DeviceTypeManageAdd.html", function(result){
+				$("#main-container").html(result);
+			});
+		}
+		function initSelect(){
+			$("#sysType").empty();
+			get_promapper_result("getSubsysTypeList","",function(data1){
+				var resultArr = eval(data1);
+				$("#sysType").empty();
+				for(var i=0; i<resultArr.length; i++){
+					$("#sysType").append("<option value='"+resultArr[i].id+"'>"+resultArr[i]["name"]+"</option>");
+				}
+				$("#sysType").prepend('<option value="-1" selected="selected" >'+getLangData('statisticsPage.all')+'</option>');
+
+				$("#sysType").select2({
+					//最多能够选择的个数
+					minimumResultsForSearch: -1
+				});
+				loadTableData(true,-1);
+			});
+		}
+		function loadTableData(needChangePage,sysTypeVal) {
+			deleteOldData();
+			var sq1='1=1';
+			if (sysTypeVal!=-1){
+				sq1='d.sub_sys_type_='+sysTypeVal;
+			}
+			get_promapper_result("getDeviceTypeList",sq1,function(data){
+				currentData =  data?data:[];
+				console.log('currentData');
+				console.log(currentData);
+				if(currentData == null || currentData.length == 0){
+					totalDataCnt=0;
+					totalPageCnt = 1;
+					currentPageCnt = 1;
+					arragePagingInfo();
+					$("#templateTr").hide();
+					return;
+				}
+				totalDataCnt = currentData.length;
+				totalPageCnt = Math.ceil(totalDataCnt/rowPerPage);
+
+				var datalen = rowPerPage;
+				if(totalDataCnt<rowPerPage) {
+					datalen = totalDataCnt;
+				}
+				if(needChangePage) {
+					currentPageCnt  = 1;
+				}
+
+				arragePagingInfo();
+				addDataToTable();
+			});
+		}
+	</script>
+
+</html>

@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>专家管理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <style type="text/css">
+        body {
+            background-color: #00274F;
+        }
+
+        .ReportManaTopDiv div {
+            float: left;
+            padding: 6px 26px;
+            background-color: #00aba5;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .ReportManaTopDiv div:hover {
+            background-color: #079c97;
+        }
+        /* 弹窗样式 */
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 100px;
+            background-color: rgba(55, 66, 105, 1);
+            border: 1px solid #e5dada;
+            border-radius: 9px;
+            display: none; /* 默认隐藏 */
+        }
+
+        .panel-footer {
+            padding: 10px 15px;
+            background-color: rgba(0, 0, 0, 0);
+            border-top: 1px solid #020e2d;
+        }
+
+        .panel-footer div>button {
+            background-color: rgba(223, 228, 232, 0);
+            /*height: 30px;*/
+            font-size: 14px;
+            border: solid 1px rgba(0, 186, 189, 0);
+            color: #fff;
+            padding-bottom: 2px;
+        }
+
+        .pagination2 div,
+        .pagination2 div>a {
+            background-color: rgba(223, 228, 232, 0);
+            float: left;
+            font-size: 14px;
+            margin-left: 10px;
+            border: solid 1px rgba(0, 186, 189, 0);
+            color: #fff;
+        }
+
+        .panel-footer input {
+            background-color: rgba(223, 228, 232, 0.12);
+            height: 23px;
+            border: solid 1px rgba(0, 186, 189, 0.4);
+            color: #ccc;
+        }
+
+        .table tbody>tr>td {
+            border-color: rgba(0, 0, 0, 0);
+            vertical-align: middle;
+        }
+
+        .table>thead>tr>th {
+            vertical-align: bottom;
+            border: 1px solid rgba(0, 0, 0, 0);
+        }
+
+        .table>tbody>tr>th {
+            vertical-align: bottom;
+            border: 1px solid rgba(0, 0, 0, 0);
+        }
+
+        .panel-footer {
+            padding: 10px 15px;
+            background-color: rgba(0, 0, 0, 0);
+            border-top: 1px solid rgba(0, 0, 0, 0);
+        }
+
+        .hidden-column {
+            display: none;
+        }
+        .panel{
+            border:0px;
+        }
+        .panel-heading{
+            color:#00fefd !important;
+            background: #284c73;
+            background: -moz-linear-gradient(top, #284c73 30%,#1f3b5b 60%,#14283f 80%);
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#284c73), color-stop(60%,#1f3b5b),color-stop(80%,#1f3b5b));
+            background: -webkit-linear-gradient(top, #284c73 30%,#1f3b5b 60%,#14283f 80%);
+            background: -o-linear-gradient(top,#284c73 30%,#1f3b5b 60%,#14283f 80%);
+            background: -ms-linear-gradient(top, #284c73 30%,#1f3b5b 60%,#14283f 80%);
+            background: linear-gradient(to bottom, #284c73 30%,#1f3b5b 60%,#14283f 80%);
+            border-color:#284c73;
+        }
+        .panel-body{
+            border-top: 0px !important;
+        }
+
+        .select2-container .select2-selection--single{
+            height:35px;
+            line-height: 35px;
+            padding:3px;
+            border:0.1px solid #284c73;
+        }
+    </style>
+    <div class="col-md-12">
+        <div class="panel panel-default table-responsive" style="margin-top: 10px;">
+            <div class="panel-heading" style="color:white;" i18n="expert.zjgl" >
+              专家管理
+            </div>
+            <div class="panel-body">
+                <div class="form-group form-inline" style="margin-bottom:0px;display: inline-block">
+                    <label for="expertType" style="font-size: 18px;float: left" i18n="expert.zjlx"><span>专家类型</span><span>：</span></label>
+                    <select id="expertType"  class="control-input blue-select" name="expertType" onchange="setExpertType()"; style="width:150px;float: left; margin-left:12px">
+                        <option value="0" selected="selected">全能型</option>
+                        <option value="1" >力量型</option>
+                        <option value="2" >知识型</option>
+                    </select>
+
+                    <div class="form-group" style="float: left;margin-left: 15px;">
+                        <!-- 查询 -->
+                        <a type="submit" class="btn btn-sm  btn-primary" i18n="alarm.cx" id="queryBtn" ><i class="fa fa-search"></i>
+                            查询</a>
+                    </div>
+                    <div class="form-group"style="float: left;margin-left: 15px;">
+                        <!-- 新增 -->
+                        <a type="submit" class="btn btn-sm btn-primary" i18n="UserSet.add" id="addExpert"> <i class="fa fa-plus"></i>&nbsp;新增</a>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table" id="expertTable" style="font-size:14px;height: 100%;width: 100%">
+                <thead>
+                <tr>
+                    <th i18n="expert.id" style="display: none" width="10% ">专家ID</th>
+                    <th i18n="expert.zjlx" width="10%">序号</th>
+                    <th i18n="expert.zjlx" width="10%">专家类型</th>
+                    <th i18n="expert.zjmc">专家名称</th>
+                    <th i18n="expert.mpnumber">手机号</th>
+                    <th i18n="expert.wcn">微信号</th>
+                    <th i18n="expert.op">操作</th>
+                </tr>
+                </thead>
+                <tbody id="tableBody">
+                <tr id="templateTr" style="border-right:0px;">
+                    <td  style="display: none"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <a class="el-button el-button-mini el-button-text" name="editZoneBtn" onclick="toEditPage(this)" style="cursor:pointer;">
+                            <img src="images/edit.png" style="width: 25px;height: 25px;" />
+                        </a>
+                        <a class="el-button el-button-mini el-button-text danger"  onclick="toDeletePage(this)"  name="deleteRoleBtn" style="cursor:pointer;">
+                            <img src="images/trash.png" style="width: 25px;height: 25px;" />
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel-footer clearfix " style=" background:rgba(0, 0, 0, 0);color:white;">
+                <div class="form-group cy-panelfotter pull-right" style="margin-top:0px;">
+
+                    <button style="float: left;margin-right: 10px;" id="jumpUserBtn"
+                            i18n="alarm.table.go">前往
+                    </button>
+                    <div style="float: left;">
+                        <input id="jumpUserPage" value="1">
+                    </div>
+                    <label style="float: left;margin-left: 10px;" i18n="alarm.table.page">页</label>
+                </div>
+                <input type="hidden" id="currentUserPage" value="1">
+                <div class="pagination2  m-top-none pull-right">
+                    <div>
+                        <a href="javascript:void(0);">
+									<span i18n="alarm.table.total">
+										共
+									</span>
+                            <span id="lblShowCnt">
+										0
+									</span>
+                            <span i18n="alarm.table.item">
+										条
+									</span>
+                        </a>
+                    </div>
+                    <div>
+                        <a href="javascript:void(0);">
+
+									<span id="numperpage">
+										30
+									</span>
+                            <span i18n="alarm.table.pageitem">
+										页
+									</span>
+                        </a>
+                    </div>
+                    <div>
+                        <a id="toPre" href="javascript:void(0);">
+                            < </a>
+                    </div>
+                    <div>
+								<span id="currpagenum" href="javascript:void(0);"
+                                      style="background-color: rgba(255,255,255,0.12);padding-left: 3px;padding-right: 3px;">
+									1
+								</span>
+                    </div>
+
+                    <div>
+                        <a id="toNext" href="javascript:void(0);">></a>
+                    </div>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</head>
+<body>
+<script>
+    var totalPageCnt = 0 ;
+    var currentPageCnt = 1;
+    var totalDataCnt = -1;
+    var rowPerPage = 10;
+    var currentData =null;
+    var begin = 1;
+    var end = rowPerPage;
+    var ExpertID=[];
+
+    $(function() {
+        console.log("专家页面数据");
+        //初始化专家类型
+        initExpertType() ;
+        // 获取当前页
+        addListener();
+        //初始化默认专家类型进行一次查询，并显示数据
+        getExpertData();
+        //获取当前默认条件的数据参数和页数信息
+        loadTablePageData();
+    });
+    //查询
+    $("#queryBtn").click(function() {
+        deleteOldData();
+        loadTablePageData();   //分页数据
+        //arragePagingInfo();// 分页封装
+        loadTableData();        //表格10条数据
+    });
+
+    //新增按钮，跳转到新增角色界面
+    $("#addExpert").click(function () {
+        var arr=[];
+        localStorage["expert_ChangeFlag"] = "新增";
+        get_promapper_result("getExpertDataByStation", localStorage["currentStationCd"], function (data) {
+            for (let i = 0; i < data.length; i++){
+               arr.push(data[i].id);
+            }
+            console.log(arr);
+            totalDataCnt =Math.max.apply(null, arr);
+            console.log(totalDataCnt);
+            localStorage["expertId"] = totalDataCnt + 1;
+            $.get("ExpertManageAdd.html", function (result) {
+                $("#main-container").html(result);
+            });
+        });
+    });
+
+    //获取专家数据
+    function getExpertData() {
+     $("#templateTr").show();
+        console.log('test')
+        let tr = $("#templateTr");
+            get_promapper_result("getExpertDataByStation",  localStorage["currentStationCd"], function (data) {
+                if (data != null && data.length > 0 && data[0] != null) {
+                 //   totalDataCnt = data.length;  //总条数
+                    // arragePagingInfo();// 分页封装
+                    let startIdx = 0;
+                    let endIdx = 0;
+                    if (data.length < rowPerPage)
+                        endIdx = data.length;
+                    else
+                        endIdx = rowPerPage;
+                    let trIdx = 0;
+                    for (let i = startIdx; i < endIdx; i++) {
+                        let clonedTr = tr.clone();
+                        if (i >= endIdx) {
+                            clonedTr.insertBefore(tr);
+                            continue;
+                        }
+                        clonedTr.attr("id", "tr" + trIdx);
+                        clonedTr.children("td").each(function (inner_index) {
+                            switch (inner_index) {
+                                case 0:
+                                    var exid= data[i].id;     //专家ID
+                                    $(this).html(exid);
+                                    break;
+                                case 1:
+                                    $(this).html((currentPageCnt - 1) * rowPerPage + 1 + i);   //序号
+                                    break;
+                                case 2:
+                                    var typename= data[i].name_;     //专家类型
+                                    $(this).html(typename);
+                                    break;
+                                case 3:
+                                    var nam = data[i].name;     //专家名称
+                                    $(this).html(nam);
+                                    break;
+                                case 4:
+                                    var phone = data[i].phone;  //手机号
+                                    $(this).html(phone);
+                                    break;
+                                case 5:
+                                    var wc = data[i].wechatNo;   //微信号
+                                    $(this).html(wc);
+                                    break;
+                                case 6:
+                                    var obj =$(this).find("a");
+                                    for(var idx=0;idx<obj.length;idx++) {
+                                        obj.attr("id",data[i].id);
+                                        obj.attr("typename",data[i].name_);
+                                        obj.attr("name", data[i].name);
+                                        obj.attr("phone", data[i].phone);
+                                        obj.attr("wc", data[i].wechatNo);
+                                    }
+                                    break;
+                            }
+                        });
+                        clonedTr.insertBefore(tr);
+                        trIdx++;
+                    }
+                    $("#templateTr").hide();
+                   // totalDataCnt = data.length;  //总条数
+                    arragePagingInfo();// 分页封装
+                }
+            });
+        //获取当前默认条件的数据参数和页数信息
+      //  loadTablePageData();
+    }
+    function addListener(){
+        // 获取当前页
+        var curPage = $("#currentUserPage").val();
+        //跳转页面
+        $("#jumpUserBtn").click(function() {
+            // 获取跳转页数的值
+            var curPage = $("#jumpUserPage").val();
+            //判断输入页数是否是数字，并且判断是否大于总页数
+            if (curPage <= 0 || curPage != parseInt(curPage)) {
+                // alert('请输入正整数');
+                sweetAlert(getLangData("akbm.jump"));
+                return false;
+            } else if (curPage > totalPageCnt) {
+               // alert('跳转页数不能大于总页数');
+                sweetAlert(getLangData("akbm.jumperror"));
+                return false;
+            }
+            currentPageCnt = parseInt(curPage);
+
+           // arragePagingInfo();
+       //     loadTablePageData();
+            arragePagingInfo();// 分页封装
+            loadTableData();
+        });
+
+        //分页a标签的跳转成异步跳转
+        $(".pagination2 div a").click(function(event) {
+            var thisID = $(this).attr("id");
+            if (totalDataCnt == 0) {
+                return;
+            }
+            event.preventDefault();
+            if (thisID == "toFirst") {
+                currentPageCnt = 1;
+            } else if (thisID == "toLast") {
+                currentPageCnt = totalPageCnt;
+            } else if (thisID == "toPre") {
+                if (currentPageCnt == 1) {
+                    return;
+                }
+                currentPageCnt = currentPageCnt - 1;
+            } else if (thisID == "toNext") {
+                if (currentPageCnt == totalPageCnt) {
+                    return;
+                }
+                currentPageCnt = currentPageCnt + 1;
+            }
+            loadTablePageData()
+           // arragePagingInfo();
+            loadTableData();
+        });
+    }
+
+    //分页封装
+    function arragePagingInfo() {
+        totalPageCnt = Math.ceil(totalDataCnt / rowPerPage);//取整
+        if (currentPageCnt > totalPageCnt) totalPageCnt = totalPageCnt;
+        if (currentPageCnt < 1) totalPageCnt = 1;
+        begin = (currentPageCnt - 1) * rowPerPage + 1;
+        end = currentPageCnt * rowPerPage;
+
+        $('#numperpage').text(totalPageCnt);   //共‘多少’页
+        $("#lblShowCnt").html(totalDataCnt);   //共‘多少’条
+        $("#currpagenum").text(currentPageCnt); //当前‘多少’页
+        $("#jumpUserPage").val(currentPageCnt);  //前往‘多少’页
+    }
+
+   // 获取当前默认条件的数据参数和页数信息
+    function loadTablePageData(){
+        var ele = $('#expertType').val();
+        if (ele == 0) {  //查所有专家数据条数
+            console.log(localStorage["currentStationCd"])
+            get_promapper_result("getExpertDataByStation",  localStorage["currentStationCd"], function (data) {
+                totalDataCnt = data.length;  //总条数
+                arragePagingInfo();// 分页封装
+            });
+        } else {   //查某个类型专家条数
+            get_promapper_result("countTypeExpert", localStorage["currentStationCd"] + "," + ele, function (data) {
+                totalDataCnt = data[0].count;  //总条数
+                arragePagingInfo(); //分页封装
+            });
+        }
+         //loadTableData();
+    };
+    //显示表格数据，根据筛选条件以及第几页
+    function loadTableData() {
+        deleteOldData();
+       $("#templateTr").show();
+        let tr = $("#templateTr");
+        var ele = $('#expertType').val();
+        var start = currentPageCnt * 10 - 10;
+        var num = 10;
+        if (ele == 0) {//所有专家
+            abc = localStorage["currentStationCd"] +  "," + start + "," + num
+            get_promapper_result("getDataByLimit", abc , function (data) {
+                if (data != null && data.length > 0 && data[0] != null) {
+                    // totalDataCnt = data.length;
+                    let startIdx = 0;
+                    let endIdx = 0;
+                    if (data.length < rowPerPage)
+                        endIdx = data.length;
+                    else
+                        endIdx = rowPerPage;
+                    let trIdx = 0;
+                    for (let i = startIdx; i < endIdx; i++) {
+                        let clonedTr = tr.clone();
+                        if (i >= endIdx) {
+                            clonedTr.insertBefore(tr);
+                            continue;
+                        }
+                        clonedTr.attr("id", "tr" + trIdx);
+                        clonedTr.children("td").each(function (inner_index) {
+                            switch (inner_index) {
+                                case 0:
+                                    var exid= data[i].id;     //专家ID
+                                    $(this).html(exid);
+                                    break;
+                                case 1:
+                                    $(this).html((currentPageCnt - 1) * rowPerPage + 1 + i);   //序号
+                                    break;
+                                case 2:
+                                    var typename= data[i].name_;     //专家类型
+                                    $(this).html(typename);
+                                    break;
+                                case 3:
+                                    var nam = data[i].name;     //专家名称
+                                    $(this).html(nam);
+                                    break;
+                                case 4:
+                                    var phone = data[i].phone;  //手机号
+                                    $(this).html(phone);
+                                    break;
+                                case 5:
+                                    var wc = data[i].wechatNo;   //微信号
+                                    $(this).html(wc);
+                                    break;
+                                case 6:
+                                    var obj =$(this).find("a");
+                                    for(var idx=0;idx<obj.length;idx++) {
+                                        obj.attr("id",data[i].id);
+                                        obj.attr("typename",data[i].name_);
+                                        obj.attr("name", data[i].name);
+                                        obj.attr("phone", data[i].phone);
+                                        obj.attr("wc", data[i].wechatNo);
+                                    }
+                                    break;
+                            }
+                        });
+                        clonedTr.insertBefore(tr);
+                        trIdx++;
+                    }
+                    $("#templateTr").hide();
+                 //   totalDataCnt = data.length;  //总条数
+                 //   loadTablePageData();
+                    arragePagingInfo();// 分页封装
+                }
+
+            });
+        }else{
+            //某个类型专家
+            abc2 = localStorage["currentStationCd"] +  "," + ele +  "," + start + "," + num
+            get_promapper_result("getDataByLimitType", abc2, function (data) {
+                if (data != null && data.length > 0 && data[0] != null) {
+                    // totalDataCnt = data.length;
+                    let startIdx = 0;
+                    let endIdx = 0;
+                    if (data.length < rowPerPage)
+                        endIdx = data.length;
+                    else
+                        endIdx = rowPerPage;
+                    let trIdx = 0;
+                    for (let i = startIdx; i < endIdx; i++) {
+                        let clonedTr = tr.clone();
+                        if (i >= endIdx) {
+                            clonedTr.insertBefore(tr);
+                            continue;
+                        }
+                        clonedTr.attr("id", "tr" + trIdx);
+                        clonedTr.children("td").each(function (inner_index) {
+                            switch (inner_index) {
+                                case 0:
+                                    var exid= data[i].id;     //专家ID
+                                    $(this).html(exid);
+                                    break;
+                                case 1:
+                                    $(this).html((currentPageCnt - 1) * rowPerPage + 1 + i);   //序号
+                                    break;
+                                case 2:
+                                    var typename= data[i].name_;     //专家类型
+                                    $(this).html(typename);
+                                    break;
+                                case 3:
+                                    var nam = data[i].name;     //专家名称
+                                    $(this).html(nam);
+                                    break;
+                                case 4:
+                                    var phone = data[i].phone;  //手机号
+                                    $(this).html(phone);
+                                    break;
+                                case 5:
+                                    var wc = data[i].wechatNo;   //微信号
+                                    $(this).html(wc);
+                                    break;
+                                case 6:
+                                    var obj =$(this).find("a");
+                                    for(var idx=0;idx<obj.length;idx++) {
+                                        obj.attr("id",data[i].id);
+                                        obj.attr("typename",data[i].name_);
+                                        obj.attr("name", data[i].name);
+                                        obj.attr("phone", data[i].phone);
+                                        obj.attr("wc", data[i].wechatNo);
+                                    }
+                                    break;
+                            }
+                        });
+                        clonedTr.insertBefore(tr);
+                        trIdx++;
+                    }
+                    $("#templateTr").hide();
+                  //  loadTablePageData();
+                    arragePagingInfo();// 分页封装
+                }
+            });
+        }
+
+    }
+    //删除旧数据
+    function deleteOldData() {
+        var tableLen = $("#expertTable").find("tr").length;
+        for(var i = 0; i < tableLen - 1; i++) {
+            var tr_id = "tr" + i;
+            $('#' + tr_id).remove();
+        }
+    }
+
+    //初始化专家类型
+    function initExpertType() {
+        get_promapper_result("getExpertType", null, function (data) {
+            var ele = $('#expertType');
+            ele.empty();
+            ele.append("<option value='" + 0 + "' >" + '全部' + "</option>");
+            if (data != null) {
+                for (var i = 0; i < data.length; i++) {
+                    option = "<option value='" + data[i].code_ + "' >" + data[i]['name_'] + "</option>";
+                    ele.append(option);
+                }
+            }
+        });
+    }
+    //选择专家类型并进行查询
+    function setExpertType() {
+        deleteOldData();
+       loadTablePageData();   //分页数据
+        loadTableData();        //表格10条数据
+        // arragePagingInfo();
+    }
+
+    function toDeletePage(obj) {
+        var exPertId = $(obj).attr("id");
+        console.log(exPertId);
+        swal({
+                title: localStorage["cLan"] == "cn"?"确定删除吗？":"Sure to delete or not?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonText: localStorage["cLan"] == "cn"?"确定删除":"Delete",
+                cancelButtonText:localStorage["cLan"] == "cn"?"取消":"Cancel",
+                closeOnConfirm: false
+            },
+            function(){
+            }).then(function(isConfirm) {
+            if (isConfirm === true) {
+                get_promapper_result("deleteExpert", exPertId, function (data) {
+                    sweetAlert(getLangData("knowledgemanage.sccg"));//删除成功
+                    loadTableData();
+                    loadTablePageData();
+                });
+            }
+        });
+    }
+
+    function toEditPage(obj) {
+        console.log('edit');
+        var exid = $(obj).attr("id");
+        localStorage["expertId"] = exid;
+        localStorage["expert_typeName"] = $(obj).attr("typename");
+        localStorage["expert_name"] = $(obj).attr("name");
+        localStorage["expert_phone"] = $(obj).attr("phone");
+        localStorage["expert_wc"] = $(obj).attr("wc");
+        localStorage["expert_ChangeFlag"]  = "修改";
+        $.get("ExpertManageAdd.html", function(result){
+            $("#main-container").html(result);
+        });
+            loadTableData();
+            arragePagingInfo();
+            // loadTablePageData();
+    }
+
+
+</script>
+</body>
+</html>

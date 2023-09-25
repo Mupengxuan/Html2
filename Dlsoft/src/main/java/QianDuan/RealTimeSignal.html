@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>实时数据</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta name="description" content="">
+</head>
+<body>
+<div class="col-md-12" style="height:100%;">
+	<div id="treeDiv" class="col-md-2 panel panel-default " style ="height:calc(100% - 10px);">
+		<ul id="myTab" class="nav nav-tabs">
+			<li id="rtuTab" class=""> <a href="#rtuTabContent" data-toggle="tab" i18n="energyanalyze.rtulb">RTU列表</a> </li>
+			<li id="devTab" class=""> <a href="#devTabContent" data-toggle="tab" i18n="energyanalyze.sblb">设备列表</a> </li>
+		</ul>
+		<div class="tab-content" style="overflow-y: auto;height: calc(100% - 40px);">
+			<div id="rtuTabContent" class="tab-pane fade" style="overflow:auto;height:100%;">
+				<ul id="rtuTree" class="ztree">
+				</ul>
+			</div>
+			<div id="devTabContent" class="tab-pane fade active in" style="overflow:auto;height:100%;">
+				<ul id="devTree" class="ztree">
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div id="contentDiv" class="col-md-10 " style ="height:100%;">
+		<div class="panel panel-default">
+			<div class="panel-heading" style="color:white;" i18n="energyanalyze.cxtj">
+				查询条件
+			</div>
+			<div class="panel-body " style="color:white;">
+				<div class="row">
+					<div class="StatisPageTopDiv">
+						<label class="label-radio inline" >
+							<input type="radio" checked="" name="fillType" value="1"  /> <span class="custom-radio"></span> <span i18n="common.yc">遥测量</span> </label>
+						<label class="label-radio inline">
+							<input type="radio" name="fillType" value="2" /> <span class="custom-radio"></span> <span i18n="common.yx">遥信量</span></label>
+						<label class="label-radio inline">
+							<input type="radio" name="fillType" value="3" /> <span class="custom-radio"></span> <span i18n="common.dd">电度量</span> </label>
+					</div>
+					<div class="StatisPageTopDiv">
+						<label class="label-radio inline" i18n="RealtimeSignal.signame">信号名称</label>
+						<input id="filterName" onchange="filterName()">
+					</div>
+					<div class="StatisPageTopDiv">
+						<button type="button" class="btn btn-primary" onclick="refresh()">
+							<span i18n="common.sx" >刷新</span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="panel panel-default table-responsive " style="height:calc( 100% - 140px);" id="divTable">
+			<table id="assets_table" class="table " style="width: 100%;">
+				<thead style="display:table;overflow-y: scroll; margin-bottom:0px;border:3px solid rgba(0,0,0,0);">
+				<tr id="headTr">
+					<td id="devColTitle" i18n="RealtimeSignal.dev">设备名称</td>
+					<td i18n="RealtimeSignal.sigid">信号ID</td>
+					<td i18n="RealtimeSignal.signame">信号名称</td>
+					<td i18n="RealtimeSignal.sigvalue">当前值</td>
+					<td i18n="RealtimeSignal.sigunit">单位</td>
+					<td i18n="RealtimeSignal.sigtime">刷新时间</td>
+				</tr>
+				</thead>
+				<tbody id ="realTBody" style="display:block; overflow-y: auto;">
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<script>
+	let currentNode = null;
+	let currentNodeType = null;
+	let devTree = null;
+	let rtuTree = null;
+	let timeout = null;
+	let snames = [];
+
+	$(function() {
+		console.log("实时数据");
+		setCtrlCss();
+
+		$('input[name="fillType"]').change(function(e) {
+			if(currentNode == null){
+				return ;
+			}
+			loadTableDataRealSignal();
+		});
+
+		if(localStorage["hideDevice"] && localStorage["hideDevice"] == "true"){
+			$("#rtuTab").addClass("active");
+			$("#rtuTabContent").addClass("active");
+			$("#devTab").addClass("hidden");
+			initRtuTree(true);
+		}else{
+			$("#devTab").addClass("active");
+			$("#devTabContent").addClass("active");
+			initDevTree(true);
+			initRtuTree();
+		}
+
+		$(window).on("onPageClose",function(){
+			window.clearTimeout(timeout);
+		})
+	});
+	function refresh(){
+		let loadText = getLangData("common.jzz");
+		let eles = document.getElementsByName("svalue");
+		eles.forEach(function(value,index,array){
+			value.innerText = loadText;
+		});
+		eles = document.getElementsByName("stime");
+		eles.forEach(function(value,index,array){
+			value.innerText = loadText;
+		});
+		queryRealData();
+	}
+
+	function loadTableDataRealSignal(){
+		let sql = "";
+		let code = "";
+		var checkType =  $("input[name='fillType']:checked").val();
+		if(currentNodeType == "dev"){//设备
+			if(checkType == 1){//遥测
+				sql = "getDeviceYcCodes";
+			}else if(checkType == 2){//遥信
+				sql = "getDeviceYxCodes";
+			}else{//电度
+				sql = "getDeviceKwhCodes";
+			}
+			code = currentNode.code_;
+		}else{//rtu
+			if(checkType == 1){//遥测
+				sql = "getRtuYcCodes";
+			}else if(checkType == 2){//遥信
+				sql = "getRtuYxCodes";
+			}else{//电度
+				sql = "getRtuKwhCodes";
+			}
+			code = currentNode.code;
+		}
+		$("#realTBody").html("");
+		$(document).progressDialog.showDialog("loading...");
+		get_promapper_result(sql,code, function(data) {
+			$(document).progressDialog.hideDialog();
+			var realTbodyStr = "";
+			if(data==null||data.length==0){
+				data = [];
+				realTbodyStr = "<tr><td>"+getLangData("powerstationinfo.noData")+"</td><td></td><td></td><td></td><td></td><td></td></tr>"
+			}
+			if(checkType != 3){
+				$("#headTr td:nth-child(6)").show();
+			}else{
+				$("#headTr td:nth-child(6)").hide();
+			}
+			let loadText = getLangData("common.jzz");
+			snames = [];
+			for (var k=0;k<data.length;k++){
+				let yxyckwhcode = data[k].dataVal?data[k].dataVal:"";
+				let id = data[k].dataVal?("<span name='svalue' id='"+data[k].dataVal+"'>" +  loadText +"</span>"):"";
+				let trStr="<tr name='"+data[k]["name" + getLanIndex()]+"' style='width:100%;border-left:0;border-right:0'>";
+				trStr =trStr+"<td>" +  currentNode.name +"</td>";
+				trStr =trStr+"<td>" +  yxyckwhcode +"</td>";
+				trStr =trStr+"<td>" +  data[k]["name" + getLanIndex()] +"</td>";
+				trStr =trStr+"<td>" + id + "</td>";
+				trStr =trStr+"<td>" +  data[k].unit +"</td>";
+
+				if(checkType != 3){
+					let id2 = id == ""?id:("id='"+yxyckwhcode+"_ts'");
+					trStr =trStr+"<td><span name='stime' "+id2+">" +  loadText +"</span></td>";
+				}
+
+				trStr = trStr+"</tr>";
+				realTbodyStr = realTbodyStr+trStr;
+				if(data[k].dataVal && data[k].dataVal != "" && data[k].dataVal != "0"){
+					snames.push(data[k].dataVal);
+				}
+			}
+			$("#realTBody").html(realTbodyStr);
+			updateTableWidth(checkType);
+			queryRealData();
+
+			filterName();
+		},"json");
+
+	}
+	function filterName(){
+		let txt = $("#filterName").val();
+		if(txt.length > 0){
+			$("#realTBody tr[name*="+txt+"]").show();
+			$("#realTBody tr:not([name*="+txt+"])").hide();
+		}else{
+			$("#realTBody tr").show();
+		}
+
+	}
+	function updateTableWidth(checkType){
+		var _width = $("#divTable").width();
+		if(checkType != 3){
+			$('#divTable tr td:first-child').width(_width*0.1);
+			$('#divTable tr td:nth-child(2)').width(_width*0.1);
+			$('#divTable tr td:nth-child(3)').width(_width*0.3);
+			$('#divTable tr td:nth-child(4)').width(_width*0.1);
+			$('#divTable tr td:nth-child(5)').width(_width*0.1);
+			$('#divTable tr td:nth-child(6)').width(_width*0.3);
+		}else{
+			$('#divTable tr td:first-child').width(_width*0.1);
+			$('#divTable tr td:nth-child(2)').width(_width*0.1);
+			$('#divTable tr td:nth-child(3)').width(_width*0.3);
+			$('#divTable tr td:nth-child(4)').width(_width*0.3);
+			$('#divTable tr td:nth-child(5)').width(_width*0.2);
+		}
+	}
+	function queryRealData(){
+		var checkType =  $("input[name='fillType']:checked").val();
+		var pre = "";
+		if(checkType == "2"){
+			checkType = "1";
+			pre = "yx";
+		}else if(checkType == "1"){
+			checkType = "";
+			pre = "yc";
+		}else if(checkType == "3"){
+			checkType = "2";
+			pre = "kwh";
+		}
+		let data = {};
+		data[pre+"Snames"] = snames.join(",");
+		$.ajax({
+			url: "getYcYxKwhRealData",
+			type: "post",
+			data: data,
+			success: function (result) {
+				if(result.success != "true"){
+					sweetAlert(result.errStr);
+				}
+				let obj = result["resultObject"+checkType];
+				let today = new Date().Format("yyyy-MM-dd");
+				let trs = $("#realTBody tr");
+				for(let i=0;i<trs.length;i++){
+					let tr = $(trs[i]);
+					let svalueEle = tr.find("[name=svalue]")[0];
+					let sTsEle = tr.find("[name=stime]")[0];
+					if(!svalueEle){
+						sTsEle.innerText = "-";
+						continue;
+					}
+					let n = svalueEle.id;
+					if(obj[n] && obj[n].hasOwnProperty("data")){
+						svalueEle.innerText = obj[n].data;
+						if(sTsEle){
+							sTsEle.innerText = obj[n].ts?obj[n].ts.replace(today,"今天"):"-";
+							if(new Date(obj[n].ts).DateDiff("n",new Date()) > 10){
+								sTsEle.className = "red";
+							}else{
+								sTsEle.className = "";
+							}
+						}
+					}else{
+						svalueEle.innerText = "-";
+						if(sTsEle){
+							sTsEle.innerText = "-";
+							sTsEle.className = "red";
+						}
+					}
+				}
+				if(timeout){
+					window.clearTimeout(timeout);
+				}
+				timeout = window.setTimeout(function(){
+					queryRealData();
+				},10000);
+			}
+		});
+	}
+	function setCtrlCss(){
+		$("#realTBody").css("max-height",getContainerHeight() -$("#groupDiv").height()-$("#headTr").height()-165);
+	}
+
+	function initRtuTree(isChoose){
+		get_promapper_result("getRtuTreeByStation", localStorage["currentStationCd"]+","+localStorage["currentStationCd"], function(data) {
+			if(data!=null){
+				let zNodes = data;
+				for(var i in zNodes){
+					if(zNodes[i].id.indexOf("type_") == 0){
+						zNodes[i].nocheck = true;
+						zNodes[i].isParent = true;
+						zNodes[i].open = true;
+						zNodes[i].iconSkin = 'icon09';
+					}else{
+						zNodes[i].isParent = false;
+					}
+				}
+				rtuTree = $.fn.zTree.init($("#rtuTree"), getRtuTreeSetting(), zNodes);
+				var cnodes = rtuTree.getNodesByParamFuzzy("id","rtu_");
+				if(isChoose && cnodes!=null && cnodes.length>0){
+					rtuTree.selectNode(cnodes[0]);//选择点
+					rtuTree.setting.callback.onClick(null, rtuTree.setting.treeId, cnodes[0]);//调用事件
+				}
+			}
+		});
+	}
+
+	function initDevTree(isChoose){
+		get_promapper_result("getStationDeviceListTree", localStorage["currentStationCd"], function(data) {
+			if(data!=null){
+				let zNodes = data;
+				// for(var i in zNodes){
+				// 	if(zNodes[i].id.indexOf("type_") == 0){
+				// 		zNodes[i].nocheck = true;
+				// 		zNodes[i].isParent = true;
+				// 		zNodes[i].open = true;
+				// 		zNodes[i].iconSkin = 'icon09';
+				// 	}else{
+				// 		zNodes[i].isParent = false;
+				// 	}
+				// }
+				devTree = $.fn.zTree.init($("#devTree"), getDevTreeSetting(), zNodes);
+				var cnodes = devTree.getNodesByParam("level",1);
+				if(isChoose && cnodes!=null && cnodes.length>0){
+					devTree.selectNode(cnodes[0]);//选择点
+					devTree.setting.callback.onClick(null, devTree.setting.treeId, cnodes[0]);//调用事件
+				}
+			}
+		});
+	}
+	function getDevTreeSetting(){
+		return {
+			check: {
+				enable: false,
+				chkDisabledInherit: true,
+				nocheck: true,
+				chkDisabled: false
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+			callback: {
+				beforeClick:function(treeId,treeNode){
+					if(treeNode.id.indexOf("type_") == 0) {
+						rtuTree.expandNode(treeNode, !treeNode.open);
+						return false;
+					}
+					return true;
+				},
+				onClick: function(e,treeId,treeNode){
+					changeCurrentNode(treeNode,"dev");
+				}
+			},
+			view:{
+				showIcon:function(treeId,treeNode){
+					return treeNode.id.indexOf("type_") == 0;
+				}
+			}
+		};
+	}
+	function getRtuTreeSetting(){
+		return {
+			check: {
+				enable: false,
+				chkDisabledInherit: true,
+				nocheck: true,
+				chkDisabled: false
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+			callback: {
+				beforeClick:function(treeId, treeNode) {
+					if(treeNode.id.indexOf("type_") == 0){
+						return false;
+					}
+					return true;
+				},
+				onClick: function(e,treeId,treeNode){
+					changeCurrentNode(treeNode,"rtu");
+				}
+			},
+			view:{
+				showIcon:function(treeId,treeNode){
+					return treeNode.id.indexOf("type_") == 0;
+				}
+			}
+		};
+	}
+	function changeCurrentNode(treeNode,type){
+		currentNode = treeNode;
+		currentNodeType = type;
+		if(type == "rtu" && devTree){
+			devTree.cancelSelectedNode();
+		}else if(type == "dev" && rtuTree){
+			rtuTree.cancelSelectedNode();
+		}
+		$("#devColTitle").html(getLangData("RealtimeSignal."+currentNodeType));
+		loadTableDataRealSignal();
+	}
+</script>
+
+</body>
+</html>
